@@ -1,0 +1,40 @@
+{
+  "name": "daom89/WebER",
+  "version": "0.0.1",
+  "type": "project",
+  "keywords": ["console", "tool", "example"],
+  "homepage": "https://google.com",
+  "time": "2019-10-28",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Diego Ojeda",
+      "email": "daom89@gmail.com",
+      "homepage": "http://www.sena.edu.co",
+      "role": "Developer"
+    }
+  ],
+  "require":{
+    "php": ">=7.1.0",
+    "almasaeed2010/adminlte": "v3.0.0-rc.5"
+
+  },
+  "require-dev": {
+
+  },
+  "autoload": {
+
+  },
+  "scripts": {
+    "post-install-cmd": [
+    ],
+    "post-update-cmd": [
+    ]
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "extra": {
+
+  }
+}

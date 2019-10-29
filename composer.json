@@ -1,5 +1,5 @@
 {
-  "name": "daom89/WebER",
+  "name": "daom89/weber",
   "version": "0.0.1",
   "type": "project",
   "keywords": ["console", "tool", "example"],
@@ -16,7 +16,8 @@
   ],
   "require":{
     "php": ">=7.1.0",
-    "almasaeed2010/adminlte": "v3.0.0-rc.5"
+    "almasaeed2010/adminlte": "v3.0.0-rc.5",
+    "vlucas/phpdotenv": "^3.6"
 
   },
   "require-dev": {

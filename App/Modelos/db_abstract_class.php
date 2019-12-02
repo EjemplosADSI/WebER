@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Modelos;
+
 /**
  * Created by PhpStorm.
  * User: DAOM-PC

@@ -15,10 +15,9 @@
     }
   ],
   "require":{
-    "php": ">=7.1.0",
+    "php": ">=7.2.0",
     "almasaeed2010/adminlte": "^3.0",
     "vlucas/phpdotenv": "^3.6"
-
   },
   "require-dev": {
 

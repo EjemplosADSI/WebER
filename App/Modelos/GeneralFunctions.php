@@ -6,17 +6,20 @@ namespace App\Modelos;
 
 class GeneralFunctions
 {
-
-    public function getVersionPackage()
-    {
-        //TODO: Generar una funcion para obtener la ruta absoluta del proyecto
-
-        $data = array();
-        $packages = json_decode(file_get_contents('../vendor/composer/installed.json'));
-        // Assuming that the project root is one level above the web root.
-        foreach ($packages as $package) {
-            $data[$package['name']] = $package['version'];
+    static function SubirArchivo($File, $Ruta){
+        $archivos = new upload($File);
+        if ($archivos->uploaded){
+            $archivos->file_new_name_body = (date('H-M-s')."-".$archivos->file_src_name_body);
+            $archivos->Process($Ruta);
+            if($archivos->processed){
+                return $archivos->file_dst_name;
+            }else{
+                echo "Archivo No Subido, Error en la carpeta..".$archivos->error;
+                return false;
+            }
+        }else{
+            echo "Archivo No Subido, Error en la carpeta..".$archivos->error;
+            return false;
         }
     }
-    
 }

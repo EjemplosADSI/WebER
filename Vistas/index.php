@@ -2,11 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 3 | Blank Page</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= getenv('TITLE_SITE') ?> | Layout</title>
     <?php require("partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -42,7 +38,7 @@
             <!-- Default box -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Title</h3>
+                    <h3 class="card-title">Título Modulo</h3>
 
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -52,16 +48,15 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    Start creating your amazing application!
+                    Contenido del modulo
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                    Footer
+                    Pie de Página.
                 </div>
                 <!-- /.card-footer-->
             </div>
             <!-- /.card -->
-
         </section>
         <!-- /.content -->
     </div>

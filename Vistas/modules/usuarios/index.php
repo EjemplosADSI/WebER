@@ -35,6 +35,16 @@
         <!-- Main content -->
         <section class="content">
 
+            <?php if(!empty($_GET['respuesta'])){ ?>
+                <?php if ($_GET['respuesta'] == "correcto"){ ?>
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h5><i class="icon fas fa-check"></i> Correcto!</h5>
+                        El usuario ha sido creado
+                    </div>
+                <?php } ?>
+            <?php } ?>
+
             <!-- Default box -->
             <div class="card">
                 <div class="card-header">

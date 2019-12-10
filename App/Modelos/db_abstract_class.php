@@ -4,8 +4,8 @@ namespace App\Modelos;
 
 /**
  * Created by PhpStorm.
- * User: DAOM-PC
- * Date: 28/10/2019
+ * User: Diego-PC
+ * Date: 10/12/2019
  * Time: 9:17
  */
 abstract class db_abstract_class {
@@ -13,15 +13,15 @@ abstract class db_abstract_class {
     public $isConnected;
     protected $datab;
     private $username = "weber";
-    private $password = "*WebEr2019.";
+    private $password = "weber2019";
     private $host = "localhost";
     private $driver = "mysql";
     private $dbname = "weber";
 
     # métodos abstractos para ABM de clases que hereden
-    abstract protected static function buscarForId($id);
     abstract protected static function buscar($query);
     abstract protected static function getAll();
+    abstract protected static function buscarForId($id);
     abstract protected function insertar();
     abstract protected function editar();
     abstract protected function eliminar($id);
@@ -30,9 +30,9 @@ abstract class db_abstract_class {
         $this->isConnected = true;
         try {
             $this->datab = new PDO(
-                ($this->driver != "sqlsrv") ? 
-                    "$this->driver:host={$this->host};dbname={$this->dbname};charset=utf8" : 
-                    "$this->driver:Server=$this->host;Database=$this->dbname", 
+                ($this->driver != "sqlsrv") ?
+                    "$this->driver:host={$this->host};dbname={$this->dbname};charset=utf8" :
+                    "$this->driver:Server=$this->host;Database=$this->dbname",
                 $this->username, $this->password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
             );
             $this->datab->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -93,8 +93,7 @@ abstract class db_abstract_class {
                 $this->__construct();
             }
             $stmt = $this->datab->prepare($query);
-            $stmt->execute($params);
-
+            return $stmt->execute($params);
         }catch(PDOException $e){
             throw new Exception($e->getMessage());
         }

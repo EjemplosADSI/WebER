@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/Vistas/">WebER</a></li>
+                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/Views/">WebER</a></li>
                             <li class="breadcrumb-item active">Inicio</li>
                         </ol>
                     </div>
@@ -36,17 +36,11 @@
         <section class="content">
 
             <?php if(!empty($_GET['respuesta'])){ ?>
-                <?php if ($_GET['respuesta'] == "correcto"){ ?>
-                    <div class="alert alert-success alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <h5><i class="icon fas fa-check"></i> Correcto!</h5>
-                        El usuario ha sido creado correctamente
-                    </div>
-                <?php }else {?>
+                <?php if ($_GET['respuesta'] != "correcto"){ ?>
                     <div class="alert alert-danger alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                            El usuario no fue posible crearlo,
+                            Error al crear el usuario: <?= $_GET['mensaje'] ?>
                     </div>
                 <?php } ?>
             <?php } ?>
@@ -58,7 +52,7 @@
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form class="form-horizontal">
+                <form class="form-horizontal" method="post" id="frmCreateUsuario" name="frmCreateUsuario" action="../../../app/Controllers/UsuariosController.php?action=create">
                     <div class="card-body">
                         <div class="form-group row">
                             <label for="nombres" class="col-sm-2 col-form-label">Nombres</label>
@@ -87,13 +81,13 @@
                         <div class="form-group row">
                             <label for="documento" class="col-sm-2 col-form-label">Documento</label>
                             <div class="col-sm-10">
-                                <input required type="number" max="11" min="7" class="form-control" id="documento" name="documento" placeholder="Ingrese su documento">
+                                <input required type="number" minlength="6" class="form-control" id="documento" name="documento" placeholder="Ingrese su documento">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="telefono" class="col-sm-2 col-form-label">Telefono</label>
                             <div class="col-sm-10">
-                                <input required type="number" max="11" min="6" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su telefono">
+                                <input required type="number" minlength="6" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su telefono">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -106,7 +100,7 @@
                     <!-- /.card-body -->
                     <div class="card-footer">
                         <button type="submit" class="btn btn-info">Enviar</button>
-                        <button type="submit" class="btn btn-default float-right">Cancelar</button>
+                        <a href="index.php" role="button" class="btn btn-default float-right">Cancelar</a>
                     </div>
                     <!-- /.card-footer -->
                 </form>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modelos;
+namespace App\Models;
 
 /**
  * Created by PhpStorm.
@@ -8,7 +8,7 @@ namespace App\Modelos;
  * Date: 10/12/2019
  * Time: 9:17
  */
-abstract class db_abstract_class {
+abstract class BasicModel {
 
     public $isConnected;
     protected $datab;
@@ -22,25 +22,25 @@ abstract class db_abstract_class {
     abstract protected static function search($query);
     abstract protected static function getAll();
     abstract protected static function searchForId($id);
-    abstract protected function store();
+    abstract protected function create();
     abstract protected function update();
     abstract protected function deleted($id);
 
     public function __construct(){
         $this->isConnected = true;
         try {
-            $this->datab = new PDO(
+            $this->datab = new \PDO(
                 ($this->driver != "sqlsrv") ?
                     "$this->driver:host={$this->host};dbname={$this->dbname};charset=utf8" :
-                    "$this->driver:Server=$this->host;Database=$this->dbname",
-                $this->username, $this->password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
+                    "$this->driver:Server=$this->host;database=$this->dbname",
+                $this->username, $this->password, array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
             );
-            $this->datab->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->datab->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $this->datab->setAttribute(PDO::ATTR_PERSISTENT, true);
-        }catch(PDOException $e) {
+            $this->datab->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->datab->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+            $this->datab->setAttribute(\PDO::ATTR_PERSISTENT, true);
+        }catch(\PDOException $e) {
             $this->isConnected = false;
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 

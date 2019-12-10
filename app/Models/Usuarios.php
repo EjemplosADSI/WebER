@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Modelos;
+namespace App\Models;
 
-class Usuarios extends db_abstract_class
+require('BasicModel.php');
+
+class Usuarios extends BasicModel
 {
     private $id;
     private $nombres;
@@ -37,17 +39,17 @@ class Usuarios extends db_abstract_class
     public function __construct($usuario = array())
     {
         parent::__construct(); //Llama al contructor padre "la clase conexion" para conectarme a la BD
-        $this->id = $usuario['id'];
-        $this->nombres = $usuario['nombres'];
-        $this->apellidos = $usuario['apellidos'];
-        $this->tipo_documento = $usuario['tipo_documento'];
-        $this->documento = $usuario['documento'];
-        $this->telefono = $usuario['telefono'];
-        $this->direccion = $usuario['direccion'];
-        $this->user = $usuario['user'];
-        $this->password = $usuario['password'];
-        $this->rol = $usuario['rol'];
-        $this->estado = $usuario['estado'];
+        $this->id = $usuario['id'] ?? null;
+        $this->nombres = $usuario['nombres'] ?? null;
+        $this->apellidos = $usuario['apellidos'] ?? null;
+        $this->tipo_documento = $usuario['tipo_documento'] ?? null;
+        $this->documento = $usuario['documento'] ?? null;
+        $this->telefono = $usuario['telefono'] ?? null;
+        $this->direccion = $usuario['direccion'] ?? null;
+        $this->user = $usuario['user'] ?? null;
+        $this->password = $usuario['password'] ?? null;
+        $this->rol = $usuario['rol'] ?? null;
+        $this->estado = $usuario['estado'] ?? null;
     }
 
     /* Metodo destructor cierra la conexion. */
@@ -56,177 +58,177 @@ class Usuarios extends db_abstract_class
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      */
-    public function setId($id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getNombres()
+    public function getNombres() : string
     {
         return $this->nombres;
     }
 
     /**
-     * @param mixed $nombres
+     * @param string $nombres
      */
-    public function setNombres($nombres): void
+    public function setNombres(string $nombres): void
     {
         $this->nombres = $nombres;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getApellidos()
+    public function getApellidos() : string
     {
         return $this->apellidos;
     }
 
     /**
-     * @param mixed $apellidos
+     * @param string $apellidos
      */
-    public function setApellidos($apellidos): void
+    public function setApellidos(string $apellidos): void
     {
         $this->apellidos = $apellidos;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getTipoDocumento()
+    public function getTipoDocumento() : string
     {
         return $this->tipo_documento;
     }
 
     /**
-     * @param mixed $tipo_documento
+     * @param string $tipo_documento
      */
-    public function setTipoDocumento($tipo_documento): void
+    public function setTipoDocumento(string $tipo_documento): void
     {
         $this->tipo_documento = $tipo_documento;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getDocumento()
+    public function getDocumento() : int
     {
         return $this->documento;
     }
 
     /**
-     * @param mixed $documento
+     * @param int $documento
      */
-    public function setDocumento($documento): void
+    public function setDocumento(int $documento): void
     {
         $this->documento = $documento;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getTelefono()
+    public function getTelefono() : int
     {
         return $this->telefono;
     }
 
     /**
-     * @param mixed $telefono
+     * @param int $telefono
      */
-    public function setTelefono($telefono): void
+    public function setTelefono(int $telefono): void
     {
         $this->telefono = $telefono;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDireccion()
+    public function getDireccion() : string
     {
         return $this->direccion;
     }
 
     /**
-     * @param mixed $direccion
+     * @param string $direccion
      */
-    public function setDireccion($direccion): void
+    public function setDireccion(string $direccion): void
     {
         $this->direccion = $direccion;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getUser()
+    public function getUser() : string
     {
         return $this->user;
     }
 
     /**
-     * @param mixed $user
+     * @param string $user
      */
-    public function setUser($user): void
+    public function setUser(string $user): void
     {
         $this->user = $user;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPassword()
+    public function getPassword() : string
     {
         return $this->password;
     }
 
     /**
-     * @param mixed $password
+     * @param string $password
      */
-    public function setPassword($password): void
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getRol()
+    public function getRol() : string
     {
         return $this->rol;
     }
 
     /**
-     * @param mixed $rol
+     * @param string $rol
      */
-    public function setRol($rol): void
+    public function setRol(string $rol): void
     {
         $this->rol = $rol;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getEstado()
+    public function getEstado() : string
     {
         return $this->estado;
     }
 
     /**
-     * @param mixed $estado
+     * @param string $estado
      */
-    public function setEstado($estado): void
+    public function setEstado(string $estado): void
     {
         $this->estado = $estado;
     }
@@ -263,10 +265,9 @@ class Usuarios extends db_abstract_class
         $this->VentasEmpleado = $VentasEmpleado;
     }
 
-
-    protected function store()
+    public function create() : bool
     {
-        $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
+        $result = $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
             $this->nombres,
             $this->apellidos,
             $this->tipo_documento,
@@ -276,15 +277,16 @@ class Usuarios extends db_abstract_class
             $this->user,
             $this->password,
             $this->rol,
-            $this->estado,
+            $this->estado
             )
         );
         $this->Disconnect();
+        return $result;
     }
 
-    protected function update()
+    public function update() : bool
     {
-        $this->updateRow("UPDATE weber.usuarios SET nombres = ?, apellidos = ?, tipo_documento = ?, documento = ?, telefono = ?, direccion = ?, user = ?, password = ?, rol = ?, estado = ? WHERE id = ?", array(
+        $result = $this->updateRow("UPDATE weber.usuarios SET nombres = ?, apellidos = ?, tipo_documento = ?, documento = ?, telefono = ?, direccion = ?, user = ?, password = ?, rol = ?, estado = ? WHERE id = ?", array(
                 $this->nombres,
                 $this->apellidos,
                 $this->tipo_documento,
@@ -299,14 +301,15 @@ class Usuarios extends db_abstract_class
             )
         );
         $this->Disconnect();
+        return $result;
     }
 
-    protected function deleted($id)
+    public function deleted($id) : void
     {
         // TODO: Implement deleted() method.
     }
 
-    protected static function search($query)
+    public static function search($query) : array
     {
         $arrUsuarios = array();
         $tmp = new Usuarios();
@@ -332,7 +335,7 @@ class Usuarios extends db_abstract_class
         return $arrUsuarios;
     }
 
-    protected static function searchForId($id)
+    public static function searchForId($id) : Usuarios
     {
         $Usuario = new Usuarios();
         if ($id > 0){
@@ -357,12 +360,19 @@ class Usuarios extends db_abstract_class
         }
     }
 
-    protected static function getAll()
+    public static function getAll() : array
     {
-        return Usuarios::buscar("SELECT * FROM weber.usuarios");
+        return Usuarios::search("SELECT * FROM weber.usuarios");
     }
 
-
-
+    public static function usuarioRegistrado ($documento) : bool
+    {
+        $result = Usuarios::search("SELECT id FROM weber.usuarios where documento = ".$documento);
+        if (count($result) > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 }

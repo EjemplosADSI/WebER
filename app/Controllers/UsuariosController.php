@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Controladores;
-use App\Modelos\Usuarios;
+namespace App\Controllers;
+
+require('../Models/Usuarios.php');
+use App\Models\Usuarios;
 
 if(!empty($_GET['action'])){
     UsuariosController::main($_GET['action']);
@@ -13,8 +15,8 @@ class UsuariosController{
 
     static function main($action)
     {
-        if ($action == "crear") {
-            UsuariosController::crear();
+        if ($action == "create") {
+            UsuariosController::create();
         }/* else if ($action == "editar") {
             UsuariosController::editar();
         } else if ($action == "buscarID") {
@@ -31,10 +33,9 @@ class UsuariosController{
 
     }
 
-    static public function crear()
+    static public function create()
     {
         try {
-
             $arrayUsuario = array();
             $arrayUsuario['nombres'] = $_POST['nombres'];
             $arrayUsuario['apellidos'] = $_POST['apellidos'];
@@ -42,16 +43,18 @@ class UsuariosController{
             $arrayUsuario['documento'] = $_POST['documento'];
             $arrayUsuario['telefono'] = $_POST['telefono'];
             $arrayUsuario['direccion'] = $_POST['direccion'];
-            $arrayUsuario['user'] = '';
-            $arrayUsuario['password'] = '';
             $arrayUsuario['rol'] = 'Cliente';
             $arrayUsuario['estado'] = 'Activo';
 
-            $Usuario = new Usuarios ($arrayUsuario);
-            $Usuario->create();
-            header("Location: ../Vista/modules/persona/create.php?respuesta=correcto");
+            if(!Usuarios::usuarioRegistrado($arrayUsuario['documento'])){
+                $Usuario = new Usuarios ($arrayUsuario);
+                $Usuario->create();
+                header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto&action=create");
+            }else{
+                header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
+            }
         } catch (Exception $e) {
-            header("Location: ../Vista/modules/persona/create.php?respuesta=error&mensaje=" . $e->getMessage());
+            header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
 

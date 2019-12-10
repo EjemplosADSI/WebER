@@ -1,7 +1,7 @@
 <?php
 
-require (__DIR__.'/../../vendor/autoload.php'); //Requerido para convertir un objeto en Array
-require_once (__DIR__.'/../Modelos/Usuarios.php');
+namespace App\Controladores;
+use App\Modelos\Usuarios;
 
 if(!empty($_GET['action'])){
     UsuariosController::main($_GET['action']);
@@ -15,7 +15,7 @@ class UsuariosController{
     {
         if ($action == "crear") {
             UsuariosController::crear();
-        } else if ($action == "editar") {
+        }/* else if ($action == "editar") {
             UsuariosController::editar();
         } else if ($action == "buscarID") {
             UsuariosController::buscarID($_REQUEST['idPersona']);
@@ -23,48 +23,32 @@ class UsuariosController{
             UsuariosController::ActivarPersona();
         } else if ($action == "InactivarUsuario") {
             UsuariosController::InactivarPersona();
-            /*}else if ($action == "login"){
-                UsuariosController::login();
-            }else if($action == "cerrarSession"){
-                UsuariosController::cerrarSession();
-            }*/
-        }
+        }else if ($action == "login"){
+            UsuariosController::login();
+        }else if($action == "cerrarSession"){
+            UsuariosController::cerrarSession();
+        }*/
+
     }
 
     static public function crear()
     {
         try {
-            $arrayPersona = array();
-            $arrayPersona['Tipo_Documento'] = $_POST['Tipo_Documento'];
-            $arrayPersona['Documento'] = $_POST['Documento'];
-            $arrayPersona['Nombres'] = $_POST['Nombres'];
-            $arrayPersona['Apellidos'] = $_POST['Apellidos'];
-            $arrayPersona['Telefono'] = $_POST['Telefono'];
-            $arrayPersona['Direccion'] = $_POST['Direccion'];
-            $arrayPersona['Correo'] = $_POST['Correo'];
-            $arrayPersona['NRP'] = (!empty($_POST['NRP']) ? $_POST['NRP'] : NULL);
-            $arrayPersona['Profesion'] = (!empty($_POST['NRP']) ? $_POST['Profesion'] : NULL);
-            $arrayPersona['Usuario'] = $_POST['Usuario'];
-            $arrayPersona['Contrasena'] = $_POST['Contrasena'];
-            $arrayPersona['Tipo_Usuario'] = $_POST['Tipo_Usuario'];
-            $arrayPersona['Observaciones'] = (!empty($_POST['Observaciones']) ? $_POST['Observaciones'] : NULL);
-            if ($arrayPersona['Tipo_Usuario'] == "Medico" AND (!empty($_POST['relEspecialidades']))) {
-                $arrayPersona['relEspecialidades'] = Especialidad::buscarForId($_POST['relEspecialidades']);
-            }
-            $arrayPersona['Estado'] = 'Activo';
 
-            //Subir el archivo
-            if (!empty($_FILES['Foto']) && ($_FILES['Foto']["name"] != "")) {
-                $NameFile = GeneralFunctions::SubirArchivo($_FILES['Foto'], '../Vista/filesUploaded/');
-                if ($NameFile != false) {
-                    $arrayPersona['Foto'] = $NameFile;
-                } else {
-                    throw new Exception('La imagen no se pudo subir.');
-                }
-            }
+            $arrayUsuario = array();
+            $arrayUsuario['nombres'] = $_POST['nombres'];
+            $arrayUsuario['apellidos'] = $_POST['apellidos'];
+            $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
+            $arrayUsuario['documento'] = $_POST['documento'];
+            $arrayUsuario['telefono'] = $_POST['telefono'];
+            $arrayUsuario['direccion'] = $_POST['direccion'];
+            $arrayUsuario['user'] = '';
+            $arrayUsuario['password'] = '';
+            $arrayUsuario['rol'] = 'Cliente';
+            $arrayUsuario['estado'] = 'Activo';
 
-            $Persona = new Persona ($arrayPersona);
-            $Persona->insertar();
+            $Usuario = new Usuarios ($arrayUsuario);
+            $Usuario->create();
             header("Location: ../Vista/modules/persona/create.php?respuesta=correcto");
         } catch (Exception $e) {
             header("Location: ../Vista/modules/persona/create.php?respuesta=error&mensaje=" . $e->getMessage());

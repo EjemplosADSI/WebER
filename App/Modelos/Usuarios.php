@@ -263,7 +263,8 @@ class Usuarios extends db_abstract_class
         $this->VentasEmpleado = $VentasEmpleado;
     }
 
-    protected function insertar()
+
+    protected function store()
     {
         $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
             $this->nombres,
@@ -281,7 +282,7 @@ class Usuarios extends db_abstract_class
         $this->Disconnect();
     }
 
-    protected function editar()
+    protected function update()
     {
         $this->updateRow("UPDATE weber.usuarios SET nombres = ?, apellidos = ?, tipo_documento = ?, documento = ?, telefono = ?, direccion = ?, user = ?, password = ?, rol = ?, estado = ? WHERE id = ?", array(
                 $this->nombres,
@@ -300,12 +301,12 @@ class Usuarios extends db_abstract_class
         $this->Disconnect();
     }
 
-    protected function eliminar($id)
+    protected function deleted($id)
     {
-        // TODO: Implement eliminar() method.
+        // TODO: Implement deleted() method.
     }
 
-    protected static function buscar($query)
+    protected static function search($query)
     {
         $arrUsuarios = array();
         $tmp = new Usuarios();
@@ -331,7 +332,7 @@ class Usuarios extends db_abstract_class
         return $arrUsuarios;
     }
 
-    protected static function buscarForId($id)
+    protected static function searchForId($id)
     {
         $Usuario = new Usuarios();
         if ($id > 0){
@@ -360,5 +361,8 @@ class Usuarios extends db_abstract_class
     {
         return Usuarios::buscar("SELECT * FROM weber.usuarios");
     }
+
+
+
 
 }

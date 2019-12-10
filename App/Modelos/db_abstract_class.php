@@ -19,12 +19,12 @@ abstract class db_abstract_class {
     private $dbname = "weber";
 
     # métodos abstractos para ABM de clases que hereden
-    abstract protected static function buscar($query);
+    abstract protected static function search($query);
     abstract protected static function getAll();
-    abstract protected static function buscarForId($id);
-    abstract protected function insertar();
-    abstract protected function editar();
-    abstract protected function eliminar($id);
+    abstract protected static function searchForId($id);
+    abstract protected function store();
+    abstract protected function update();
+    abstract protected function deleted($id);
 
     public function __construct(){
         $this->isConnected = true;

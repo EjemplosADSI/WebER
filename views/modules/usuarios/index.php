@@ -1,9 +1,16 @@
-<?php require("../../partials/routes.php"); ?>
+<?php require("../../partials/routes.php");
+require("../../../app/Controllers/UsuariosController.php");
+
+use App\Controllers\UsuariosController; ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title><?= getenv('TITLE_SITE') ?> | Layout</title>
     <?php require("../../partials/head_imports.php"); ?>
+    <!-- DataTables -->
+    <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/datatables-responsive/css/responsive.bootstrap4.css">
+    <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/datatables-buttons/css/buttons.bootstrap4.css">
 </head>
 <body class="hold-transition sidebar-mini">
 
@@ -71,7 +78,63 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            Contenido del modulo
+                            <table id="tblUsuarios" class="datatable table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombres</th>
+                                    <th>Apellidos</th>
+                                    <th>Tipo Documento</th>
+                                    <th>Documento</th>
+                                    <th>Telefono</th>
+                                    <th>Direccion</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                $arrUsuarios = UsuariosController::getAll();
+                                foreach ($arrUsuarios as $usuario){
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $usuario->getId(); ?></td>
+                                        <td><?php echo $usuario->getNombres(); ?></td>
+                                        <td><?php echo $usuario->getApellidos(); ?></td>
+                                        <td><?php echo $usuario->getTipoDocumento(); ?></td>
+                                        <td><?php echo $usuario->getDocumento(); ?></td>
+                                        <td><?php echo $usuario->getTelefono(); ?></td>
+                                        <td><?php echo $usuario->getDireccion(); ?></td>
+                                        <td><?php echo $usuario->getRol(); ?></td>
+                                        <td><?php echo $usuario->getEstado(); ?></td>
+                                        <td>
+                                            <a href="edit.php?id=<?php echo $usuario->getId(); ?>" type="button" data-toggle="tooltip" title="Actualizar" class="btn docs-tooltip btn-primary btn-xs"><i class="fa fa-edit"></i></a>
+                                            <a href="show.php?id=<?php echo $usuario->getId(); ?>" type="button" data-toggle="tooltip" title="Ver" class="btn docs-tooltip btn-warning btn-xs"><i class="fa fa-eye"></i></a>
+                                            <?php if ($usuario->getEstado() != "Activo"){ ?>
+                                                <a href="../../../app/Controllers/UsuariosController.php?action=activate&Id=<?php echo $usuario->getId(); ?>" type="button" data-toggle="tooltip" title="Activar" class="btn docs-tooltip btn-success btn-xs"><i class="fa fa-check-square"></i></a>
+                                            <?php }else{ ?>
+                                                <a type="button" href="../../../app/Controllers/UsuariosController.php?action=inactivate&Id=<?php echo $usuario->getId(); ?>" data-toggle="tooltip" title="Inactivar" class="btn docs-tooltip btn-danger btn-xs"><i class="fa fa-times-circle"></i></a>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombres</th>
+                                    <th>Apellidos</th>
+                                    <th>Tipo Documento</th>
+                                    <th>Documento</th>
+                                    <th>Telefono</th>
+                                    <th>Direccion</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -91,5 +154,41 @@
 </div>
 <!-- ./wrapper -->
 <?php require ('../../partials/scripts.php');?>
+<!-- DataTables -->
+<script src="<?= $adminlteURL ?>/plugins/datatables/jquery.dataTables.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/datatables-responsive/js/dataTables.responsive.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/datatables-responsive/js/responsive.bootstrap4.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/dataTables.buttons.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.bootstrap4.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/jszip/jszip.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/pdfmake/pdfmake.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.html5.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.print.js"></script>
+<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.colVis.js"></script>
+
+<script>
+    $(function () {
+        $('.datatable').DataTable({
+            "dom": 'Bfrtip',
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "language": {
+                "url": "../../components/Spanish.json" //Idioma
+            },
+            "buttons": [
+                'copy', 'print', 'excel', 'pdf'
+            ],
+            "pagingType": "full_numbers",
+            "responsive": true,
+            "stateSave" : true, //Guardar la configuracion del usuario
+        });
+    });
+</script>
+
 </body>
 </html>

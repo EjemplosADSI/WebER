@@ -1,14 +1,11 @@
 <?php
 
 namespace App\Controllers;
-
-require('../Models/Usuarios.php');
+require(__DIR__.'/../Models/Usuarios.php');
 use App\Models\Usuarios;
 
 if(!empty($_GET['action'])){
     UsuariosController::main($_GET['action']);
-}else{
-    echo "No se encontro ninguna accion...";
 }
 
 class UsuariosController{
@@ -17,15 +14,17 @@ class UsuariosController{
     {
         if ($action == "create") {
             UsuariosController::create();
-        }/* else if ($action == "editar") {
-            UsuariosController::editar();
-        } else if ($action == "buscarID") {
-            UsuariosController::buscarID($_REQUEST['idPersona']);
-        } else if ($action == "ActivarUsuario") {
-            UsuariosController::ActivarPersona();
-        } else if ($action == "InactivarUsuario") {
-            UsuariosController::InactivarPersona();
-        }else if ($action == "login"){
+        } else if ($action == "edit") {
+            UsuariosController::edit();
+        } else if ($action == "searchForID") {
+            UsuariosController::searchForID($_REQUEST['idPersona']);
+        } else if ($action == "searchAll") {
+            UsuariosController::getAll();
+        } else if ($action == "activate") {
+            UsuariosController::activate();
+        } else if ($action == "inactivate") {
+            UsuariosController::inactivate();
+        }/*else if ($action == "login"){
             UsuariosController::login();
         }else if($action == "cerrarSession"){
             UsuariosController::cerrarSession();
@@ -45,16 +44,87 @@ class UsuariosController{
             $arrayUsuario['direccion'] = $_POST['direccion'];
             $arrayUsuario['rol'] = 'Cliente';
             $arrayUsuario['estado'] = 'Activo';
-
             if(!Usuarios::usuarioRegistrado($arrayUsuario['documento'])){
                 $Usuario = new Usuarios ($arrayUsuario);
-                $Usuario->create();
-                header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto&action=create");
+                if($Usuario->create()){
+                    header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto");
+                }
             }else{
                 header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
             }
         } catch (Exception $e) {
             header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=" . $e->getMessage());
+        }
+    }
+
+    static public function edit (){
+        try {
+            $arrayUsuario = array();
+            $arrayUsuario['nombres'] = $_POST['nombres'];
+            $arrayUsuario['apellidos'] = $_POST['apellidos'];
+            $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
+            $arrayUsuario['documento'] = $_POST['documento'];
+            $arrayUsuario['telefono'] = $_POST['telefono'];
+            $arrayUsuario['direccion'] = $_POST['direccion'];
+            $arrayUsuario['rol'] = $_POST['rol'];
+            $arrayUsuario['estado'] = $_POST['estado'];
+            $arrayUsuario['id'] = $_POST['id'];
+
+            $user = new Usuarios($arrayUsuario);
+            $user->update();
+
+            header("Location: ../../views/modules/usuarios/show.php?id=".$user->getId()."&respuesta=correcto");
+        } catch (\Exception $e) {
+            //var_dump($e);
+            header("Location: ../../views/modules/usuarios/edit.php?respuesta=error&mensaje=".$e->getMessage());
+        }
+    }
+
+    static public function activate (){
+        try {
+            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
+            $ObjUsuario->setEstado("Activo");
+            if($ObjUsuario->update()){
+                header("Location: ../../views/modules/usuarios/index.php");
+            }else{
+                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
+            }
+        } catch (\Exception $e) {
+            //var_dump($e);
+            header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=".$e->getMessage());
+        }
+    }
+
+    static public function inactivate (){
+        try {
+            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
+            $ObjUsuario->setEstado("Inactivo");
+            if($ObjUsuario->update()){
+                header("Location: ../../views/modules/usuarios/index.php");
+            }else{
+                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
+            }
+        } catch (\Exception $e) {
+            //var_dump($e);
+            header("Location: ../../views/modules/usuarios/index.php?respuesta=error");
+        }
+    }
+
+    static public function searchForID ($id){
+        try {
+            return Usuarios::searchForId($id);
+        } catch (\Exception $e) {
+            var_dump($e);
+            //header("Location: ../../views/modules/usuarios/manager.php?respuesta=error");
+        }
+    }
+
+    static public function getAll (){
+        try {
+            return Usuarios::getAll();
+        } catch (\Exception $e) {
+            var_dump($e);
+            //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
     }
 
@@ -94,91 +164,9 @@ class UsuariosController{
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;
-    }
+    }*/
 
-
-    static public function editar (){
-        try {
-            $arrayPersona = array();
-            $arrayPersona['Tipo_Documento'] = $_POST['Tipo_Documento'];
-            $arrayPersona['Documento'] = $_POST['Documento'];
-            $arrayPersona['Nombres'] = $_POST['Nombres'];
-            $arrayPersona['Apellidos'] = $_POST['Apellidos'];
-            $arrayPersona['Telefono'] = $_POST['Telefono'];
-            $arrayPersona['Direccion'] = $_POST['Direccion'];
-            $arrayPersona['Correo'] = $_POST['Correo'];
-            $arrayPersona['NRP'] = (!empty($_POST['NRP']) ? $_POST['NRP'] : NULL);
-            $arrayPersona['Profesion'] = (!empty($_POST['NRP']) ? $_POST['Profesion'] : NULL);
-            $arrayPersona['Usuario'] = $_POST['Usuario'];
-            $arrayPersona['Contrasena'] = $_POST['Contrasena'];
-            $arrayPersona['Tipo_Usuario'] = $_POST['Tipo_Usuario'];
-            $arrayPersona['Observaciones'] = (!empty($_POST['Observaciones']) ? $_POST['Observaciones'] : NULL);
-            $arrayPersona['Estado'] = $_POST['Estado'];
-            $arrayPersona['idPersona'] = $_POST['idPersona'];
-
-            //Subir el archivo
-            if (!empty($_FILES['Foto']) && ($_FILES['Foto']["name"] != "" )){
-                var_dump($_FILES['Foto']);
-                $NameFile = GeneralFunctions::SubirArchivo($_FILES['Foto'],'../Vista/filesUploaded/');
-                if ($NameFile != false){
-                    $arrayPersona['Foto'] = $NameFile;
-                }else{
-                    throw new Exception('La imagen no se pudo subir.');
-                }
-            }else{
-                $persona = UsuariosController::buscarID($arrayPersona['idPersona']);
-                $arrayPersona['Foto'] = $persona->getFoto();
-            }
-
-            $person = new Persona($arrayPersona);
-            $person->editar();
-
-            header("Location: ../Vista/modules/persona/view.php?id=".$person->getIdPersona()."&respuesta=correcto");
-        } catch (Exception $e) {
-            var_dump($e);
-            //header("Location: ../Vista/modules/persona/edit.php?respuesta=error");
-        }
-    }
-
-    static public function ActivarPersona (){
-        try {
-            $ObjPersona = Persona::buscarForId($_GET['IdPersona']);
-            $ObjPersona->setEstado("Activo");
-            $ObjPersona->editar();
-            header("Location: ../Vista/modules/persona/manager.php");
-        } catch (Exception $e) {
-            header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
-        }
-    }
-
-    static public function InactivarPersona (){
-        try {
-            $ObjPersona = Persona::buscarForId($_GET['IdPersona']);
-            $ObjPersona->setEstado("Inactivo");
-            $ObjPersona->editar();
-            header("Location: ../Vista/modules/persona/manager.php");
-        } catch (Exception $e) {
-            var_dump($e);
-            //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
-        }
-    }
-
-    static public function buscarID ($id){
-        try {
-            return Persona::buscarForId($id);
-        } catch (Exception $e) {
-            header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
-        }
-    }
-
-    public function buscarAll (){
-        try {
-            return Persona::getAll();
-        } catch (Exception $e) {
-            header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
-        }
-    }
-
+    /*
     public function buscar ($Query){
         try {
             return Persona::buscar($Query);

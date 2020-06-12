@@ -76,7 +76,7 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function getNombres() : string
+    public function getNombres(): string
     {
         return $this->nombres;
     }
@@ -92,7 +92,7 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function getApellidos() : string
+    public function getApellidos(): string
     {
         return $this->apellidos;
     }
@@ -108,7 +108,7 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function getTipoDocumento() : string
+    public function getTipoDocumento(): string
     {
         return $this->tipo_documento;
     }
@@ -124,7 +124,7 @@ class Usuarios extends BasicModel
     /**
      * @return int
      */
-    public function getDocumento() : int
+    public function getDocumento(): int
     {
         return $this->documento;
     }
@@ -140,7 +140,7 @@ class Usuarios extends BasicModel
     /**
      * @return int
      */
-    public function getTelefono() : int
+    public function getTelefono(): int
     {
         return $this->telefono;
     }
@@ -156,7 +156,7 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function getDireccion() : string
+    public function getDireccion(): string
     {
         return $this->direccion;
     }
@@ -172,7 +172,7 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function getUser() : string
+    public function getUser(): string
     {
         return $this->user;
     }
@@ -188,7 +188,7 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function getPassword() : string
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -204,7 +204,7 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function getRol() : string
+    public function getRol(): string
     {
         return $this->rol;
     }
@@ -220,7 +220,7 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function getEstado() : string
+    public function getEstado(): string
     {
         return $this->estado;
     }
@@ -304,9 +304,11 @@ class Usuarios extends BasicModel
         return $result;
     }
 
-    public function deleted($id) : void
+    public function deleted($id) : bool
     {
-        // TODO: Implement deleted() method.
+        $User = Usuarios::searchForId($id); //Buscando un usuario por el ID
+        $User->setEstado("Inactivo"); //Cambia el estado del Usuario
+        return $User->update();                    //Guarda los cambios..
     }
 
     public static function search($query) : array
@@ -373,6 +375,12 @@ class Usuarios extends BasicModel
         }else{
             return false;
         }
+    }
+
+    public function __toString()
+    {
+        //
+        return $this->nombres." ".$this->apellidos;
     }
 
 }

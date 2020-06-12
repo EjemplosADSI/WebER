@@ -15,7 +15,7 @@ abstract class BasicModel {
     private $username = "weber";
     private $password = "weber2019";
     private $host = "localhost";
-    private $driver = "mysql";
+    private $driver = "mysql"; //mysql, postgres, oracle, sql server, sqlite
     private $dbname = "weber";
 
     # métodos abstractos para ABM de clases que hereden
@@ -51,9 +51,9 @@ abstract class BasicModel {
         $this->isConnected = false;
     }
 
-    //Getting row
-    //$getrow = $database->getRow("SELECT email, username FROM users WHERE username =?", array("yusaf"));
-    public function getRow($query, $params=array()){
+    //Getting row -> Deveulve una sola fila de la Base de Datos.
+    //$getrow = $database->getRow("SELECT email, username FROM users WHERE username = ? and password = ?", array("diego","123456"));
+    public function getRow($query, $params = array()){
         try{
             $stmt = $this->datab->prepare($query);
             $stmt->execute($params);

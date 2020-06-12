@@ -339,27 +339,24 @@ class Usuarios extends BasicModel
 
     public static function searchForId($id) : Usuarios
     {
-        $Usuario = new Usuarios();
+        $Usuario = null;
         if ($id > 0){
+            $Usuario = new Usuarios();
             $getrow = $Usuario->getRow("SELECT * FROM weber.usuarios WHERE id =?", array($id));
-            $Usuario->id = $getrow['idPersona'];
-            $Usuario->nombres = $getrow['Tipo_Documento'];
-            $Usuario->apellidos = $getrow['Documento'];
-            $Usuario->tipo_documento = $getrow['Nombres'];
-            $Usuario->documento = $getrow['Apellidos'];
-            $Usuario->telefono = $getrow['Telefono'];
-            $Usuario->direccion = $getrow['Direccion'];
-            $Usuario->user = $getrow['Correo'];
-            $Usuario->password = $getrow['Foto'];
-            $Usuario->rol = $getrow['NRP'];
-            $Usuario->estado = $getrow['Fecha_Registro'];
-            $Usuario->Disconnect();
-            return $Usuario;
-        }else{
-            $Usuario->Disconnect();
-            unset($Usuario);
-            return NULL;
+            $Usuario->id = $getrow['id'];
+            $Usuario->nombres = $getrow['nombres'];
+            $Usuario->apellidos = $getrow['apellidos'];
+            $Usuario->tipo_documento = $getrow['tipo_documento'];
+            $Usuario->documento = $getrow['documento'];
+            $Usuario->telefono = $getrow['telefono'];
+            $Usuario->direccion = $getrow['direccion'];
+            $Usuario->user = $getrow['user'];
+            $Usuario->password = $getrow['password'];
+            $Usuario->rol = $getrow['rol'];
+            $Usuario->estado = $getrow['estado'];
         }
+        $Usuario->Disconnect();
+        return $Usuario;
     }
 
     public static function getAll() : array

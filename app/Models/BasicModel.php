@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use Exception;
+use PDOException;
+
 /**
  * Created by PhpStorm.
  * User: Diego-PC
  * Date: 10/12/2019
  * Time: 9:17
  */
-abstract class BasicModel {
 
+abstract class BasicModel {
+    //TODO: Agregar PHPDoc
     public $isConnected;
     protected $datab;
     private $username = "weber";
@@ -40,7 +44,7 @@ abstract class BasicModel {
             $this->datab->setAttribute(\PDO::ATTR_PERSISTENT, true);
         }catch(\PDOException $e) {
             $this->isConnected = false;
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -50,6 +54,8 @@ abstract class BasicModel {
         $this->datab = null;
         $this->isConnected = false;
     }
+
+
 
     //Getting row -> Deveulve una sola fila de la Base de Datos.
     //$getrow = $database->getRow("SELECT email, username FROM users WHERE username = ? and password = ?", array("diego","123456"));

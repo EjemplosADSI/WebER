@@ -6,7 +6,7 @@
              alt="AdminLTE Logo"
              class="brand-image img-circle elevation-3"
              style="opacity: .8">
-        <span class="brand-text font-weight-light">WebER</span>
+        <span class="brand-text font-weight-light"><?= getenv('ALIASE_SITE') ?></span>
     </a>
 
     <!-- Sidebar -->
@@ -27,14 +27,40 @@
                 <!-- Add icons to the links using the .nav-icon class
                      with font-awesome or any other icon font library -->
                 <li class="nav-item">
-                    <a href="<?= $baseURL; ?>/views/" class="nav-link">
+                    <a href="<?= $baseURL; ?>/views/index.php" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Inicio
                         </p>
                     </a>
                 </li>
+                <li class="nav-header">Modulos Principales</li>
+                <li class="nav-item has-treeview menu-open">
+                    <a href="#" class="nav-link active">
+                        <i class="nav-icon far fa-user"></i>
+                        <p>
+                            Usuarios
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= $baseURL ?>/views/modules/usuarios/index.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Gestionar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= $baseURL ?>/views/modules/usuarios/create.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Registrar</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
+
         </nav>
         <!-- /.sidebar-menu -->
     </div>

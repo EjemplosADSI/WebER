@@ -53,14 +53,57 @@ class Usuarios extends BasicModel
     }
 
     /* Metodo destructor cierra la conexion. */
-    function __destruct() {
+
+    public static function getAll(): array
+    {
+        return Usuarios::search("SELECT * FROM weber.usuarios");
+    }
+
+    public static function search($query): array
+    {
+        $arrUsuarios = array();
+        $tmp = new Usuarios();
+        $getrows = $tmp->getRows($query);
+
+        foreach ($getrows as $valor) {
+            $Usuario = new Usuarios();
+            $Usuario->id = $valor['id'];
+            $Usuario->nombres = $valor['nombres'];
+            $Usuario->apellidos = $valor['apellidos'];
+            $Usuario->tipo_documento = $valor['tipo_documento'];
+            $Usuario->documento = $valor['documento'];
+            $Usuario->telefono = $valor['telefono'];
+            $Usuario->direccion = $valor['direccion'];
+            $Usuario->user = $valor['user'];
+            $Usuario->password = $valor['password'];
+            $Usuario->rol = $valor['rol'];
+            $Usuario->estado = $valor['estado'];
+            $Usuario->Disconnect();
+            array_push($arrUsuarios, $Usuario);
+        }
+        $tmp->Disconnect();
+        return $arrUsuarios;
+    }
+
+    public static function usuarioRegistrado($documento): bool
+    {
+        $result = Usuarios::search("SELECT id FROM weber.usuarios where documento = " . $documento);
+        if (count($result) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function __destruct()
+    {
         $this->Disconnect();
     }
 
     /**
      * @return int
      */
-    public function getId() : int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -265,26 +308,55 @@ class Usuarios extends BasicModel
         $this->VentasEmpleado = $VentasEmpleado;
     }
 
-    public function create() : bool
+    public function create(): bool
     {
         $result = $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
-            $this->nombres,
-            $this->apellidos,
-            $this->tipo_documento,
-            $this->documento,
-            $this->telefono,
-            $this->direccion,
-            $this->user,
-            $this->password,
-            $this->rol,
-            $this->estado
+                $this->nombres,
+                $this->apellidos,
+                $this->tipo_documento,
+                $this->documento,
+                $this->telefono,
+                $this->direccion,
+                $this->user,
+                $this->password,
+                $this->rol,
+                $this->estado
             )
         );
         $this->Disconnect();
         return $result;
     }
 
-    public function update() : bool
+    public function deleted($id): bool
+    {
+        $User = Usuarios::searchForId($id); //Buscando un usuario por el ID
+        $User->setEstado("Inactivo"); //Cambia el estado del Usuario
+        return $User->update();                    //Guarda los cambios..
+    }
+
+    public static function searchForId($id): Usuarios
+    {
+        $Usuario = null;
+        if ($id > 0) {
+            $Usuario = new Usuarios();
+            $getrow = $Usuario->getRow("SELECT * FROM weber.usuarios WHERE id =?", array($id));
+            $Usuario->id = $getrow['id'];
+            $Usuario->nombres = $getrow['nombres'];
+            $Usuario->apellidos = $getrow['apellidos'];
+            $Usuario->tipo_documento = $getrow['tipo_documento'];
+            $Usuario->documento = $getrow['documento'];
+            $Usuario->telefono = $getrow['telefono'];
+            $Usuario->direccion = $getrow['direccion'];
+            $Usuario->user = $getrow['user'];
+            $Usuario->password = $getrow['password'];
+            $Usuario->rol = $getrow['rol'];
+            $Usuario->estado = $getrow['estado'];
+        }
+        $Usuario->Disconnect();
+        return $Usuario;
+    }
+
+    public function update(): bool
     {
         $result = $this->updateRow("UPDATE weber.usuarios SET nombres = ?, apellidos = ?, tipo_documento = ?, documento = ?, telefono = ?, direccion = ?, user = ?, password = ?, rol = ?, estado = ? WHERE id = ?", array(
                 $this->nombres,
@@ -304,80 +376,11 @@ class Usuarios extends BasicModel
         return $result;
     }
 
-    public function deleted($id) : bool
-    {
-        $User = Usuarios::searchForId($id); //Buscando un usuario por el ID
-        $User->setEstado("Inactivo"); //Cambia el estado del Usuario
-        return $User->update();                    //Guarda los cambios..
-    }
-
-    public static function search($query) : array
-    {
-        $arrUsuarios = array();
-        $tmp = new Usuarios();
-        $getrows = $tmp->getRows($query);
-
-        foreach ($getrows as $valor) {
-            $Usuario = new Usuarios();
-            $Usuario->id = $valor['id'];
-            $Usuario->nombres = $valor['nombres'];
-            $Usuario->apellidos = $valor['apellidos'];
-            $Usuario->tipo_documento = $valor['tipo_documento'];
-            $Usuario->documento = $valor['documento'];
-            $Usuario->telefono = $valor['telefono'];
-            $Usuario->direccion = $valor['direccion'];
-            $Usuario->user = $valor['user'];
-            $Usuario->password = $valor['password'];
-            $Usuario->rol = $valor['rol'];
-            $Usuario->estado = $valor['estado'];
-            $Usuario->Disconnect();
-            array_push($arrUsuarios, $Usuario);
-        }
-        $tmp->Disconnect();
-        return $arrUsuarios;
-    }
-
-    public static function searchForId($id) : Usuarios
-    {
-        $Usuario = null;
-        if ($id > 0){
-            $Usuario = new Usuarios();
-            $getrow = $Usuario->getRow("SELECT * FROM weber.usuarios WHERE id =?", array($id));
-            $Usuario->id = $getrow['id'];
-            $Usuario->nombres = $getrow['nombres'];
-            $Usuario->apellidos = $getrow['apellidos'];
-            $Usuario->tipo_documento = $getrow['tipo_documento'];
-            $Usuario->documento = $getrow['documento'];
-            $Usuario->telefono = $getrow['telefono'];
-            $Usuario->direccion = $getrow['direccion'];
-            $Usuario->user = $getrow['user'];
-            $Usuario->password = $getrow['password'];
-            $Usuario->rol = $getrow['rol'];
-            $Usuario->estado = $getrow['estado'];
-        }
-        $Usuario->Disconnect();
-        return $Usuario;
-    }
-
-    public static function getAll() : array
-    {
-        return Usuarios::search("SELECT * FROM weber.usuarios");
-    }
-
-    public static function usuarioRegistrado ($documento) : bool
-    {
-        $result = Usuarios::search("SELECT id FROM weber.usuarios where documento = ".$documento);
-        if (count($result) > 0){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     public function __toString()
     {
         //
-        return $this->nombres." ".$this->apellidos;
+        return $this->nombres . " " . $this->apellidos;
+
     }
 
 }

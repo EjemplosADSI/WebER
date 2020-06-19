@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= getenv('TITLE_SITE') ?> | Layout</title>
+    <title><?= getenv('TITLE_SITE') ?> | Home</title>
     <?php require("partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -24,8 +24,8 @@
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/">WebER</a></li>
-                            <li class="breadcrumb-item active">Inicio</li>
+                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/index.php"><?= getenv('ALIASE_SITE') ?></a></li>
+                            <li class="breadcrumb-item active">Home</li>
                         </ol>
                     </div>
                 </div>

@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 require(__DIR__.'/../Models/Usuarios.php');
+
+use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
 
 if(!empty($_GET['action'])){
@@ -53,7 +55,8 @@ class UsuariosController{
                 header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
             }
         } catch (Exception $e) {
-            header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=" . $e->getMessage());
+            GeneralFunctions::console( $e, 'error', 'errorStack');
+            //header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
 
@@ -75,8 +78,8 @@ class UsuariosController{
 
             header("Location: ../../views/modules/usuarios/show.php?id=".$user->getId()."&respuesta=correcto");
         } catch (\Exception $e) {
-            //var_dump($e);
-            header("Location: ../../views/modules/usuarios/edit.php?respuesta=error&mensaje=".$e->getMessage());
+            GeneralFunctions::console( $e, 'error', 'errorStack');
+            //header("Location: ../../views/modules/usuarios/edit.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
 
@@ -90,8 +93,8 @@ class UsuariosController{
                 header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
-            //var_dump($e);
-            header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=".$e->getMessage());
+            GeneralFunctions::console( $e, 'error', 'errorStack');
+            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
 
@@ -105,8 +108,8 @@ class UsuariosController{
                 header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
-            //var_dump($e);
-            header("Location: ../../views/modules/usuarios/index.php?respuesta=error");
+            GeneralFunctions::console( $e, 'error', 'errorStack');
+            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error");
         }
     }
 
@@ -114,7 +117,7 @@ class UsuariosController{
         try {
             return Usuarios::searchForId($id);
         } catch (\Exception $e) {
-            var_dump($e);
+            GeneralFunctions::console( $e, 'error', 'errorStack');
             //header("Location: ../../views/modules/usuarios/manager.php?respuesta=error");
         }
     }
@@ -123,7 +126,7 @@ class UsuariosController{
         try {
             return Usuarios::getAll();
         } catch (\Exception $e) {
-            var_dump($e);
+            GeneralFunctions::console( $e, 'error', 'errorStack');
             //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
     }

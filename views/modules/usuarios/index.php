@@ -1,5 +1,7 @@
-<?php require("../../partials/routes.php");
-require("../../../app/Controllers/UsuariosController.php");
+<?php
+require_once("../../../app/Controllers/UsuariosController.php");
+require_once("../../partials/routes.php");
+
 
 use App\Controllers\UsuariosController; ?>
 <!DOCTYPE html>
@@ -16,9 +18,9 @@ use App\Controllers\UsuariosController; ?>
 
 <!-- Site wrapper -->
 <div class="wrapper">
-    <?php require("../../partials/navbar_customization.php"); ?>
+    <?php require_once("../../partials/navbar_customization.php"); ?>
 
-    <?php require("../../partials/sliderbar_main_menu.php"); ?>
+    <?php require_once("../../partials/sliderbar_main_menu.php"); ?>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">

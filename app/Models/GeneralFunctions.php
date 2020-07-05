@@ -22,4 +22,16 @@ class GeneralFunctions
             return false;
         }
     }
+
+    static function console ($data, $type = 'log', $typePrint = 'simple' ){
+        echo '<script>';
+        if ($typePrint == 'errorStack'){
+            echo 'console.'.$type.'('. json_encode($data->getMessage()) .');';
+            echo 'console.'.$type.'('. json_encode($data->getTrace()) .');';
+        }else{
+            $dataPrint = json_encode($data);
+            echo 'console.'.$type.'('. $dataPrint .')';
+        }
+        echo '</script>';
+    }
 }

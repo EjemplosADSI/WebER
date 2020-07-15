@@ -164,6 +164,7 @@ class Ventas extends BasicModel
      */
     public static function search($query)
     {
+
         $arrVentas = array();
         $tmp = new Ventas();
         $getrows = $tmp->getRows($query);
@@ -178,9 +179,6 @@ class Ventas extends BasicModel
             $Venta->monto = $valor['monto'];
             $Venta->estado = $valor['estado'];
             $Venta->Disconnect();
-            if(count($getrows) == 1){ // Si solamente hay un registro encontrado devuelve este objeto y no un array
-                return $Venta;
-            }
             array_push($arrVentas, $Venta);
         }
         $tmp->Disconnect();

@@ -8,7 +8,7 @@ use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
 
 if(!empty($_GET['action'])){
-    DetalleVentasController::main($_GET['action']);
+    UsuariosController::main($_GET['action']);
 }
 
 class UsuariosController{
@@ -16,17 +16,17 @@ class UsuariosController{
     static function main($action)
     {
         if ($action == "create") {
-            DetalleVentasController::create();
+            UsuariosController::create();
         } else if ($action == "edit") {
-            DetalleVentasController::edit();
+            UsuariosController::edit();
         } else if ($action == "searchForID") {
-            DetalleVentasController::searchForID($_REQUEST['idPersona']);
+            UsuariosController::searchForID($_REQUEST['idPersona']);
         } else if ($action == "searchAll") {
-            DetalleVentasController::getAll();
+            UsuariosController::getAll();
         } else if ($action == "activate") {
-            DetalleVentasController::activate();
+            UsuariosController::activate();
         } else if ($action == "inactivate") {
-            DetalleVentasController::inactivate();
+            UsuariosController::inactivate();
         }/*else if ($action == "login"){
             UsuariosController::login();
         }else if($action == "cerrarSession"){
@@ -132,10 +132,10 @@ class UsuariosController{
         }
     }
 
-    /*public static function personaIsInArray($idPersona, $ArrPersonas){
-        if(count($ArrPersonas) > 0){
-            foreach ($ArrPersonas as $Persona){
-                if($Persona->getIdPersona() == $idPersona){
+    private static function usuarioIsInArray($idUsuario, $ArrUsuarios){
+        if(count($ArrUsuarios) > 0){
+            foreach ($ArrUsuarios as $Usuario){
+                if($Usuario->getId() == $idUsuario){
                     return true;
                 }
             }
@@ -143,32 +143,32 @@ class UsuariosController{
         return false;
     }
 
-    static public function selectPersona ($isMultiple=false,
+    static public function selectUsuario ($isMultiple=false,
                                           $isRequired=true,
-                                          $id="idConsultorio",
-                                          $nombre="idConsultorio",
+                                          $id="idUsuario",
+                                          $nombre="idUsuario",
                                           $defaultValue="",
-                                          $class="",
+                                          $class="form-control",
                                           $where="",
                                           $arrExcluir = array()){
-        $arrPersonas = array();
+        $arrUsuarios = array();
         if($where != ""){
-            $base = "SELECT * FROM persona WHERE ";
-            $arrPersonas = Persona::buscar($base.$where);
+            $base = "SELECT * FROM usuarios WHERE ";
+            $arrUsuarios = Usuarios::search($base.' '.$where);
         }else{
-            $arrPersonas = Persona::getAll();
+            $arrUsuarios = Usuarios::getAll();
         }
 
-        $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."'>";
+        $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."' style='width: 100%;'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
-        if(count($arrPersonas) > 0){
-            foreach ($arrPersonas as $persona)
-                if (!UsuariosController::personaIsInArray($persona->getIdPersona(),$arrExcluir))
-                    $htmlSelect .= "<option ".(($persona != "") ? (($defaultValue == $persona->getIdPersona()) ? "selected" : "" ) : "")." value='".$persona->getIdPersona()."'>".$persona->getNombres()." ".$persona->getApellidos()."</option>";
+        if(count($arrUsuarios) > 0){
+            foreach ($arrUsuarios as $usuario)
+                if (!UsuariosController::usuarioIsInArray($usuario->getId(),$arrExcluir))
+                    $htmlSelect .= "<option ".(($usuario != "") ? (($defaultValue == $usuario->getId()) ? "selected" : "" ) : "")." value='".$usuario->getId()."'>".$usuario->getDocumento()." - ".$usuario->getNombres()." ".$usuario->getApellidos()."</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;
-    }*/
+    }
 
     /*
     public function buscar ($Query){

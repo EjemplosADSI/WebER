@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-require('BasicModel.php');
+require_once('BasicModel.php');
 
 class Usuarios extends BasicModel
 {
@@ -87,9 +87,6 @@ class Usuarios extends BasicModel
             $Usuario->rol = $valor['rol'];
             $Usuario->estado = $valor['estado'];
             $Usuario->Disconnect();
-            if(count($getrows) == 1){ // Si solamente hay un registro encontrado devuelve este objeto y no un array
-                return $Usuario;
-            }
             array_push($arrUsuarios, $Usuario);
         }
         $tmp->Disconnect();
@@ -104,7 +101,7 @@ class Usuarios extends BasicModel
     public static function usuarioRegistrado($documento): bool
     {
         $result = Usuarios::search("SELECT * FROM weber.usuarios where documento = " . $documento);
-        if ( is_object ($result) ) {
+        if ( count ($result) > 0 ) {
             return true;
         } else {
             return false;

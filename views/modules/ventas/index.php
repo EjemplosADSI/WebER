@@ -3,7 +3,7 @@ require_once("../../../app/Controllers/UsuariosController.php");
 require_once("../../partials/routes.php");
 
 
-use App\Controllers\DetalleVentasController;
+use App\Controllers\VentasController;
 
 ?>
 <!DOCTYPE html>
@@ -99,7 +99,7 @@ use App\Controllers\DetalleVentasController;
                                 </thead>
                                 <tbody>
                                 <?php
-                                    $arrUsuarios = DetalleVentasController::getAll();
+                                    $arrUsuarios = VentasController::getAll();
                                     foreach ($arrUsuarios as $usuario){
                                 ?>
                                         <tr>

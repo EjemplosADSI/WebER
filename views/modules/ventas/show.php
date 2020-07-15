@@ -2,7 +2,7 @@
 require("../../partials/routes.php");
 require("../../../app/Controllers/UsuariosController.php");
 
-use App\Controllers\DetalleVentasController; ?>
+use App\Controllers\VentasController; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,7 +58,7 @@ use App\Controllers\DetalleVentasController; ?>
             <!-- Horizontal Form -->
             <div class="card card-info">
                 <?php if(!empty($_GET["id"]) && isset($_GET["id"])){
-                    $DataUsuario = DetalleVentasController::searchForID($_GET["id"]);
+                    $DataUsuario = VentasController::searchForID($_GET["id"]);
                     if(!empty($DataUsuario)){
                 ?>
                 <div class="card-header">

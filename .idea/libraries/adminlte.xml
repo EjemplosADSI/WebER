@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="adminlte" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/vendor/almasaeed2010/adminlte/dist/css" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/vendor/almasaeed2010/adminlte/dist/css" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

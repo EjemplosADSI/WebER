@@ -1,4 +1,9 @@
-<?php require("../../partials/routes.php"); ?>
+<?php
+    require_once("../../../app/Controllers/UsuariosController.php");
+    require("../../partials/routes.php");
+    use App\Controllers\UsuariosController;
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,6 +20,17 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+
+        <?php if(!empty($_GET['respuesta'])){ ?>
+            <?php if ($_GET['respuesta'] != "correcto"){ ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-ban"></i> Error!</h5>
+                    Error al crear la venta: <?= $_GET['mensaje'] ?>
+                </div>
+            <?php } ?>
+        <?php } ?>
+
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -34,161 +50,67 @@
 
         <!-- Main content -->
         <section class="content">
+            <div class="container-fluid">
 
-            <?php if(!empty($_GET['respuesta'])){ ?>
-                <?php if ($_GET['respuesta'] != "correcto"){ ?>
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                            Error al crear la venta: <?= $_GET['mensaje'] ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-info">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fas fa-shopping-cart"></i> Información de la Venta</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="card-refresh" data-source="create.php" data-source-selector="#card-refresh-content" data-load-on-init="false"><i class="fas fa-sync-alt"></i></button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                </div>
+                            </div>
+
+                                <div class="card-body">
+                                    <form class="form-horizontal" method="post" id="frmCreateVenta" name="frmCreateVenta" action="../../../app/Controllers/VentasController.php?action=create">
+                                    <div class="form-group row">
+                                        <label for="cliente_id" class="col-sm-2 col-form-label">Cliente</label>
+                                        <div class="col-sm-10">
+                                            <?= UsuariosController::selectUsuario(false,
+                                                true,
+                                                'cliente_id',
+                                                'cliente_id',
+                                                '',
+                                                'form-control select2bs4 select2-info',
+                                                "rol = 'Cliente' and estado = 'Activo'")
+                                            ?>
+                                        </div>
+                                    </div>
+                                        <div class="form-group row">
+                                            <label for="empleado_id" class="col-sm-2 col-form-label">Empleado</label>
+                                            <div class="col-sm-10">
+                                                <?= UsuariosController::selectUsuario(false,
+                                                    true,
+                                                    'empleado_id',
+                                                    'empleado_id',
+                                                    '',
+                                                    'form-control select2bs4 select2-info',
+                                                    "rol = 'Empleado' and estado = 'Activo'")
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    <!-- /.card-body -->
+                                        <button type="submit" class="btn btn-info">Enviar</button>
+                                        <a href="index.php" role="button" class="btn btn-default float-right">Cancelar</a>
+                                    </form>
+                                </div>
+                        </div>
+                        <!-- /.card -->
+
                     </div>
-                <?php } ?>
-            <?php } ?>
-
-
-            <!-- Horizontal Form -->
-            <div class="card card-info">
-                <div class="card-header">
-                    <h3 class="card-title">Horizontal Form</h3>
+                    <div class="row">
+                        <!-- /.col (left) -->
+                        <div class="col-md-6">
+                        </div>
+                        <!-- /.col (right) -->
+                    </div>
                 </div>
-                <!-- /.card-header -->
-                <!-- form start -->
-                <form class="form-horizontal" method="post" id="frmCreateUsuario" name="frmCreateUsuario" action="../../../app/Controllers/UsuariosController.php?action=create">
-                    <div class="card-body">
-
-                        <div class="box box-default">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Select2</h3>
-
-                                <div class="box-tools pull-right">
-                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-                                </div>
-                            </div>
-                            <!-- /.box-header -->
-                            <div class="box-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Minimal</label>
-                                            <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                                <option selected="selected" data-select2-id="3">Alabama</option>
-                                                <option>Alaska</option>
-                                                <option>California</option>
-                                                <option>Delaware</option>
-                                                <option>Tennessee</option>
-                                                <option>Texas</option>
-                                                <option>Washington</option>
-                                            </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="2" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-gdtx-container"><span class="select2-selection__rendered" id="select2-gdtx-container" role="textbox" aria-readonly="true" title="Alabama">Alabama</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
-                                        </div>
-                                        <!-- /.form-group -->
-                                        <div class="form-group">
-                                            <label>Disabled</label>
-                                            <select class="form-control select2 select2-hidden-accessible" disabled="" style="width: 100%;" data-select2-id="4" tabindex="-1" aria-hidden="true">
-                                                <option selected="selected" data-select2-id="6">Alabama</option>
-                                                <option>Alaska</option>
-                                                <option>California</option>
-                                                <option>Delaware</option>
-                                                <option>Tennessee</option>
-                                                <option>Texas</option>
-                                                <option>Washington</option>
-                                            </select><span class="select2 select2-container select2-container--default select2-container--disabled" dir="ltr" data-select2-id="5" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1" aria-labelledby="select2-dy66-container"><span class="select2-selection__rendered" id="select2-dy66-container" role="textbox" aria-readonly="true" title="Alabama">Alabama</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
-                                        </div>
-                                        <!-- /.form-group -->
-                                    </div>
-                                    <!-- /.col -->
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Multiple</label>
-                                            <select class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="Select a State" style="width: 100%;" data-select2-id="7" tabindex="-1" aria-hidden="true">
-                                                <option>Alabama</option>
-                                                <option>Alaska</option>
-                                                <option>California</option>
-                                                <option>Delaware</option>
-                                                <option>Tennessee</option>
-                                                <option>Texas</option>
-                                                <option>Washington</option>
-                                            </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="8" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--multiple" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="-1"><ul class="select2-selection__rendered"><li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="Select a State" style="width: 794.5px;"></li></ul></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
-                                        </div>
-                                        <!-- /.form-group -->
-                                        <div class="form-group">
-                                            <label>Disabled Result</label>
-                                            <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="9" tabindex="-1" aria-hidden="true">
-                                                <option selected="selected" data-select2-id="11">Alabama</option>
-                                                <option>Alaska</option>
-                                                <option disabled="disabled">California (disabled)</option>
-                                                <option>Delaware</option>
-                                                <option>Tennessee</option>
-                                                <option>Texas</option>
-                                                <option>Washington</option>
-                                            </select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="10" style="width: 100%;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-labelledby="select2-dvmo-container"><span class="select2-selection__rendered" id="select2-dvmo-container" role="textbox" aria-readonly="true" title="Alabama">Alabama</span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
-                                        </div>
-                                        <!-- /.form-group -->
-                                    </div>
-                                    <!-- /.col -->
-                                </div>
-                                <!-- /.row -->
-                            </div>
-                            <!-- /.box-body -->
-                            <div class="box-footer">
-                                Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
-                                the plugin.
-                            </div>
-                        </div>
-
-
-                        <div class="form-group row">
-                            <label for="nombres" class="col-sm-2 col-form-label">Nombres</label>
-                            <div class="col-sm-10">
-                                <input required type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingrese sus nombres">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="apellidos" class="col-sm-2 col-form-label">Apellidos</label>
-                            <div class="col-sm-10">
-                                <input required type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Ingrese sus apellidos">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="tipo_documento" class="col-sm-2 col-form-label">Tipo Documento</label>
-                            <div class="col-sm-10">
-                                <select id="tipo_documento" name="tipo_documento" class="custom-select">
-                                    <option value="C.C">Cedula de Ciudadania</option>
-                                    <option value="T.I">Tarjeta de Identidad</option>
-                                    <option value="R.C">Registro Civil</option>
-                                    <option value="Pasaporte">Pasaporte</option>
-                                    <option value="C.E">Cedula de Extranjeria</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="documento" class="col-sm-2 col-form-label">Documento</label>
-                            <div class="col-sm-10">
-                                <input required type="number" minlength="6" class="form-control" id="documento" name="documento" placeholder="Ingrese su documento">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="telefono" class="col-sm-2 col-form-label">Telefono</label>
-                            <div class="col-sm-10">
-                                <input required type="number" minlength="6" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su telefono">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="direccion" class="col-sm-2 col-form-label">Direccion</label>
-                            <div class="col-sm-10">
-                                <input required type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese su direccion">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-info">Enviar</button>
-                        <a href="index.php" role="button" class="btn btn-default float-right">Cancelar</a>
-                    </div>
-                    <!-- /.card-footer -->
-                </form>
-            </div>
-            <!-- /.card -->
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
         </section>
         <!-- /.content -->
     </div>

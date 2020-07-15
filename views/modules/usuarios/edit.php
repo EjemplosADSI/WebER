@@ -2,7 +2,7 @@
 require("../../partials/routes.php");
 require("../../../app/Controllers/UsuariosController.php");
 
-use App\Controllers\DetalleVentasController; ?>
+use App\Controllers\UsuariosController; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,7 +64,7 @@ use App\Controllers\DetalleVentasController; ?>
                 <?php if(!empty($_GET["id"]) && isset($_GET["id"])){ ?>
                     <p>
                     <?php
-                    $DataUsuario = DetalleVentasController::searchForID($_GET["id"]);
+                    $DataUsuario = UsuariosController::searchForID($_GET["id"]);
                         if(!empty($DataUsuario)){
                     ?>
                             <!-- form start -->

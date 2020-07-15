@@ -10,25 +10,25 @@ use App\Models\Productos;
 use App\Models\Ventas;
 
 if(!empty($_GET['action'])){
-    DetalleVentasController::main($_GET['action']);
+    VentasController::main($_GET['action']);
 }
 
-class DetalleVentasController{
+class VentasController{
 
     static function main($action)
     {
         if ($action == "create") {
-            DetalleVentasController::create();
+            VentasController::create();
         } else if ($action == "edit") {
-            DetalleVentasController::edit();
+            VentasController::edit();
         } else if ($action == "searchForID") {
-            DetalleVentasController::searchForID($_REQUEST['idDetalleVentas']);
+            VentasController::searchForID($_REQUEST['idDetalleVentas']);
         } else if ($action == "searchAll") {
-            DetalleVentasController::getAll();
+            VentasController::getAll();
         } else if ($action == "activate") {
-            DetalleVentasController::activate();
+            VentasController::activate();
         } else if ($action == "inactivate") {
-            DetalleVentasController::inactivate();
+            VentasController::inactivate();
         }
     }
 

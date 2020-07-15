@@ -1,15 +1,15 @@
 <?php
 
 namespace App\Controllers;
-require(__DIR__.'/../Models/Ventas.php');
-require_once(__DIR__.'/../Models/GeneralFunctions.php');
+require_once(__DIR__.'/../Models/Ventas.php');
+require_once(__DIR__.'/../Models/Usuarios.php');
 
 use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
 use App\Models\Ventas;
 
 if(!empty($_GET['action'])){
-    DetalleVentasController::main($_GET['action']);
+    VentasController::main($_GET['action']);
 }
 
 class VentasController{
@@ -17,17 +17,17 @@ class VentasController{
     static function main($action)
     {
         if ($action == "create") {
-            DetalleVentasController::create();
+            VentasController::create();
         } else if ($action == "edit") {
-            DetalleVentasController::edit();
+            VentasController::edit();
         } else if ($action == "searchForID") {
-            DetalleVentasController::searchForID($_REQUEST['idVenta']);
+            VentasController::searchForID($_REQUEST['idVenta']);
         } else if ($action == "searchAll") {
-            DetalleVentasController::getAll();
+            VentasController::getAll();
         } else if ($action == "activate") {
-            DetalleVentasController::activate();
+            VentasController::activate();
         } else if ($action == "inactivate") {
-            DetalleVentasController::inactivate();
+            VentasController::inactivate();
         }
     }
 
@@ -35,11 +35,11 @@ class VentasController{
     {
         try {
             $arrayVenta = array();
-            $arrayVenta['numero_serie'] = $_POST['numero_serie'];
+            $arrayVenta['numero_serie'] = 'VG'.'-'.date('Y-m-d');
             $arrayVenta['cliente_id'] = Usuarios::searchForId($_POST['cliente_id']);
             $arrayVenta['empleado_id'] = Usuarios::searchForId($_POST['empleado_id']);
-            $arrayVenta['fecha_venta'] = $_POST['fecha_venta'];
-            $arrayVenta['monto'] = $_POST['monto'];
+            $arrayVenta['fecha_venta'] = date('Y-m-d H:i:s'); //Fecha Completa Hoy
+            $arrayVenta['monto'] = 0;
             $arrayVenta['estado'] = 'Activo';
             $Venta = new Ventas($arrayVenta);
             if($Venta->create()){

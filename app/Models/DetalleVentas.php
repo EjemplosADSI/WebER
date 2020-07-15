@@ -3,7 +3,7 @@
 
 namespace App\Models;
 
-require('BasicModel.php');
+require_once('BasicModel.php');
 
 class DetalleVentas extends BasicModel
 {

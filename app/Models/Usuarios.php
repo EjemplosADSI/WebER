@@ -54,12 +54,20 @@ class Usuarios extends BasicModel
 
     /* Metodo destructor cierra la conexion. */
 
+    /**
+     * @return array
+     */
     public static function getAll(): array
     {
         return Usuarios::search("SELECT * FROM weber.usuarios");
     }
 
-    public static function search($query): array
+    /**
+     * @param $query
+     * @return Usuarios|array
+     * @throws \Exception
+     */
+    public static function search($query)
     {
         $arrUsuarios = array();
         $tmp = new Usuarios();
@@ -79,22 +87,33 @@ class Usuarios extends BasicModel
             $Usuario->rol = $valor['rol'];
             $Usuario->estado = $valor['estado'];
             $Usuario->Disconnect();
+            if(count($getrows) == 1){ // Si solamente hay un registro encontrado devuelve este objeto y no un array
+                return $Usuario;
+            }
             array_push($arrUsuarios, $Usuario);
         }
         $tmp->Disconnect();
         return $arrUsuarios;
     }
 
+    /**
+     * @param $documento
+     * @return bool
+     * @throws \Exception
+     */
     public static function usuarioRegistrado($documento): bool
     {
-        $result = Usuarios::search("SELECT id FROM weber.usuarios where documento = " . $documento);
-        if (count($result) > 0) {
+        $result = Usuarios::search("SELECT * FROM weber.usuarios where documento = " . $documento);
+        if ( is_object ($result) ) {
             return true;
         } else {
             return false;
         }
     }
 
+    /**
+     *
+     */
     function __destruct()
     {
         $this->Disconnect();
@@ -308,6 +327,10 @@ class Usuarios extends BasicModel
         $this->VentasEmpleado = $VentasEmpleado;
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function create(): bool
     {
         $result = $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
@@ -327,6 +350,10 @@ class Usuarios extends BasicModel
         return $result;
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     public function deleted($id): bool
     {
         $User = Usuarios::searchForId($id); //Buscando un usuario por el ID
@@ -334,6 +361,11 @@ class Usuarios extends BasicModel
         return $User->update();                    //Guarda los cambios..
     }
 
+    /**
+     * @param $id
+     * @return Usuarios
+     * @throws \Exception
+     */
     public static function searchForId($id): Usuarios
     {
         $Usuario = null;
@@ -356,6 +388,9 @@ class Usuarios extends BasicModel
         return $Usuario;
     }
 
+    /**
+     * @return bool
+     */
     public function update(): bool
     {
         $result = $this->updateRow("UPDATE weber.usuarios SET nombres = ?, apellidos = ?, tipo_documento = ?, documento = ?, telefono = ?, direccion = ?, user = ?, password = ?, rol = ?, estado = ? WHERE id = ?", array(
@@ -376,11 +411,20 @@ class Usuarios extends BasicModel
         return $result;
     }
 
+    /**
+     * @return string
+     */
+    public function nombresCompletos()
+    {
+        return $this->nombres . " " . $this->apellidos;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        //
-        return $this->nombres . " " . $this->apellidos;
-
+        return "Nombres: $this->nombres, Apellidos: $this->nombres, Tipo Documento: $this->tipo_documento, Documento: $this->documento, Telefono: $this->telefono, Direccion: $this->direccion";
     }
 
 }

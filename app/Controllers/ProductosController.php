@@ -1,134 +1,125 @@
 <?php
 
 namespace App\Controllers;
-require(__DIR__.'/../Models/Usuarios.php');
+require(__DIR__.'/../Models/Productos.php');
 require_once(__DIR__.'/../Models/GeneralFunctions.php');
 
 use App\Models\GeneralFunctions;
-use App\Models\Usuarios;
+use App\Models\Productos;
 
 if(!empty($_GET['action'])){
-    DetalleVentasController::main($_GET['action']);
+    ProductosController::main($_GET['action']);
 }
 
-class UsuariosController{
+class ProductosController{
 
     static function main($action)
     {
         if ($action == "create") {
-            DetalleVentasController::create();
+            ProductosController::create();
         } else if ($action == "edit") {
-            DetalleVentasController::edit();
+            ProductosController::edit();
         } else if ($action == "searchForID") {
-            DetalleVentasController::searchForID($_REQUEST['idPersona']);
+            ProductosController::searchForID($_REQUEST['idProducto']);
         } else if ($action == "searchAll") {
-            DetalleVentasController::getAll();
+            ProductosController::getAll();
         } else if ($action == "activate") {
-            DetalleVentasController::activate();
+            ProductosController::activate();
         } else if ($action == "inactivate") {
-            DetalleVentasController::inactivate();
+            ProductosController::inactivate();
         }/*else if ($action == "login"){
             UsuariosController::login();
         }else if($action == "cerrarSession"){
             UsuariosController::cerrarSession();
         }*/
-
     }
 
     static public function create()
     {
         try {
-            $arrayUsuario = array();
-            $arrayUsuario['nombres'] = $_POST['nombres'];
-            $arrayUsuario['apellidos'] = $_POST['apellidos'];
-            $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
-            $arrayUsuario['documento'] = $_POST['documento'];
-            $arrayUsuario['telefono'] = $_POST['telefono'];
-            $arrayUsuario['direccion'] = $_POST['direccion'];
-            $arrayUsuario['rol'] = 'Cliente';
-            $arrayUsuario['estado'] = 'Activo';
-            if(!Usuarios::usuarioRegistrado($arrayUsuario['documento'])){
-                $Usuario = new Usuarios ($arrayUsuario);
-                if($Usuario->create()){
-                    header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto");
+            $arrayProducto = array();
+            $arrayProducto['nombres'] = $_POST['nombres'];
+            $arrayProducto['precio'] = $_POST['precio'];
+            $arrayProducto['stock'] = $_POST['stock'];
+            $arrayProducto['estado'] = 'Activo';
+            if(!Productos::productoRegistrado($arrayProducto['nombres'])){
+                $Producto = new Productos($arrayProducto);
+                if($Producto->create()){
+                    header("Location: ../../views/modules/productos/index.php?respuesta=correcto");
                 }
             }else{
-                header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
+                header("Location: ../../views/modules/productos/create.php?respuesta=error&mensaje=Producto ya registrado");
             }
         } catch (Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=" . $e->getMessage());
+            header("Location: ../../views/modules/productos/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
 
     static public function edit (){
         try {
-            $arrayUsuario = array();
-            $arrayUsuario['nombres'] = $_POST['nombres'];
-            $arrayUsuario['apellidos'] = $_POST['apellidos'];
-            $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
-            $arrayUsuario['documento'] = $_POST['documento'];
-            $arrayUsuario['telefono'] = $_POST['telefono'];
-            $arrayUsuario['direccion'] = $_POST['direccion'];
-            $arrayUsuario['rol'] = $_POST['rol'];
-            $arrayUsuario['estado'] = $_POST['estado'];
-            $arrayUsuario['id'] = $_POST['id'];
+            $arrayProducto = array();
+            $arrayProducto['nombres'] = $_POST['nombres'];
+            $arrayProducto['precio'] = $_POST['precio'];
+            $arrayProducto['stock'] = $_POST['stock'];
+            $arrayProducto['estado'] = $_POST['estado'];
+            $arrayProducto['id'] = $_POST['id'];
 
-            $user = new Usuarios($arrayUsuario);
-            $user->update();
+            $Producto = new Productos($arrayProducto);
+            $Producto->update();
 
-            header("Location: ../../views/modules/usuarios/show.php?id=".$user->getId()."&respuesta=correcto");
+            header("Location: ../../views/modules/productos/show.php?id=".$Producto->getId()."&respuesta=correcto");
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/edit.php?respuesta=error&mensaje=".$e->getMessage());
+            header("Location: ../../views/modules/productos/edit.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
 
     static public function activate (){
         try {
-            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
-            $ObjUsuario->setEstado("Activo");
-            if($ObjUsuario->update()){
-                header("Location: ../../views/modules/usuarios/index.php");
+            $ObjProducto = Productos::searchForId($_GET['Id']);
+            $ObjProducto->setEstado("Activo");
+            if($ObjProducto->update()){
+                header("Location: ../../views/modules/productos/index.php");
             }else{
-                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
+                header("Location: ../../views/modules/productos/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=".$e->getMessage());
+            header("Location: ../../views/modules/productos/index.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
 
     static public function inactivate (){
         try {
-            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
-            $ObjUsuario->setEstado("Inactivo");
-            if($ObjUsuario->update()){
-                header("Location: ../../views/modules/usuarios/index.php");
+            $ObjProducto = Productos::searchForId($_GET['Id']);
+            $ObjProducto->setEstado("Inactivo");
+            if($ObjProducto->update()){
+                header("Location: ../../views/modules/productos/index.php");
             }else{
-                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
+                header("Location: ../../views/modules/productos/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error");
+            header("Location: ../../views/modules/productos/index.php?respuesta=error");
         }
     }
 
     static public function searchForID ($id){
         try {
-            return Usuarios::searchForId($id);
+            return Productos::searchForId($id);
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/manager.php?respuesta=error");
+            header("Location: ../../views/modules/productos/manager.php?respuesta=error");
         }
     }
 
     static public function getAll (){
         try {
-            return Usuarios::getAll();
+            return Productos::getAll();
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'log', 'errorStack');
-            //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
+            header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
     }
 

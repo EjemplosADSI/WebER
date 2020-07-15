@@ -1,17 +1,18 @@
 <?php
 
 namespace App\Controllers;
-require(__DIR__.'/../Models/Usuarios.php');
+require(__DIR__.'/../Models/Ventas.php');
 require_once(__DIR__.'/../Models/GeneralFunctions.php');
 
 use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
+use App\Models\Ventas;
 
 if(!empty($_GET['action'])){
     DetalleVentasController::main($_GET['action']);
 }
 
-class UsuariosController{
+class VentasController{
 
     static function main($action)
     {
@@ -20,115 +21,102 @@ class UsuariosController{
         } else if ($action == "edit") {
             DetalleVentasController::edit();
         } else if ($action == "searchForID") {
-            DetalleVentasController::searchForID($_REQUEST['idPersona']);
+            DetalleVentasController::searchForID($_REQUEST['idVenta']);
         } else if ($action == "searchAll") {
             DetalleVentasController::getAll();
         } else if ($action == "activate") {
             DetalleVentasController::activate();
         } else if ($action == "inactivate") {
             DetalleVentasController::inactivate();
-        }/*else if ($action == "login"){
-            UsuariosController::login();
-        }else if($action == "cerrarSession"){
-            UsuariosController::cerrarSession();
-        }*/
-
+        }
     }
 
     static public function create()
     {
         try {
-            $arrayUsuario = array();
-            $arrayUsuario['nombres'] = $_POST['nombres'];
-            $arrayUsuario['apellidos'] = $_POST['apellidos'];
-            $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
-            $arrayUsuario['documento'] = $_POST['documento'];
-            $arrayUsuario['telefono'] = $_POST['telefono'];
-            $arrayUsuario['direccion'] = $_POST['direccion'];
-            $arrayUsuario['rol'] = 'Cliente';
-            $arrayUsuario['estado'] = 'Activo';
-            if(!Usuarios::usuarioRegistrado($arrayUsuario['documento'])){
-                $Usuario = new Usuarios ($arrayUsuario);
-                if($Usuario->create()){
-                    header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto");
-                }
-            }else{
-                header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
+            $arrayVenta = array();
+            $arrayVenta['numero_serie'] = $_POST['numero_serie'];
+            $arrayVenta['cliente_id'] = Usuarios::searchForId($_POST['cliente_id']);
+            $arrayVenta['empleado_id'] = Usuarios::searchForId($_POST['empleado_id']);
+            $arrayVenta['fecha_venta'] = $_POST['fecha_venta'];
+            $arrayVenta['monto'] = $_POST['monto'];
+            $arrayVenta['estado'] = 'Activo';
+            $Venta = new Ventas($arrayVenta);
+            if($Venta->create()){
+                header("Location: ../../views/modules/ventas/index.php?respuesta=correcto");
             }
         } catch (Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=" . $e->getMessage());
+            header("Location: ../../views/modules/ventas/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
 
     static public function edit (){
         try {
-            $arrayUsuario = array();
-            $arrayUsuario['nombres'] = $_POST['nombres'];
-            $arrayUsuario['apellidos'] = $_POST['apellidos'];
-            $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
-            $arrayUsuario['documento'] = $_POST['documento'];
-            $arrayUsuario['telefono'] = $_POST['telefono'];
-            $arrayUsuario['direccion'] = $_POST['direccion'];
-            $arrayUsuario['rol'] = $_POST['rol'];
-            $arrayUsuario['estado'] = $_POST['estado'];
-            $arrayUsuario['id'] = $_POST['id'];
+            $arrayVenta = array();
+            $arrayVenta['numero_serie'] = $_POST['numero_serie'];
+            $arrayVenta['cliente_id'] = Usuarios::searchForId($_POST['cliente_id']);
+            $arrayVenta['empleado_id'] = Usuarios::searchForId($_POST['empleado_id']);
+            $arrayVenta['fecha_venta'] = $_POST['fecha_venta'];
+            $arrayVenta['monto'] = $_POST['monto'];
+            $arrayVenta['estado'] = $_POST['estado'];
+            $arrayVenta['id'] = $_POST['id'];
 
-            $user = new Usuarios($arrayUsuario);
-            $user->update();
+            $Venta = new Ventas($arrayVenta);
+            $Venta->update();
 
-            header("Location: ../../views/modules/usuarios/show.php?id=".$user->getId()."&respuesta=correcto");
+            header("Location: ../../views/modules/ventas/show.php?id=".$Venta->getId()."&respuesta=correcto");
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/edit.php?respuesta=error&mensaje=".$e->getMessage());
+            header("Location: ../../views/modules/ventas/edit.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
 
     static public function activate (){
         try {
-            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
-            $ObjUsuario->setEstado("Activo");
-            if($ObjUsuario->update()){
-                header("Location: ../../views/modules/usuarios/index.php");
+            $ObjVenta = Ventas::searchForId($_GET['Id']);
+            $ObjVenta->setEstado("Activo");
+            if($ObjVenta->update()){
+                header("Location: ../../views/modules/ventas/index.php");
             }else{
-                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
+                header("Location: ../../views/modules/ventas/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=".$e->getMessage());
+            header("Location: ../../views/modules/ventas/index.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
 
     static public function inactivate (){
         try {
-            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
-            $ObjUsuario->setEstado("Inactivo");
-            if($ObjUsuario->update()){
-                header("Location: ../../views/modules/usuarios/index.php");
+            $ObjVenta = Ventas::searchForId($_GET['Id']);
+            $ObjVenta->setEstado("Inactivo");
+            if($ObjVenta->update()){
+                header("Location: ../../views/modules/ventas/index.php");
             }else{
-                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
+                header("Location: ../../views/modules/ventas/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error");
+            header("Location: ../../views/modules/ventas/index.php?respuesta=error");
         }
     }
 
     static public function searchForID ($id){
         try {
-            return Usuarios::searchForId($id);
+            return Ventas::searchForId($id);
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/manager.php?respuesta=error");
+            header("Location: ../../views/modules/ventas/manager.php?respuesta=error");
         }
     }
 
     static public function getAll (){
         try {
-            return Usuarios::getAll();
+            return Ventas::getAll();
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'log', 'errorStack');
-            //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
+            header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
     }
 

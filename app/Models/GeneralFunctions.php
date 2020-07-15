@@ -1,9 +1,8 @@
 <?php
 
-
 namespace App\Models;
 
-
+require(__DIR__ .'/../../vendor/autoload.php');
 class GeneralFunctions
 {
     static function SubirArchivo($File, $Ruta){

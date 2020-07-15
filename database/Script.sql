@@ -1,13 +1,15 @@
 -- MySQL Workbench Synchronization
--- Generated: 2019-10-28 21:48
+-- Generated: 2020-07-14 18:12
 -- Model: New Model
 -- Version: 1.0
 -- Project: Name of the project
--- Author: INESMARIA
+-- Author: Diego Ojeda
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+ALTER SCHEMA `weber`  DEFAULT COLLATE utf8_general_ci ;
 
 CREATE TABLE IF NOT EXISTS `weber`.`detalle_ventas` (
   `Id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -16,8 +18,8 @@ CREATE TABLE IF NOT EXISTS `weber`.`detalle_ventas` (
   `cantidad` INT(11) UNSIGNED NOT NULL,
   `precio_venta` DOUBLE NOT NULL,
   PRIMARY KEY (`Id`),
-  INDEX `fk_detalle_ventas_ventas1_idx` (`ventas_id` ASC) ,
-  INDEX `fk_detalle_ventas_producto1_idx` (`producto_id` ASC) ,
+  INDEX `fk_detalle_ventas_ventas1_idx` (`ventas_id` ASC),
+  INDEX `fk_detalle_ventas_producto1_idx` (`producto_id` ASC),
   CONSTRAINT `fk_detalle_ventas_ventas1`
     FOREIGN KEY (`ventas_id`)
     REFERENCES `weber`.`ventas` (`id`)
@@ -25,23 +27,25 @@ CREATE TABLE IF NOT EXISTS `weber`.`detalle_ventas` (
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_detalle_ventas_producto1`
     FOREIGN KEY (`producto_id`)
-    REFERENCES `weber`.`producto` (`id`)
+    REFERENCES `weber`.`productos` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 155
-DEFAULT CHARACTER SET = utf8;
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `weber`.`producto` (
-  `id` INT(11) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `weber`.`productos` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombres` VARCHAR(244) NOT NULL,
   `precio` DOUBLE NOT NULL,
   `stock` INT(11) UNSIGNED NOT NULL,
   `estado` ENUM('Activo', 'Inactivo') NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 9
-DEFAULT CHARACTER SET = utf8;
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `weber`.`ventas` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -52,8 +56,8 @@ CREATE TABLE IF NOT EXISTS `weber`.`ventas` (
   `monto` DOUBLE NOT NULL,
   `estado` ENUM('Activo', 'Inactivo') NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_ventas_Usuarios1_idx` (`cliente_id` ASC) ,
-  INDEX `fk_ventas_Usuarios2_idx` (`empleado_id` ASC) ,
+  INDEX `fk_ventas_Usuarios1_idx` (`cliente_id` ASC),
+  INDEX `fk_ventas_Usuarios2_idx` (`empleado_id` ASC),
   CONSTRAINT `fk_ventas_Usuarios1`
     FOREIGN KEY (`cliente_id`)
     REFERENCES `weber`.`usuarios` (`id`)
@@ -65,8 +69,9 @@ CREATE TABLE IF NOT EXISTS `weber`.`ventas` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 94
-DEFAULT CHARACTER SET = utf8;
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `weber`.`usuarios` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -81,9 +86,10 @@ CREATE TABLE IF NOT EXISTS `weber`.`usuarios` (
   `rol` ENUM('Empleado', 'Cliente') NOT NULL,
   `estado` ENUM('Activo', 'Inactivo') NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `documento_UNIQUE` (`documento` ASC) )
+  UNIQUE INDEX `documento_UNIQUE` (`documento` ASC))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

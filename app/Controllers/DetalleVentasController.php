@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controllers;
-require(__DIR__.'/../Models/DetalleVentas.php');
+require_once(__DIR__.'/../Models/DetalleVentas.php');
 require_once(__DIR__.'/../Models/GeneralFunctions.php');
 
 use App\Models\GeneralFunctions;
@@ -10,25 +10,25 @@ use App\Models\Productos;
 use App\Models\Ventas;
 
 if(!empty($_GET['action'])){
-    VentasController::main($_GET['action']);
+    DetalleVentasController::main($_GET['action']);
 }
 
-class VentasController{
+class DetalleVentasController{
 
     static function main($action)
     {
         if ($action == "create") {
-            VentasController::create();
+            DetalleVentasController::create();
         } else if ($action == "edit") {
-            VentasController::edit();
+            DetalleVentasController::edit();
         } else if ($action == "searchForID") {
-            VentasController::searchForID($_REQUEST['idDetalleVentas']);
+            DetalleVentasController::searchForID($_REQUEST['idDetalleVentas']);
         } else if ($action == "searchAll") {
-            VentasController::getAll();
+            DetalleVentasController::getAll();
         } else if ($action == "activate") {
-            VentasController::activate();
+            DetalleVentasController::activate();
         } else if ($action == "inactivate") {
-            VentasController::inactivate();
+            DetalleVentasController::inactivate();
         }
     }
 

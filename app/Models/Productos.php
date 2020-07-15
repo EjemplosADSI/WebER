@@ -3,7 +3,7 @@
 
 namespace App\Models;
 
-require('BasicModel.php');
+require_once('BasicModel.php');
 
 class Productos extends BasicModel
 {
@@ -107,7 +107,7 @@ class Productos extends BasicModel
     /**
      * @return mixed
      */
-    public function getEstado() : string 
+    public function getEstado() : string
     {
         return $this->estado;
     }

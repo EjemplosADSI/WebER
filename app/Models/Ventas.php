@@ -229,6 +229,7 @@ class Ventas extends BasicModel
                 $this->estado
             )
         );
+        $this->setId(($result) ? $this->getLastId() : null);
         $this->Disconnect();
         return $result;
     }

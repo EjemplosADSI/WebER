@@ -66,7 +66,7 @@ use App\Controllers\VentasController;
                         <!-- Default box -->
                         <div class="card card-dark">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-boxes"></i> &nbsp; Gestionar Ventas</h3>
+                                <h3 class="card-title"><i class="fas fa-shopping-cart"></i> &nbsp; Gestionar Ventas</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                             data-source="index.php" data-source-selector="#card-refresh-content"

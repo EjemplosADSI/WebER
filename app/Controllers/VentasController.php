@@ -35,7 +35,7 @@ class VentasController{
     {
         try {
             $arrayVenta = array();
-            $arrayVenta['numero_serie'] = 'VG'.'-'.date('Y-m-d');
+            $arrayVenta['numero_serie'] = 'FV'.'-'.date('Y-m-d');
             $arrayVenta['cliente_id'] = Usuarios::searchForId($_POST['cliente_id']);
             $arrayVenta['empleado_id'] = Usuarios::searchForId($_POST['empleado_id']);
             $arrayVenta['fecha_venta'] = date('Y-m-d H:i:s'); //Fecha Completa Hoy
@@ -43,7 +43,7 @@ class VentasController{
             $arrayVenta['estado'] = 'Activo';
             $Venta = new Ventas($arrayVenta);
             if($Venta->create()){
-                header("Location: ../../views/modules/ventas/index.php?respuesta=correcto");
+                header("Location: ../../views/modules/ventas/create.php?id=".$Venta->getId());
             }
         } catch (Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
@@ -107,7 +107,7 @@ class VentasController{
             return Ventas::searchForId($id);
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            header("Location: ../../views/modules/ventas/manager.php?respuesta=error");
+            //header("Location: ../../views/modules/ventas/manager.php?respuesta=error");
         }
     }
 

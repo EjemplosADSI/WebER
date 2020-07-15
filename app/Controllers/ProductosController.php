@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controllers;
-require(__DIR__.'/../Models/Productos.php');
+require_once(__DIR__.'/../Models/Productos.php');
 require_once(__DIR__.'/../Models/GeneralFunctions.php');
 
 use App\Models\GeneralFunctions;
@@ -123,10 +123,10 @@ class ProductosController{
         }
     }
 
-    /*public static function personaIsInArray($idPersona, $ArrPersonas){
-        if(count($ArrPersonas) > 0){
-            foreach ($ArrPersonas as $Persona){
-                if($Persona->getIdPersona() == $idPersona){
+    public static function productoIsInArray($idProducto, $ArrProducto){
+        if(count($ArrProducto) > 0){
+            foreach ($ArrProducto as $Producto){
+                if($Producto->getId() == $idProducto){
                     return true;
                 }
             }
@@ -134,32 +134,32 @@ class ProductosController{
         return false;
     }
 
-    static public function selectPersona ($isMultiple=false,
-                                          $isRequired=true,
-                                          $id="idConsultorio",
-                                          $nombre="idConsultorio",
-                                          $defaultValue="",
-                                          $class="",
-                                          $where="",
-                                          $arrExcluir = array()){
-        $arrPersonas = array();
+    static public function selectProducto ($isMultiple=false,
+                                           $isRequired=true,
+                                           $id="idProducto",
+                                           $nombre="idProducto",
+                                           $defaultValue="",
+                                           $class="",
+                                           $where="",
+                                           $arrExcluir = array()){
+        $arrProducto = array();
         if($where != ""){
-            $base = "SELECT * FROM persona WHERE ";
-            $arrPersonas = Persona::buscar($base.$where);
+            $base = "SELECT * FROM productos WHERE ";
+            $arrProducto = Productos::search($base.$where);
         }else{
-            $arrPersonas = Persona::getAll();
+            $arrProducto = Productos::getAll();
         }
 
         $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
-        if(count($arrPersonas) > 0){
-            foreach ($arrPersonas as $persona)
-                if (!UsuariosController::personaIsInArray($persona->getIdPersona(),$arrExcluir))
-                    $htmlSelect .= "<option ".(($persona != "") ? (($defaultValue == $persona->getIdPersona()) ? "selected" : "" ) : "")." value='".$persona->getIdPersona()."'>".$persona->getNombres()." ".$persona->getApellidos()."</option>";
+        if(count($arrProducto) > 0){
+            foreach ($arrProducto as $producto)
+                if (!ProductosController::productoIsInArray($producto->getId(),$arrExcluir))
+                    $htmlSelect .= "<option ".(($producto != "") ? (($defaultValue == $producto->getId()) ? "selected" : "" ) : "")." value='".$producto->getId()."'>".$producto->getStock()." - ".$producto->getNombres()." - ".$producto->getPrecio()."</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;
-    }*/
+    }
 
     /*
     public function buscar ($Query){
@@ -193,37 +193,6 @@ class ProductosController{
             var_dump($e);
             //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
-    }
-
-    public static function login (){
-        try {
-            if(!empty($_POST['Usuario']) && !empty($_POST['Contrasena'])){
-                $tmpPerson = new Persona();
-                $respuesta = $tmpPerson->Login($_POST['Usuario'], $_POST['Contrasena']);
-                if (is_a($respuesta,"Persona")) {
-                    $hydrator = new ReflectionHydrator(); //Instancia de la clase para convertir objetos
-                    $ArrDataPersona = $hydrator->extract($respuesta); //Convertimos el objeto persona en un array
-                    unset($ArrDataPersona["datab"],$ArrDataPersona["isConnected"],$ArrDataPersona["relEspecialidades"]); //Limpiamos Campos no Necesarios
-                    $_SESSION['UserInSession'] = $ArrDataPersona;
-                    echo json_encode(array('type' => 'success', 'title' => 'Ingreso Correcto', 'text' => 'Sera redireccionado en un momento...'));
-                }else{
-                    echo json_encode(array('type' => 'error', 'title' => 'Error al ingresar', 'text' => $respuesta)); //Si la llamda es por Ajax
-                }
-                return $respuesta; //Si la llamada es por funcion
-            }else{
-                echo json_encode(array('type' => 'error', 'title' => 'Datos Vacios', 'text' => 'Debe ingresar la informacion del usuario y contraseña'));
-                return "Datos Vacios"; //Si la llamada es por funcion
-            }
-        } catch (Exception $e) {
-            var_dump($e);
-            header("Location: ../login.php?respuesta=error");
-        }
-    }
-
-    public static function cerrarSession (){
-        session_unset();
-        session_destroy();
-        header("Location: ../Vista/modules/persona/login.php");
     }*/
 
 }

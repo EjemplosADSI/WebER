@@ -261,7 +261,7 @@ use App\Models\DetalleVentas;
                     </div>
                     <form action="../../../app/Controllers/VentasController.php?action=create" method="post">
                         <div class="modal-body">
-                            <input id="venta_id" name="venta_id" value="<?= $dataVenta->getId(); ?>" hidden
+                            <input id="venta_id" name="venta_id" value="<?= (!isset($dataVenta)) ? $dataVenta->getId() : ''; ?>" hidden
                                    required="required" type="text">
                             <div class="form-group row">
                                 <label for="producto_id" class="col-sm-4 col-form-label">Producto</label>

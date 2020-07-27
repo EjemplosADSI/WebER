@@ -197,7 +197,7 @@ use App\Controllers\ProductosController;
             "info": true,
             "autoWidth": true,
             "language": {
-                "url": "../../components/Spanish.json" //Idioma
+                "url": "../../public/Spanish.json" //Idioma
             },
             "buttons": [
                 'copy', 'print', 'excel', 'pdf'

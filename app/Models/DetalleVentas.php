@@ -1,34 +1,34 @@
 <?php
 
-
 namespace App\Models;
 
+require_once (__DIR__ .'/../../vendor/autoload.php');
 require_once('BasicModel.php');
 
 class DetalleVentas extends BasicModel
 {
-    private $id;
-    private $ventas_id;
-    private $producto_id;
-    private $cantidad;
-    private $precio_venta;
+    private int $id;
+    private Ventas $ventas_id;
+    private Productos $producto_id;
+    private int $cantidad;
+    private float $precio_venta;
 
     /**
      * DetalleVentas constructor.
-     * @param $id
-     * @param $ventas_id
-     * @param $producto_id
-     * @param $cantidad
-     * @param $precio_venta
+     * @param int $id
+     * @param Ventas $ventas_id
+     * @param Productos $producto_id
+     * @param int $cantidad
+     * @param float $precio_venta
      */
     public function __construct($venta = array())
     {
         parent::__construct();
-        $this->id = $venta['id'] ?? null;
-        $this->nombres = $venta['nombres'] ?? null;
-        $this->precio = $venta['precio'] ?? null;
-        $this->stock = $venta['stock'] ?? null;
-        $this->estado = $venta['estado'] ?? null;
+        $this->id = $venta['id'] ?? 0;
+        $this->ventas_id = $venta['ventas_id'] ?? new Ventas();
+        $this->precio_venta = $venta['precio_venta'] ?? new Productos();
+        $this->cantidad = $venta['cantidad'] ?? 0;
+        $this->precio_venta = $venta['precio_venta'] ?? 0.0;
     }
 
     /**
@@ -40,23 +40,23 @@ class DetalleVentas extends BasicModel
     }
 
     /**
-     * @return mixed|null
+     * @return int|mixed
      */
-    public function getId(): ?mixed
+    public function getId() : int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed|null $id
+     * @param int|mixed $id
      */
-    public function setId(?mixed $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return mixed
+     * @return Ventas|mixed
      */
     public function getVentasId() : Ventas
     {
@@ -64,7 +64,7 @@ class DetalleVentas extends BasicModel
     }
 
     /**
-     * @param mixed $ventas_id
+     * @param Ventas|mixed $ventas_id
      */
     public function setVentasId(Ventas $ventas_id): void
     {
@@ -72,15 +72,15 @@ class DetalleVentas extends BasicModel
     }
 
     /**
-     * @return mixed
+     * @return Productos
      */
-    public function getProductoId() : Productos
+    public function getProductoId(): Productos
     {
         return $this->producto_id;
     }
 
     /**
-     * @param mixed $producto_id
+     * @param Productos $producto_id
      */
     public function setProductoId(Productos $producto_id): void
     {
@@ -88,42 +88,87 @@ class DetalleVentas extends BasicModel
     }
 
     /**
-     * @return mixed
+     * @return int|mixed
      */
-    public function getCantidad()
+    public function getCantidad() : int
     {
         return $this->cantidad;
     }
 
     /**
-     * @param mixed $cantidad
+     * @param int|mixed $cantidad
      */
-    public function setCantidad($cantidad): void
+    public function setCantidad(int $cantidad): void
     {
         $this->cantidad = $cantidad;
     }
 
     /**
-     * @return mixed
+     * @return float|mixed
      */
-    public function getPrecioVenta()
+    public function getPrecioVenta() : float
     {
         return $this->precio_venta;
     }
 
     /**
-     * @param mixed $precio_venta
+     * @param float|mixed $precio_venta
      */
-    public function setPrecioVenta($precio_venta): void
+    public function setPrecioVenta(float $precio_venta): void
     {
         $this->precio_venta = $precio_venta;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function create() : bool
+    {
+        $result = $this->insertRow("INSERT INTO weber.detalle_venta VALUES (NULL, ?, ?, ?, ?)", array(
+                $this->ventas_id->getId(),
+                $this->producto_id->getId(),
+                $this->cantidad,
+                $this->precio_venta
+            )
+        );
+        $this->Disconnect();
+        return $result;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function update() : bool
+    {
+        $result = $this->updateRow("UPDATE weber.detalle_venta SET ventas_id = ?, producto_id = ?, cantidad = ?, precio_venta = ? WHERE id = ?", array(
+                $this->ventas_id->getId(),
+                $this->producto_id->getId(),
+                $this->cantidad,
+                $this->precio_venta,
+                $this->id
+            )
+        );
+        $this->Disconnect();
+        return $result;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function deleted($id) : bool
+    {
+        $DetalleVenta = DetalleVentas::searchForId($id); //Buscando un usuario por el ID
+        $deleterow = $DetalleVenta->deleteRow("DELETE FROM detalle_venta WHERE id = ?", array($id));
+        return $deleterow;                    //Guarda los cambios..
     }
 
     /**
      * @param $query
      * @return mixed
      */
-    public static function search($query)
+    public static function search($query) : array
     {
         $arrDetalleVenta = array();
         $tmp = new DetalleVentas();
@@ -147,18 +192,10 @@ class DetalleVentas extends BasicModel
     }
 
     /**
-     * @return mixed
-     */
-    public static function getAll()
-    {
-        return DetalleVentas::search("SELECT * FROM weber.detalle_ventas");
-    }
-
-    /**
      * @param $id
      * @return mixed
      */
-    public static function searchForId($id)
+    public static function searchForId($id) : DetalleVentas
     {
         $DetalleVenta = null;
         if ($id > 0) {
@@ -177,45 +214,9 @@ class DetalleVentas extends BasicModel
     /**
      * @return mixed
      */
-    public function create()
+    public static function getAll() : array
     {
-        $result = $this->insertRow("INSERT INTO weber.detalle_venta VALUES (NULL, ?, ?, ?, ?)", array(
-                $this->ventas_id->getId(),
-                $this->producto_id->getId(),
-                $this->cantidad,
-                $this->precio_venta
-            )
-        );
-        $this->Disconnect();
-        return $result;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function update()
-    {
-        $result = $this->updateRow("UPDATE weber.detalle_venta SET ventas_id = ?, producto_id = ?, cantidad = ?, precio_venta = ? WHERE id = ?", array(
-                $this->ventas_id->getId(),
-                $this->producto_id->getId(),
-                $this->cantidad,
-                $this->precio_venta,
-                $this->id
-            )
-        );
-        $this->Disconnect();
-        return $result;
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function deleted($id)
-    {
-        $DetalleVenta = DetalleVentas::searchForId($id); //Buscando un usuario por el ID
-        $deleterow = $DetalleVenta->deleteRow("DELETE FROM detalle_venta WHERE id = ?", array($id));
-        return $deleterow;                    //Guarda los cambios..
+        return DetalleVentas::search("SELECT * FROM weber.detalle_ventas");
     }
 
     /**
@@ -235,7 +236,7 @@ class DetalleVentas extends BasicModel
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         return "Venta: $this->ventas_id->getNumeroSerie(), Producto: $this->producto_id->getNombres(), Cantidad: $this->cantidad, Precio Venta: $this->precio_venta";
     }

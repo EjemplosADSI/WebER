@@ -98,18 +98,21 @@ use App\Controllers\UsuariosController;
                                                 <th>#</th>
                                                 <th>Nombres</th>
                                                 <th>Apellidos</th>
-                                                <th>Tipo Documento</th>
+                                                <th>Tipo Doc.</th>
                                                 <th>Documento</th>
                                                 <th>Telefono</th>
                                                 <th>Direccion</th>
+                                                <th>Fecha Nacimiento</th>
                                                 <th>Rol</th>
                                                 <th>Estado</th>
+                                                <th>Registro</th>
                                                 <th>Acciones</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <?php
                                             $arrUsuarios = UsuariosController::getAll();
+                                            /* @var $arrUsuarios \App\Models\Usuarios[] */
                                             foreach ($arrUsuarios as $usuario) {
                                                 ?>
                                                 <tr>
@@ -120,8 +123,10 @@ use App\Controllers\UsuariosController;
                                                     <td><?php echo $usuario->getDocumento(); ?></td>
                                                     <td><?php echo $usuario->getTelefono(); ?></td>
                                                     <td><?php echo $usuario->getDireccion(); ?></td>
+                                                    <td><?php echo $usuario->getFechaNacimiento()->translatedFormat('l, j \\de F Y'); ?></td>
                                                     <td><?php echo $usuario->getRol(); ?></td>
                                                     <td><?php echo $usuario->getEstado(); ?></td>
+                                                    <td><?php echo $usuario->getFechaRegistro()->toDateTimeString(); ?></td>
                                                     <td>
                                                         <a href="edit.php?id=<?php echo $usuario->getId(); ?>"
                                                            type="button" data-toggle="tooltip" title="Actualizar"
@@ -153,12 +158,14 @@ use App\Controllers\UsuariosController;
                                                 <th>#</th>
                                                 <th>Nombres</th>
                                                 <th>Apellidos</th>
-                                                <th>Tipo Documento</th>
+                                                <th>Tipo Doc.</th>
                                                 <th>Documento</th>
                                                 <th>Telefono</th>
                                                 <th>Direccion</th>
+                                                <th>Fecha Nacimiento</th>
                                                 <th>Rol</th>
                                                 <th>Estado</th>
+                                                <th>Registro</th>
                                                 <th>Acciones</th>
                                             </tr>
                                             </tfoot>

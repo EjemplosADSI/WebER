@@ -5,7 +5,8 @@ namespace App\Models;
 require(__DIR__ .'/../../vendor/autoload.php');
 class GeneralFunctions
 {
-    static function SubirArchivo($File, $Ruta){
+    static function SubirArchivo($File, $Ruta)
+    {
         $archivos = new upload($File);
         if ($archivos->uploaded){
             $archivos->file_new_name_body = (date('H-M-s')."-".$archivos->file_src_name_body);
@@ -22,7 +23,8 @@ class GeneralFunctions
         }
     }
 
-    static function console ($data, $type = 'log', $typePrint = 'simple' ){
+    static function console ($data, $type = 'log', $typePrint = 'simple' ) : void
+    {
         echo '<script>';
         if ($typePrint == 'errorStack'){
             echo 'console.'.$type.'('. json_encode($data->getMessage()) .');';

@@ -94,8 +94,16 @@ use App\Controllers\UsuariosController; ?>
                                         <strong><i class="fas fa-map-marker-alt mr-1"></i> Direccion</strong>
                                         <p class="text-muted"><?= $DataUsuario->getDireccion() ?></p>
                                         <hr>
+                                        <strong><i class="fas fa-calendar mr-1"></i> Fecha Nacimiento</strong>
+                                        <p class="text-muted"><?= $DataUsuario->getFechaNacimiento()->translatedFormat('l, j \\de F Y'); ?></p>
+                                        <p class="text-muted">Tienes: <?= $DataUsuario->getFechaNacimiento()->diffInYears(); ?> Años</p>
+                                        <hr>
+
                                         <strong><i class="fas fa-phone mr-1"></i> Telefono</strong>
                                         <p class="text-muted"><?= $DataUsuario->getTelefono() ?></p>
+                                        <hr>
+                                        <strong><i class="fas fa-calendar-check mr-1"></i> Fecha Registro</strong>
+                                        <p class="text-muted"><?= $DataUsuario->getFechaRegistro()->toDateTimeString(); ?></p>
                                         <hr>
                                         <strong><i class="far fa-file-alt mr-1"></i> Estado y Rol</strong>
                                         <p class="text-muted"><?= $DataUsuario->getEstado() . " - " . $DataUsuario->getRol() ?></p>

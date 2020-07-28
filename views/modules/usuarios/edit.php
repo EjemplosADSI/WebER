@@ -2,7 +2,8 @@
 require("../../partials/routes.php");
 require("../../../app/Controllers/UsuariosController.php");
 
-use App\Controllers\UsuariosController; ?>
+use App\Controllers\UsuariosController;
+use Carbon\Carbon; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -151,6 +152,14 @@ use App\Controllers\UsuariosController; ?>
                                                     <input required type="text" class="form-control" id="direccion"
                                                            name="direccion" value="<?= $DataUsuario->getDireccion(); ?>"
                                                            placeholder="Ingrese su direccion">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="fecha_nacimiento" class="col-sm-2 col-form-label">Fecha Nacimiento</label>
+                                                <div class="col-sm-10">
+                                                    <input required type="date" max="<?= Carbon::now()->subYear(12)->format('Y-m-d') ?>"
+                                                           value="<?= $DataUsuario->getFechaNacimiento()->toDateString(); ?>" class="form-control" id="fecha_nacimiento"
+                                                           name="fecha_nacimiento" placeholder="Ingrese su Fecha de Nacimiento">
                                                 </div>
                                             </div>
                                             <div class="form-group row">

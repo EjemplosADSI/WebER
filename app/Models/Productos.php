@@ -1,35 +1,34 @@
 <?php
 
-
 namespace App\Models;
 
+require_once (__DIR__ .'/../../vendor/autoload.php');
 require_once('BasicModel.php');
 
 class Productos extends BasicModel
 {
-    private $id;
-    private $nombres;
-    private $precio;
-    private $stock;
-    private $estado;
+    private int $id;
+    private string $nombres;
+    private float $precio;
+    private int $stock;
+    private string $estado;
 
     /**
      * Producto constructor.
-     * @param $id
-     * @param $nombres
-     * @param $precio
-     * @param $stock
-     * @param $estado
-     * @param $DetalleVenta
+     * @param int $id
+     * @param string $nombres
+     * @param float $precio
+     * @param int $stock
+     * @param string $estado
      */
     public function __construct($venta = array())
     {
         parent::__construct();
-        $this->id = $venta['id'] ?? null;
-        $this->nombres = $venta['nombres'] ?? null;
-        $this->precio = $venta['precio'] ?? null;
-        $this->stock = $venta['stock'] ?? null;
-        $this->estado = $venta['estado'] ?? null;
+        $this->id = $venta['id'] ?? 0;
+        $this->nombres = $venta['nombres'] ?? '';
+        $this->precio = $venta['precio'] ?? 0.0;
+        $this->stock = $venta['stock'] ?? 0;
+        $this->estado = $venta['estado'] ?? '';
     }
 
     /**
@@ -41,23 +40,23 @@ class Productos extends BasicModel
     }
 
     /**
-     * @return mixed|null
+     * @return int|mixed
      */
-    public function getId(): int
+    public function getId() : int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed|null $id
+     * @param int|mixed $id
      */
-    public function setId(?mixed $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return mixed
+     * @return mixed|string
      */
     public function getNombres() : string
     {
@@ -65,15 +64,15 @@ class Productos extends BasicModel
     }
 
     /**
-     * @param mixed $nombres
+     * @param mixed|string $nombres
      */
-    public function setNombres($nombres): void
+    public function setNombres(string $nombres): void
     {
         $this->nombres = $nombres;
     }
 
     /**
-     * @return mixed
+     * @return float|mixed
      */
     public function getPrecio() : float
     {
@@ -81,15 +80,15 @@ class Productos extends BasicModel
     }
 
     /**
-     * @param mixed $precio
+     * @param float|mixed $precio
      */
-    public function setPrecio($precio): void
+    public function setPrecio(float $precio): void
     {
         $this->precio = $precio;
     }
 
     /**
-     * @return mixed
+     * @return int|mixed
      */
     public function getStock() : int
     {
@@ -97,15 +96,15 @@ class Productos extends BasicModel
     }
 
     /**
-     * @param mixed $stock
+     * @param int|mixed $stock
      */
-    public function setStock($stock): void
+    public function setStock(int $stock): void
     {
         $this->stock = $stock;
     }
 
     /**
-     * @return mixed
+     * @return mixed|string
      */
     public function getEstado() : string
     {
@@ -113,64 +112,11 @@ class Productos extends BasicModel
     }
 
     /**
-     * @param mixed $estado
+     * @param mixed|string $estado
      */
-    public function setEstado($estado): void
+    public function setEstado(string $estado): void
     {
         $this->estado = $estado;
-    }
-
-    /**
-     * @param $query
-     * @return mixed
-     */
-    public static function search($query)
-    {
-        $arrProductos = array();
-        $tmp = new Productos();
-        $getrows = $tmp->getRows($query);
-
-        foreach ($getrows as $valor) {
-            $Producto = new Productos();
-            $Producto->id = $valor['id'];
-            $Producto->nombres = $valor['nombres'];
-            $Producto->precio = $valor['precio'];
-            $Producto->stock = $valor['stock'];
-            $Producto->estado = $valor['estado'];
-            $Producto->Disconnect();
-            array_push($arrProductos, $Producto);
-        }
-        $tmp->Disconnect();
-        return $arrProductos;
-    }
-
-    /**
-     * @return Productos|array|mixed
-     */
-    public static function getAll()
-    {
-        return Productos::search("SELECT * FROM weber.productos");
-    }
-
-    /**
-     * @param $id
-     * @return Productos|null
-     * @throws \Exception
-     */
-    public static function searchForId($id)
-    {
-        $Producto = null;
-        if ($id > 0) {
-            $Producto = new Productos();
-            $getrow = $Producto->getRow("SELECT * FROM weber.productos WHERE id =?", array($id));
-            $Producto->id = $getrow['id'];
-            $Producto->nombres = $getrow['nombres'];
-            $Producto->precio = $getrow['precio'];
-            $Producto->stock = $getrow['stock'];
-            $Producto->estado = $getrow['estado'];
-        }
-        $Producto->Disconnect();
-        return $Producto;
     }
 
     /**
@@ -193,7 +139,7 @@ class Productos extends BasicModel
     /**
      * @return bool
      */
-    public function update()
+    public function update() : bool
     {
         $result = $this->updateRow("UPDATE weber.productos SET nombres = ?, precio = ?, stock = ?, estado = ? WHERE id = ?", array(
                 $this->nombres,
@@ -212,13 +158,65 @@ class Productos extends BasicModel
      * @return bool
      * @throws \Exception
      */
-    public function deleted($id)
+    public function deleted($id) : bool
     {
         $Producto = Productos::searchForId($id); //Buscando un usuario por el ID
         $Producto->setEstado("Inactivo"); //Cambia el estado del Usuario
         return $Producto->update();                    //Guarda los cambios..
     }
 
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public static function search($query) : array
+    {
+        $arrProductos = array();
+        $tmp = new Productos();
+        $getrows = $tmp->getRows($query);
+
+        foreach ($getrows as $valor) {
+            $Producto = new Productos();
+            $Producto->id = $valor['id'];
+            $Producto->nombres = $valor['nombres'];
+            $Producto->precio = $valor['precio'];
+            $Producto->stock = $valor['stock'];
+            $Producto->estado = $valor['estado'];
+            $Producto->Disconnect();
+            array_push($arrProductos, $Producto);
+        }
+        $tmp->Disconnect();
+        return $arrProductos;
+    }
+
+    /**
+     * @param $id
+     * @return Productos
+     * @throws \Exception
+     */
+    public static function searchForId($id) : Productos
+    {
+        $Producto = null;
+        if ($id > 0) {
+            $Producto = new Productos();
+            $getrow = $Producto->getRow("SELECT * FROM weber.productos WHERE id =?", array($id));
+            $Producto->id = $getrow['id'];
+            $Producto->nombres = $getrow['nombres'];
+            $Producto->precio = $getrow['precio'];
+            $Producto->stock = $getrow['stock'];
+            $Producto->estado = $getrow['estado'];
+        }
+        $Producto->Disconnect();
+        return $Producto;
+    }
+
+    /**
+     * @return Productos|array|mixed
+     */
+    public static function getAll() : array
+    {
+        return Productos::search("SELECT * FROM weber.productos");
+    }
 
     /**
      * @param $nombres
@@ -234,11 +232,10 @@ class Productos extends BasicModel
         }
     }
 
-
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         return "Nombre: $this->nombres, Precio: $this->precio, Stock: $this->stock, Estado: $this->estado";
     }

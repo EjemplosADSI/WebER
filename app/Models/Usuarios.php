@@ -2,21 +2,27 @@
 
 namespace App\Models;
 
+require_once (__DIR__ .'/../../vendor/autoload.php');
 require_once('BasicModel.php');
+
+use Carbon\Carbon;
 
 class Usuarios extends BasicModel
 {
-    private $id;
-    private $nombres;
-    private $apellidos;
-    private $tipo_documento;
-    private $documento;
-    private $telefono;
-    private $direccion;
-    private $user;
-    private $password;
-    private $rol;
-    private $estado;
+    /* Tipos de Datos => bool, int, float,  */
+    private int $id;
+    private string $nombres;
+    private string $apellidos;
+    private string $tipo_documento;
+    private int $documento;
+    private int $telefono;
+    private string $direccion;
+    private Carbon $fecha_nacimiento;
+    private ?string $user;
+    private ?string $password;
+    private string $rol;
+    private string $estado;
+    private Carbon $fecha_registro;
 
     /* Relaciones */
     private $VentasCliente;
@@ -24,90 +30,39 @@ class Usuarios extends BasicModel
 
     /**
      * Usuarios constructor.
-     * @param $id
-     * @param $nombres
-     * @param $apellidos
-     * @param $tipo_documento
-     * @param $documento
-     * @param $telefono
-     * @param $direccion
-     * @param $user
-     * @param $password
-     * @param $rol
-     * @param $estado
+     * @param int $id
+     * @param string $nombres
+     * @param string $apellidos
+     * @param string $tipo_documento
+     * @param int $documento
+     * @param int $telefono
+     * @param string $direccion
+     * @param Carbon $fecha_nacimiento
+     * @param string $user
+     * @param string $password
+     * @param string $rol
+     * @param string $estado
+     * @param Carbon $fecha_registro
      */
     public function __construct($usuario = array())
     {
         parent::__construct(); //Llama al contructor padre "la clase conexion" para conectarme a la BD
-        $this->id = $usuario['id'] ?? null;
-        $this->nombres = $usuario['nombres'] ?? null;
-        $this->apellidos = $usuario['apellidos'] ?? null;
-        $this->tipo_documento = $usuario['tipo_documento'] ?? null;
-        $this->documento = $usuario['documento'] ?? null;
-        $this->telefono = $usuario['telefono'] ?? null;
-        $this->direccion = $usuario['direccion'] ?? null;
+        $this->id = $usuario['id'] ?? 0;
+        $this->nombres = $usuario['nombres'] ?? '';
+        $this->apellidos = $usuario['apellidos'] ?? '';
+        $this->tipo_documento = $usuario['tipo_documento'] ?? '';
+        $this->documento = $usuario['documento'] ?? 0;
+        $this->telefono = $usuario['telefono'] ?? 0;
+        $this->direccion = $usuario['direccion'] ?? '';
+        $this->fecha_nacimiento = $usuario['fecha_nacimiento'] ?? new Carbon();
         $this->user = $usuario['user'] ?? null;
         $this->password = $usuario['password'] ?? null;
-        $this->rol = $usuario['rol'] ?? null;
-        $this->estado = $usuario['estado'] ?? null;
+        $this->rol = $usuario['rol'] ?? '';
+        $this->estado = $usuario['estado'] ?? '';
+        $this->fecha_registro = $usuario['fecha_creacion'] ?? new Carbon();
     }
 
     /* Metodo destructor cierra la conexion. */
-
-    /**
-     * @return array
-     */
-    public static function getAll(): array
-    {
-        return Usuarios::search("SELECT * FROM weber.usuarios");
-    }
-
-    /**
-     * @param $query
-     * @return Usuarios|array
-     * @throws \Exception
-     */
-    public static function search($query)
-    {
-        $arrUsuarios = array();
-        $tmp = new Usuarios();
-        $getrows = $tmp->getRows($query);
-
-        foreach ($getrows as $valor) {
-            $Usuario = new Usuarios();
-            $Usuario->id = $valor['id'];
-            $Usuario->nombres = $valor['nombres'];
-            $Usuario->apellidos = $valor['apellidos'];
-            $Usuario->tipo_documento = $valor['tipo_documento'];
-            $Usuario->documento = $valor['documento'];
-            $Usuario->telefono = $valor['telefono'];
-            $Usuario->direccion = $valor['direccion'];
-            $Usuario->user = $valor['user'];
-            $Usuario->password = $valor['password'];
-            $Usuario->rol = $valor['rol'];
-            $Usuario->estado = $valor['estado'];
-            $Usuario->Disconnect();
-            array_push($arrUsuarios, $Usuario);
-        }
-        $tmp->Disconnect();
-        return $arrUsuarios;
-    }
-
-    /**
-     * @param $documento
-     * @return bool
-     * @throws \Exception
-     */
-    public static function usuarioRegistrado($documento): bool
-    {
-        $result = Usuarios::search("SELECT * FROM weber.usuarios where documento = " . $documento);
-        if ( count ($result) > 0 ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      *
      */
@@ -117,15 +72,15 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return int
+     * @return int|mixed
      */
-    public function getId(): int
+    public function getId() : int
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param int|mixed $id
      */
     public function setId(int $id): void
     {
@@ -133,15 +88,15 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return string
+     * @return mixed|string
      */
-    public function getNombres(): string
+    public function getNombres() : string
     {
         return $this->nombres;
     }
 
     /**
-     * @param string $nombres
+     * @param mixed|string $nombres
      */
     public function setNombres(string $nombres): void
     {
@@ -149,15 +104,15 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return string
+     * @return mixed|string
      */
-    public function getApellidos(): string
+    public function getApellidos() : string
     {
         return $this->apellidos;
     }
 
     /**
-     * @param string $apellidos
+     * @param mixed|string $apellidos
      */
     public function setApellidos(string $apellidos): void
     {
@@ -165,15 +120,15 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return string
+     * @return mixed|string
      */
-    public function getTipoDocumento(): string
+    public function getTipoDocumento() : string
     {
         return $this->tipo_documento;
     }
 
     /**
-     * @param string $tipo_documento
+     * @param mixed|string $tipo_documento
      */
     public function setTipoDocumento(string $tipo_documento): void
     {
@@ -181,15 +136,15 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return int
+     * @return int|mixed
      */
-    public function getDocumento(): int
+    public function getDocumento() : int
     {
         return $this->documento;
     }
 
     /**
-     * @param int $documento
+     * @param int|mixed $documento
      */
     public function setDocumento(int $documento): void
     {
@@ -197,15 +152,15 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return int
+     * @return int|mixed
      */
-    public function getTelefono(): int
+    public function getTelefono() : int
     {
         return $this->telefono;
     }
 
     /**
-     * @param int $telefono
+     * @param int|mixed $telefono
      */
     public function setTelefono(int $telefono): void
     {
@@ -213,15 +168,15 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return string
+     * @return mixed|string
      */
-    public function getDireccion(): string
+    public function getDireccion() : string
     {
         return $this->direccion;
     }
 
     /**
-     * @param string $direccion
+     * @param mixed|string $direccion
      */
     public function setDireccion(string $direccion): void
     {
@@ -229,47 +184,63 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return string
+     * @return Carbon|mixed
      */
-    public function getUser(): string
+    public function getFechaNacimiento() : Carbon
+    {
+        return $this->fecha_nacimiento->locale('es');
+    }
+
+    /**
+     * @param Carbon|mixed $fecha_nacimiento
+     */
+    public function setFechaNacimiento(Carbon $fecha_nacimiento): void
+    {
+        $this->fecha_nacimiento = $fecha_nacimiento;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getUser() : ?string
     {
         return $this->user;
     }
 
     /**
-     * @param string $user
+     * @param mixed|string $user
      */
-    public function setUser(string $user): void
+    public function setUser(?string $user): void
     {
         $this->user = $user;
     }
 
     /**
-     * @return string
+     * @return mixed|string
      */
-    public function getPassword(): string
+    public function getPassword() : ?string
     {
         return $this->password;
     }
 
     /**
-     * @param string $password
+     * @param mixed|string $password
      */
-    public function setPassword(string $password): void
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
     }
 
     /**
-     * @return string
+     * @return mixed|string
      */
-    public function getRol(): string
+    public function getRol() : string
     {
         return $this->rol;
     }
 
     /**
-     * @param string $rol
+     * @param mixed|string $rol
      */
     public function setRol(string $rol): void
     {
@@ -277,15 +248,15 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return string
+     * @return mixed|string
      */
-    public function getEstado(): string
+    public function getEstado() : string
     {
         return $this->estado;
     }
 
     /**
-     * @param string $estado
+     * @param mixed|string $estado
      */
     public function setEstado(string $estado): void
     {
@@ -293,35 +264,19 @@ class Usuarios extends BasicModel
     }
 
     /**
-     * @return mixed
+     * @return Carbon|mixed
      */
-    public function getVentasCliente()
+    public function getFechaRegistro() : Carbon
     {
-        return $this->VentasCliente;
+        return $this->fecha_registro->locale('es');
     }
 
     /**
-     * @param mixed $VentasCliente
+     * @param Carbon|mixed $fecha_registro
      */
-    public function setVentasCliente($VentasCliente): void
+    public function setFechaRegistro(Carbon $fecha_registro): void
     {
-        $this->VentasCliente = $VentasCliente;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getVentasEmpleado()
-    {
-        return $this->VentasEmpleado;
-    }
-
-    /**
-     * @param mixed $VentasEmpleado
-     */
-    public function setVentasEmpleado($VentasEmpleado): void
-    {
-        $this->VentasEmpleado = $VentasEmpleado;
+        $this->fecha_registro = $fecha_registro;
     }
 
     /**
@@ -330,17 +285,44 @@ class Usuarios extends BasicModel
      */
     public function create(): bool
     {
-        $result = $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
+        $result = $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
                 $this->nombres,
                 $this->apellidos,
                 $this->tipo_documento,
                 $this->documento,
                 $this->telefono,
                 $this->direccion,
+                $this->fecha_nacimiento->toDateString(), //YYYY-MM-DD
                 $this->user,
                 $this->password,
                 $this->rol,
-                $this->estado
+                $this->estado,
+                $this->fecha_registro->toDateTimeString() //YYYY-MM-DD HH:MM:SS
+            )
+        );
+        $this->Disconnect();
+        return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function update(): bool
+    {
+        $result = $this->updateRow("UPDATE weber.usuarios SET nombres = ?, apellidos = ?, tipo_documento = ?, documento = ?, telefono = ?, direccion = ?, fecha_nacimiento = ?, user = ?, password = ?, rol = ?, estado = ?, fecha_registro = ? WHERE id = ?", array(
+                $this->nombres,
+                $this->apellidos,
+                $this->tipo_documento,
+                $this->documento,
+                $this->telefono,
+                $this->direccion,
+                $this->fecha_nacimiento->toDateString(),
+                $this->user,
+                $this->password,
+                $this->rol,
+                $this->estado,
+                $this->fecha_registro->toDateTimeString(),
+                $this->id
             )
         );
         $this->Disconnect();
@@ -356,6 +338,39 @@ class Usuarios extends BasicModel
         $User = Usuarios::searchForId($id); //Buscando un usuario por el ID
         $User->setEstado("Inactivo"); //Cambia el estado del Usuario
         return $User->update();                    //Guarda los cambios..
+    }
+
+    /**
+     * @param $query
+     * @return Usuarios|array
+     * @throws \Exception
+     */
+    public static function search($query) : array
+    {
+        $arrUsuarios = array();
+        $tmp = new Usuarios();
+        $getrows = $tmp->getRows($query);
+
+        foreach ($getrows as $valor) {
+            $Usuario = new Usuarios();
+            $Usuario->id = $valor['id'];
+            $Usuario->nombres = $valor['nombres'];
+            $Usuario->apellidos = $valor['apellidos'];
+            $Usuario->tipo_documento = $valor['tipo_documento'];
+            $Usuario->documento = $valor['documento'];
+            $Usuario->telefono = $valor['telefono'];
+            $Usuario->direccion = $valor['direccion'];
+            $Usuario->fecha_nacimiento = Carbon::parse($valor['fecha_nacimiento']);
+            $Usuario->user = $valor['user'];
+            $Usuario->password = $valor['password'];
+            $Usuario->rol = $valor['rol'];
+            $Usuario->estado = $valor['estado'];
+            $Usuario->fecha_registro = Carbon::parse($valor['fecha_registro']);
+            $Usuario->Disconnect();
+            array_push($arrUsuarios, $Usuario);
+        }
+        $tmp->Disconnect();
+        return $arrUsuarios;
     }
 
     /**
@@ -376,42 +391,44 @@ class Usuarios extends BasicModel
             $Usuario->documento = $getrow['documento'];
             $Usuario->telefono = $getrow['telefono'];
             $Usuario->direccion = $getrow['direccion'];
+            $Usuario->fecha_nacimiento = Carbon::parse($getrow['fecha_nacimiento']);
             $Usuario->user = $getrow['user'];
             $Usuario->password = $getrow['password'];
             $Usuario->rol = $getrow['rol'];
             $Usuario->estado = $getrow['estado'];
+            $Usuario->fecha_registro = Carbon::parse($getrow['fecha_registro']);
         }
         $Usuario->Disconnect();
         return $Usuario;
     }
 
     /**
-     * @return bool
+     * @return array
      */
-    public function update(): bool
+    public static function getAll(): array
     {
-        $result = $this->updateRow("UPDATE weber.usuarios SET nombres = ?, apellidos = ?, tipo_documento = ?, documento = ?, telefono = ?, direccion = ?, user = ?, password = ?, rol = ?, estado = ? WHERE id = ?", array(
-                $this->nombres,
-                $this->apellidos,
-                $this->tipo_documento,
-                $this->documento,
-                $this->telefono,
-                $this->direccion,
-                $this->user,
-                $this->password,
-                $this->rol,
-                $this->estado,
-                $this->id
-            )
-        );
-        $this->Disconnect();
-        return $result;
+        return Usuarios::search("SELECT * FROM weber.usuarios");
+    }
+
+    /**
+     * @param $documento
+     * @return bool
+     * @throws \Exception
+     */
+    public static function usuarioRegistrado($documento): bool
+    {
+        $result = Usuarios::search("SELECT * FROM weber.usuarios where documento = " . $documento);
+        if ( count ($result) > 0 ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * @return string
      */
-    public function nombresCompletos()
+    public function nombresCompletos() : string
     {
         return $this->nombres . " " . $this->apellidos;
     }
@@ -419,9 +436,9 @@ class Usuarios extends BasicModel
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
-        return "Nombres: $this->nombres, Apellidos: $this->nombres, Tipo Documento: $this->tipo_documento, Documento: $this->documento, Telefono: $this->telefono, Direccion: $this->direccion";
+        return "Nombres: $this->nombres, Apellidos: $this->nombres, Tipo Documento: $this->tipo_documento, Documento: $this->documento, Telefono: $this->telefono, Direccion: $this->direccion, Direccion: $this->fecha_nacimiento->toDateTimeString()";
     }
 
 }

@@ -6,6 +6,7 @@ require_once(__DIR__.'/../Models/GeneralFunctions.php');
 
 use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
+use Carbon\Carbon;
 
 if(!empty($_GET['action'])){
     UsuariosController::main($_GET['action']);
@@ -44,9 +45,11 @@ class UsuariosController{
             $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
             $arrayUsuario['documento'] = $_POST['documento'];
             $arrayUsuario['telefono'] = $_POST['telefono'];
+            $arrayUsuario['fecha_nacimiento'] = Carbon::parse($_POST['fecha_nacimiento']);
             $arrayUsuario['direccion'] = $_POST['direccion'];
             $arrayUsuario['rol'] = 'Cliente';
             $arrayUsuario['estado'] = 'Activo';
+            $arrayUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
             if(!Usuarios::usuarioRegistrado($arrayUsuario['documento'])){
                 $Usuario = new Usuarios ($arrayUsuario);
                 if($Usuario->create()){
@@ -69,10 +72,12 @@ class UsuariosController{
             $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
             $arrayUsuario['documento'] = $_POST['documento'];
             $arrayUsuario['telefono'] = $_POST['telefono'];
+            $arrayUsuario['fecha_nacimiento'] = Carbon::parse($_POST['fecha_nacimiento']);
             $arrayUsuario['direccion'] = $_POST['direccion'];
             $arrayUsuario['rol'] = $_POST['rol'];
             $arrayUsuario['estado'] = $_POST['estado'];
             $arrayUsuario['id'] = $_POST['id'];
+            $arrayUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
 
             $user = new Usuarios($arrayUsuario);
             $user->update();
@@ -123,6 +128,15 @@ class UsuariosController{
         }
     }
 
+    /**
+     * Retorna la lectura de un archivo en formato csv
+     *
+     * @param string $fileName
+     * @param string $delimiter
+     * @param string $path
+     * @return Iterator
+     * @throws Exception
+     */
     static public function getAll (){
         try {
             return Usuarios::getAll();

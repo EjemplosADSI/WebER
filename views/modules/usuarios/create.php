@@ -1,4 +1,6 @@
-<?php require("../../partials/routes.php"); ?>
+<?php use Carbon\Carbon;
+
+require("../../partials/routes.php"); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -112,6 +114,13 @@
                                         <div class="col-sm-10">
                                             <input required type="text" class="form-control" id="direccion"
                                                    name="direccion" placeholder="Ingrese su direccion">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="fecha_nacimiento" class="col-sm-2 col-form-label">Fecha Nacimiento</label>
+                                        <div class="col-sm-10">
+                                            <input required type="date" max="<?= Carbon::now()->subYear(12)->format('Y-m-d') ?>" class="form-control" id="fecha_nacimiento"
+                                                   name="fecha_nacimiento" placeholder="Ingrese su Fecha de Nacimiento">
                                         </div>
                                     </div>
                                     <hr>

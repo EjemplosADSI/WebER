@@ -21,6 +21,8 @@ class ProductosController{
             ProductosController::edit();
         } else if ($action == "searchForID") {
             ProductosController::searchForID($_REQUEST['idProducto']);
+        } else if ($action == "searchForIDAjax") {
+            ProductosController::searchForID($_REQUEST['idProducto'], 'Ajax');
         } else if ($action == "searchAll") {
             ProductosController::getAll();
         } else if ($action == "activate") {
@@ -40,6 +42,7 @@ class ProductosController{
             $arrayProducto = array();
             $arrayProducto['nombres'] = $_POST['nombres'];
             $arrayProducto['precio'] = $_POST['precio'];
+            $arrayProducto['porcentaje_ganancia'] = $_POST['porcentaje_ganancia'];
             $arrayProducto['stock'] = $_POST['stock'];
             $arrayProducto['estado'] = 'Activo';
             if(!Productos::productoRegistrado($arrayProducto['nombres'])){
@@ -61,6 +64,7 @@ class ProductosController{
             $arrayProducto = array();
             $arrayProducto['nombres'] = $_POST['nombres'];
             $arrayProducto['precio'] = $_POST['precio'];
+            $arrayProducto['porcentaje_ganancia'] = $_POST['porcentaje_ganancia'];
             $arrayProducto['stock'] = $_POST['stock'];
             $arrayProducto['estado'] = $_POST['estado'];
             $arrayProducto['id'] = $_POST['id'];
@@ -105,12 +109,23 @@ class ProductosController{
         }
     }
 
-    static public function searchForID ($id){
+    static public function searchForID ($id, $method = 'normal'){
         try {
-            return Productos::searchForId($id);
+            $result = Productos::searchForId($id);
+            if ($method === 'normal') {
+                return $result;
+            }else{
+                header('Content-type: application/json; charset=utf-8');
+                echo json_encode($result->jsonSerialize());
+            }
         } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
-            header("Location: ../../views/modules/productos/manager.php?respuesta=error");
+            if ($method === 'normal'){
+                header("Location: ../../views/modules/productos/manager.php?respuesta=error");
+            }else{
+                header('Content-type: application/json; charset=utf-8');
+                echo json_encode($e);
+            }
         }
     }
 
@@ -153,9 +168,10 @@ class ProductosController{
         $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if(count($arrProducto) > 0){
+            /* @var $arrProducto \App\Models\Productos[] */
             foreach ($arrProducto as $producto)
                 if (!ProductosController::productoIsInArray($producto->getId(),$arrExcluir))
-                    $htmlSelect .= "<option ".(($producto != "") ? (($defaultValue == $producto->getId()) ? "selected" : "" ) : "")." value='".$producto->getId()."'>".$producto->getStock()." - ".$producto->getNombres()." - ".$producto->getPrecio()."</option>";
+                    $htmlSelect .= "<option ".(($producto != "") ? (($defaultValue == $producto->getId()) ? "selected" : "" ) : "")." value='".$producto->getId()."'>".$producto->getNombres()."</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;

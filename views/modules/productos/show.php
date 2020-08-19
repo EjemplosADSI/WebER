@@ -92,6 +92,9 @@ use App\Controllers\ProductosController; ?>
                                         <strong><i class="fas fa-dollar-sign mr-1"></i> Precio</strong>
                                         <p class="text-muted"><?= $DataProducto->getPrecio() ?></p>
                                         <hr>
+                                        <strong><i class="fas fa-dollar-sign mr-1"></i> Porcentaje Ganancia</strong>
+                                        <p class="text-muted"><?= $DataProducto->getPorcentajeGanancia() ?>%</p>
+                                        <hr>
                                         <strong><i class="fas fa-archive mr-1"></i> Stock</strong>
                                         <p class="text-muted"><?= $DataProducto->getStock() ?></p>
                                         <hr>

@@ -81,6 +81,13 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                        <label for="porcentaje_ganancia" class="col-sm-2 col-form-label">Porcentaje de Ganancia</label>
+                                        <div class="col-sm-10">
+                                            <input required type="number" min="1" step="0.1" class="form-control" id="porcentaje_ganancia" name="porcentaje_ganancia"
+                                                   placeholder="Ingrese el porcentaje de ganancia">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
                                         <label for="stock" class="col-sm-2 col-form-label">Stock</label>
                                         <div class="col-sm-10">
                                             <input required type="number" minlength="6" class="form-control" id="stock"

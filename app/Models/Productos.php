@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use JsonSerializable;
+
 require_once (__DIR__ .'/../../vendor/autoload.php');
 require_once('BasicModel.php');
 
-class Productos extends BasicModel
+class Productos extends BasicModel implements JsonSerializable
 {
     private int $id;
     private string $nombres;
     private float $precio;
+    private float $porcentaje_ganancia;
     private int $stock;
     private string $estado;
 
@@ -18,6 +21,7 @@ class Productos extends BasicModel
      * @param int $id
      * @param string $nombres
      * @param float $precio
+     * @param float $porcentaje_ganancia
      * @param int $stock
      * @param string $estado
      */
@@ -27,6 +31,7 @@ class Productos extends BasicModel
         $this->id = $venta['id'] ?? 0;
         $this->nombres = $venta['nombres'] ?? '';
         $this->precio = $venta['precio'] ?? 0.0;
+        $this->porcentaje_ganancia = $venta['porcentaje_ganancia'] ?? 0.0;
         $this->stock = $venta['stock'] ?? 0;
         $this->estado = $venta['estado'] ?? '';
     }
@@ -88,6 +93,22 @@ class Productos extends BasicModel
     }
 
     /**
+     * @return float|mixed
+     */
+    public function getPorcentajeGanancia() : float
+    {
+        return $this->porcentaje_ganancia;
+    }
+
+    /**
+     * @param float|mixed $porcentaje_ganancia
+     */
+    public function setPorcentajeGanancia(float $porcentaje_ganancia): void
+    {
+        $this->porcentaje_ganancia = $porcentaje_ganancia;
+    }
+
+    /**
      * @return int|mixed
      */
     public function getStock() : int
@@ -125,9 +146,10 @@ class Productos extends BasicModel
      */
     public function create() : bool
     {
-        $result = $this->insertRow("INSERT INTO weber.productos VALUES (NULL, ?, ?, ?, ?)", array(
+        $result = $this->insertRow("INSERT INTO weber.productos VALUES (NULL, ?, ?, ?, ?, ?)", array(
                 $this->nombres,
                 $this->precio,
+                $this->porcentaje_ganancia,
                 $this->stock,
                 $this->estado
             )
@@ -141,9 +163,10 @@ class Productos extends BasicModel
      */
     public function update() : bool
     {
-        $result = $this->updateRow("UPDATE weber.productos SET nombres = ?, precio = ?, stock = ?, estado = ? WHERE id = ?", array(
+        $result = $this->updateRow("UPDATE weber.productos SET nombres = ?, precio = ?, porcentaje_ganancia = ?, stock = ?, estado = ? WHERE id = ?", array(
                 $this->nombres,
                 $this->precio,
+                $this->porcentaje_ganancia,
                 $this->stock,
                 $this->estado,
                 $this->id
@@ -180,6 +203,7 @@ class Productos extends BasicModel
             $Producto->id = $valor['id'];
             $Producto->nombres = $valor['nombres'];
             $Producto->precio = $valor['precio'];
+            $Producto->porcentaje_ganancia = $valor['porcentaje_ganancia'];
             $Producto->stock = $valor['stock'];
             $Producto->estado = $valor['estado'];
             $Producto->Disconnect();
@@ -203,6 +227,7 @@ class Productos extends BasicModel
             $Producto->id = $getrow['id'];
             $Producto->nombres = $getrow['nombres'];
             $Producto->precio = $getrow['precio'];
+            $Producto->porcentaje_ganancia = $getrow['porcentaje_ganancia'];
             $Producto->stock = $getrow['stock'];
             $Producto->estado = $getrow['estado'];
         }
@@ -233,11 +258,38 @@ class Productos extends BasicModel
     }
 
     /**
+     * @return float|mixed
+     */
+    public function getPrecioVenta() : float
+    {
+        return $this->precio + ($this->precio * ($this->porcentaje_ganancia / 100));
+    }
+
+    /**
      * @return string
      */
     public function __toString() : string
     {
-        return "Nombre: $this->nombres, Precio: $this->precio, Stock: $this->stock, Estado: $this->estado";
+        return "Nombre: $this->nombres, Precio: $this->precio, Porcentaje: $this->porcentaje_ganancia, Stock: $this->stock, Estado: $this->estado";
     }
 
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'nombres' => $this->getNombres(),
+            'precio' => $this->getPrecio(),
+            'porcentaje_ganancias' => $this->getPorcentajeGanancia(),
+            'precio_venta' => $this->getPrecioVenta(),
+            'stock' => $this->getStock(),
+            'estado' => $this->getEstado(),
+        ];
+    }
 }

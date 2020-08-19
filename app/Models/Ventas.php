@@ -3,9 +3,11 @@
 namespace App\Models;
 
 require_once (__DIR__ .'/../../vendor/autoload.php');
+require_once ('Usuarios.php');
 require_once('BasicModel.php');
 
 use Carbon\Carbon;
+use App\Models\Usuarios;
 
 class Ventas extends BasicModel
 {

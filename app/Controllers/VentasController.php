@@ -7,6 +7,7 @@ require_once(__DIR__.'/../Models/Usuarios.php');
 use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
 use App\Models\Ventas;
+use Carbon\Carbon;
 
 if(!empty($_GET['action'])){
     VentasController::main($_GET['action']);
@@ -38,14 +39,14 @@ class VentasController{
             $arrayVenta['numero_serie'] = 'FV'.'-'.date('Y-m-d');
             $arrayVenta['cliente_id'] = Usuarios::searchForId($_POST['cliente_id']);
             $arrayVenta['empleado_id'] = Usuarios::searchForId($_POST['empleado_id']);
-            $arrayVenta['fecha_venta'] = date('Y-m-d H:i:s'); //Fecha Completa Hoy
+            $arrayVenta['fecha_venta'] = Carbon::now(); //Fecha Completa Hoy
             $arrayVenta['monto'] = 0;
             $arrayVenta['estado'] = 'Activo';
             $Venta = new Ventas($arrayVenta);
             if($Venta->create()){
                 header("Location: ../../views/modules/ventas/create.php?id=".$Venta->getId());
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
             header("Location: ../../views/modules/ventas/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }

@@ -166,16 +166,18 @@ use App\Models\DetalleVentas;
                             </div>
 
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-auto mr-auto"></div>
-                                    <div class="col-auto">
-                                        <a role="button" href="#" data-toggle="modal" data-target="#modal-add-producto"
-                                           class="btn btn-primary float-right"
-                                           style="margin-right: 5px;">
-                                            <i class="fas fa-plus"></i> Añadir Producto
-                                        </a>
+                                <?php if (!empty($_GET['id'])) { ?>
+                                    <div class="row">
+                                        <div class="col-auto mr-auto"></div>
+                                        <div class="col-auto">
+                                            <a role="button" href="#" data-toggle="modal" data-target="#modal-add-producto"
+                                               class="btn btn-primary float-right"
+                                               style="margin-right: 5px;">
+                                                <i class="fas fa-plus"></i> Añadir Producto
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                <?php } ?>
                                 <div class="row">
                                     <div class="col">
                                         <table id="tblDetalleProducto"
@@ -191,38 +193,43 @@ use App\Models\DetalleVentas;
                                             </thead>
                                             <tbody>
                                             <?php
-                                            $arrDetalleVentas = DetalleVentas::getAll();
-                                            foreach ($arrDetalleVentas as $detalleVenta) {
-                                                ?>
-                                                <tr>
-                                                    <td><?php echo $detalleVenta->getId(); ?></td>
-                                                    <td><?php echo $detalleVenta->getProductoId()->getNombres(); ?></td>
-                                                    <td><?php echo $detalleVenta->getCantidad(); ?></td>
-                                                    <td><?php echo $detalleVenta->getPrecio(); ?></td>
-                                                    <td>
-                                                        <a href="edit.php?id=<?php echo $detalleVenta->getId(); ?>"
-                                                           type="button" data-toggle="tooltip" title="Actualizar"
-                                                           class="btn docs-tooltip btn-primary btn-xs"><i
-                                                                    class="fa fa-edit"></i></a>
-                                                        <a href="show.php?id=<?php echo $detalleVenta->getId(); ?>"
-                                                           type="button" data-toggle="tooltip" title="Ver"
-                                                           class="btn docs-tooltip btn-warning btn-xs"><i
-                                                                    class="fa fa-eye"></i></a>
-                                                        <?php if ($detalleVenta->getEstado() != "Activo") { ?>
-                                                            <a href="../../../app/Controllers/ProductosController.php?action=activate&Id=<?php echo $detalleVenta->getId(); ?>"
-                                                               type="button" data-toggle="tooltip" title="Activar"
-                                                               class="btn docs-tooltip btn-success btn-xs"><i
-                                                                        class="fa fa-check-square"></i></a>
-                                                        <?php } else { ?>
-                                                            <a type="button"
-                                                               href="../../../app/Controllers/ProductosController.php?action=inactivate&Id=<?php echo $detalleVenta->getId(); ?>"
-                                                               data-toggle="tooltip" title="Inactivar"
-                                                               class="btn docs-tooltip btn-danger btn-xs"><i
-                                                                        class="fa fa-times-circle"></i></a>
-                                                        <?php } ?>
-                                                    </td>
-                                                </tr>
-                                            <?php } ?>
+                                            if (!empty($_GET['id'])) {
+                                                $arrDetalleVentas = DetalleVentas::search("SELECT * FROM weber.detalle_ventas WHERE ventas_id = ".$_GET['id']);
+                                                if(count($arrDetalleVentas) > 0) {
+                                                    /* @var $arrDetalleVentas \App\Models\DetalleVentas[] */
+                                                    foreach ($arrDetalleVentas as $detalleVenta) {
+                                                        ?>
+                                                        <tr>
+                                                            <td><?php echo $detalleVenta->getId(); ?></td>
+                                                            <td><?php echo $detalleVenta->getProductoId()->getNombres(); ?></td>
+                                                            <td><?php echo $detalleVenta->getCantidad(); ?></td>
+                                                            <td><?php echo $detalleVenta->getPrecio(); ?></td>
+                                                            <td>
+                                                                <a href="edit.php?id=<?php echo $detalleVenta->getId(); ?>"
+                                                                   type="button" data-toggle="tooltip" title="Actualizar"
+                                                                   class="btn docs-tooltip btn-primary btn-xs"><i
+                                                                            class="fa fa-edit"></i></a>
+                                                                <a href="show.php?id=<?php echo $detalleVenta->getId(); ?>"
+                                                                   type="button" data-toggle="tooltip" title="Ver"
+                                                                   class="btn docs-tooltip btn-warning btn-xs"><i
+                                                                            class="fa fa-eye"></i></a>
+                                                                <?php if ($detalleVenta->getEstado() != "Activo") { ?>
+                                                                    <a href="../../../app/Controllers/ProductosController.php?action=activate&Id=<?php echo $detalleVenta->getId(); ?>"
+                                                                       type="button" data-toggle="tooltip" title="Activar"
+                                                                       class="btn docs-tooltip btn-success btn-xs"><i
+                                                                                class="fa fa-check-square"></i></a>
+                                                                <?php } else { ?>
+                                                                    <a type="button"
+                                                                       href="../../../app/Controllers/ProductosController.php?action=inactivate&Id=<?php echo $detalleVenta->getId(); ?>"
+                                                                       data-toggle="tooltip" title="Inactivar"
+                                                                       class="btn docs-tooltip btn-danger btn-xs"><i
+                                                                                class="fa fa-times-circle"></i></a>
+                                                                <?php } ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php }
+                                                }
+                                            }?>
 
                                             </tbody>
                                             <tfoot>
@@ -254,14 +261,15 @@ use App\Models\DetalleVentas;
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Agregar Producto</h4>
+                        <h4 class="modal-title">Agregar Producto a Venta</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="../../../app/Controllers/VentasController.php?action=create" method="post">
+                    <form action="../../../app/Controllers/DetalleVentasController.php?action=create" method="post">
                         <div class="modal-body">
-                            <input id="venta_id" name="venta_id" value="<?= !empty($dataVenta) ? $dataVenta->getId() : ''; ?>" hidden
+                            <?php //var_dump($dataVenta); ?>
+                            <input id="ventas_id" name="ventas_id" value="<?= !empty($dataVenta) ? $dataVenta->getId() : ''; ?>" hidden
                                    required="required" type="text">
                             <div class="form-group row">
                                 <label for="producto_id" class="col-sm-4 col-form-label">Producto</label>
@@ -274,16 +282,34 @@ use App\Models\DetalleVentas;
                                         'form-control select2bs4 select2-info',
                                         "estado = 'Activo'")
                                     ?>
+                                    <div id="divResultProducto">
+                                        <span class="text-muted">Precio Base: </span> <span id="spPrecio"></span>,
+                                        <span class="text-muted">Precio Venta: </span> <span id="spPrecioVenta"></span>,
+                                        <span class="text-muted">Stock: </span> <span id="spStock"></span>.
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="producto_id" class="col-sm-4 col-form-label">Producto</label>
+                                <label for="cantidad" class="col-sm-4 col-form-label">Cantidad</label>
                                 <div class="col-sm-8">
-                                    <input required type="number" class="form-control" id="cantidad" name="cantidad"
+                                    <input required type="number" min="1" class="form-control" step="1" id="cantidad" name="cantidad"
                                            placeholder="Ingrese la cantidad">
                                 </div>
                             </div>
-
+                            <div class="form-group row">
+                                <label for="precio_venta" class="col-sm-4 col-form-label">Precio Unitario</label>
+                                <div class="col-sm-8">
+                                    <input required readonly type="number" min="1" class="form-control" id="precio_venta" name="precio_venta"
+                                           placeholder="0.0">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="total_producto" class="col-sm-4 col-form-label">Total Producto</label>
+                                <div class="col-sm-8">
+                                    <input required readonly type="number" min="1" class="form-control" id="total_producto" name="total_producto"
+                                           placeholder="0.0">
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -315,7 +341,53 @@ use App\Models\DetalleVentas;
 <script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.colVis.js"></script>
 
 <script>
+
     $(function () {
+
+        $("#divResultProducto").hide();
+
+        $('#producto_id').on('select2:select', function (e) {
+            var dataSelect = e.params.data;
+            var dataProducto = null;
+            if(dataSelect.id !== ""){
+                $.post("../../../app/Controllers/ProductosController.php?action=searchForIDAjax", {idProducto: dataSelect.id}, "json")
+                    .done(function( resultProducto ) {
+                        dataProducto = resultProducto;
+                    })
+                    .fail(function(err) {
+                        console.log( "Error al realizar la consulta"+err );
+                    })
+                    .always(function() {
+                        updateDataProducto(dataProducto);
+                    });
+            }else{
+                updateDataProducto(dataProducto);
+            }
+        });
+
+        function updateDataProducto(dataProducto){
+            if(dataProducto !== null){
+                $("#divResultProducto").slideDown();
+                $("#spPrecio").html("$"+dataProducto.precio);
+                $("#spPrecioVenta").html("$"+dataProducto.precio_venta);
+                $("#spStock").html(dataProducto.stock+" Unidad(es)");
+                $("#cantidad").attr("max",dataProducto.stock);
+                $("#precio_venta").val(dataProducto.precio_venta);
+            }else{
+                $("#divResultProducto").slideUp();
+                $("#spPrecio").html("");
+                $("#spPrecioVenta").html("");
+                $("#spStock").html("");
+                $("#cantidad").removeAttr("max").val('0');
+                $("#precio_venta").val('0.0');
+                $("#total_producto").val('0.0');
+            }
+        }
+
+        $( "#cantidad" ).on( "change keyup focusout", function() {
+            $("#total_producto").val($( "#cantidad" ).val() *  $("#precio_venta").val());
+        });
+
         $('.datatable').DataTable({
             "dom": 'Bfrtip',
             "paging": true,

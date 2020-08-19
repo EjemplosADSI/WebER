@@ -98,6 +98,8 @@ use App\Controllers\ProductosController;
                                                 <th>#</th>
                                                 <th>Nombres</th>
                                                 <th>Precio</th>
+                                                <th>Ganancia</th>
+                                                <th>Venta</th>
                                                 <th>Stock</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
@@ -106,12 +108,15 @@ use App\Controllers\ProductosController;
                                             <tbody>
                                             <?php
                                             $arrProductos = ProductosController::getAll();
+                                            /* @var $arrProductos \App\Models\Productos[] */
                                             foreach ($arrProductos as $producto) {
                                                 ?>
                                                 <tr>
                                                     <td><?php echo $producto->getId(); ?></td>
                                                     <td><?php echo $producto->getNombres(); ?></td>
-                                                    <td><?php echo $producto->getPrecio(); ?></td>
+                                                    <td>$ <?php echo $producto->getPrecio(); ?></td>
+                                                    <td><?php echo $producto->getPorcentajeGanancia(); ?>%</td>
+                                                    <td>$ <?php echo $producto->getPrecioVenta(); ?></td>
                                                     <td><?php echo $producto->getStock(); ?></td>
                                                     <td><?php echo $producto->getEstado(); ?></td>
                                                     <td>
@@ -145,6 +150,8 @@ use App\Controllers\ProductosController;
                                                 <th>#</th>
                                                 <th>Nombres</th>
                                                 <th>Precio</th>
+                                                <th>Ganancia</th>
+                                                <th>Venta</th>
                                                 <th>Stock</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>

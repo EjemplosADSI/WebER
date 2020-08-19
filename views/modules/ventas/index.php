@@ -109,8 +109,8 @@ use App\Controllers\VentasController;
                                             <tbody>
                                             <?php
                                             $arrVentas = VentasController::getAll();
+                                            /* @var $arrVentas \App\Models\Ventas[] */
                                             foreach ($arrVentas as $venta) {
-                                                ;
                                                 ?>
                                                 <tr>
                                                     <td><?= $venta->getId(); ?></td>

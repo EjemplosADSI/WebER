@@ -1,18 +1,19 @@
 <?php
 
 namespace App\Controllers;
-require_once(__DIR__.'/../Models/Usuarios.php');
-require_once(__DIR__.'/../Models/GeneralFunctions.php');
+require_once(__DIR__ . '/../Models/Usuarios.php');
+require_once(__DIR__ . '/../Models/GeneralFunctions.php');
 
 use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
 use Carbon\Carbon;
 
-if(!empty($_GET['action'])){
+if (!empty($_GET['action'])) {
     UsuariosController::main($_GET['action']);
 }
 
-class UsuariosController{
+class UsuariosController
+{
 
     static function main($action)
     {
@@ -50,21 +51,22 @@ class UsuariosController{
             $arrayUsuario['rol'] = 'Cliente';
             $arrayUsuario['estado'] = 'Activo';
             $arrayUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
-            if(!Usuarios::usuarioRegistrado($arrayUsuario['documento'])){
+            if (!Usuarios::usuarioRegistrado($arrayUsuario['documento'])) {
                 $Usuario = new Usuarios ($arrayUsuario);
-                if($Usuario->create()){
+                if ($Usuario->create()) {
                     header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto");
                 }
-            }else{
+            } else {
                 header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
             }
         } catch (Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::console($e, 'error', 'errorStack');
             //header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
 
-    static public function edit (){
+    static public function edit()
+    {
         try {
             $arrayUsuario = array();
             $arrayUsuario['nombres'] = $_POST['nombres'];
@@ -82,48 +84,19 @@ class UsuariosController{
             $user = new Usuarios($arrayUsuario);
             $user->update();
 
-            header("Location: ../../views/modules/usuarios/show.php?id=".$user->getId()."&respuesta=correcto");
+            header("Location: ../../views/modules/usuarios/show.php?id=" . $user->getId() . "&respuesta=correcto");
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::console($e, 'error', 'errorStack');
             //header("Location: ../../views/modules/usuarios/edit.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
 
-    static public function activate (){
-        try {
-            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
-            $ObjUsuario->setEstado("Activo");
-            if($ObjUsuario->update()){
-                header("Location: ../../views/modules/usuarios/index.php");
-            }else{
-                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
-            }
-        } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=".$e->getMessage());
-        }
-    }
-
-    static public function inactivate (){
-        try {
-            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
-            $ObjUsuario->setEstado("Inactivo");
-            if($ObjUsuario->update()){
-                header("Location: ../../views/modules/usuarios/index.php");
-            }else{
-                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
-            }
-        } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error");
-        }
-    }
-
-    static public function searchForID ($id){
+    static public function searchForID($id)
+    {
         try {
             return Usuarios::searchForId($id);
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::console($e, 'error', 'errorStack');
             //header("Location: ../../views/modules/usuarios/manager.php?respuesta=error");
         }
     }
@@ -137,51 +110,87 @@ class UsuariosController{
      * @return Iterator
      * @throws Exception
      */
-    static public function getAll (){
+    static public function getAll()
+    {
         try {
             return Usuarios::getAll();
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'log', 'errorStack');
+            GeneralFunctions::console($e, 'log', 'errorStack');
             //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
     }
 
-    private static function usuarioIsInArray($idUsuario, $ArrUsuarios){
-        if(count($ArrUsuarios) > 0){
-            foreach ($ArrUsuarios as $Usuario){
-                if($Usuario->getId() == $idUsuario){
+    static public function activate()
+    {
+        try {
+            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
+            $ObjUsuario->setEstado("Activo");
+            if ($ObjUsuario->update()) {
+                header("Location: ../../views/modules/usuarios/index.php");
+            } else {
+                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
+            }
+        } catch (\Exception $e) {
+            GeneralFunctions::console($e, 'error', 'errorStack');
+            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=".$e->getMessage());
+        }
+    }
+
+    static public function inactivate()
+    {
+        try {
+            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
+            $ObjUsuario->setEstado("Inactivo");
+            if ($ObjUsuario->update()) {
+                header("Location: ../../views/modules/usuarios/index.php");
+            } else {
+                header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
+            }
+        } catch (\Exception $e) {
+            GeneralFunctions::console($e, 'error', 'errorStack');
+            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error");
+        }
+    }
+
+    static public function selectUsuario($isMultiple = false,
+                                         $isRequired = true,
+                                         $id = "idUsuario",
+                                         $nombre = "idUsuario",
+                                         $defaultValue = "",
+                                         $class = "form-control",
+                                         $where = "",
+                                         $arrExcluir = array())
+    {
+        $arrUsuarios = array();
+        if ($where != "") {
+            $base = "SELECT * FROM usuarios WHERE ";
+            $arrUsuarios = Usuarios::search($base . ' ' . $where);
+        } else {
+            $arrUsuarios = Usuarios::getAll();
+        }
+
+        $htmlSelect = "<select " . (($isMultiple) ? "multiple" : "") . " " . (($isRequired) ? "required" : "") . " id= '" . $id . "' name='" . $nombre . "' class='" . $class . "' style='width: 100%;'>";
+        $htmlSelect .= "<option value='' >Seleccione</option>";
+        if (count($arrUsuarios) > 0) {
+            /* @var $arrUsuarios \App\Models\Usuarios[] */
+            foreach ($arrUsuarios as $usuario)
+                if (!UsuariosController::usuarioIsInArray($usuario->getId(), $arrExcluir))
+                    $htmlSelect .= "<option " . (($usuario != "") ? (($defaultValue == $usuario->getId()) ? "selected" : "") : "") . " value='" . $usuario->getId() . "'>" . $usuario->getDocumento() . " - " . $usuario->getNombres() . " " . $usuario->getApellidos() . "</option>";
+        }
+        $htmlSelect .= "</select>";
+        return $htmlSelect;
+    }
+
+    private static function usuarioIsInArray($idUsuario, $ArrUsuarios)
+    {
+        if (count($ArrUsuarios) > 0) {
+            foreach ($ArrUsuarios as $Usuario) {
+                if ($Usuario->getId() == $idUsuario) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    static public function selectUsuario ($isMultiple=false,
-                                          $isRequired=true,
-                                          $id="idUsuario",
-                                          $nombre="idUsuario",
-                                          $defaultValue="",
-                                          $class="form-control",
-                                          $where="",
-                                          $arrExcluir = array()){
-        $arrUsuarios = array();
-        if($where != ""){
-            $base = "SELECT * FROM usuarios WHERE ";
-            $arrUsuarios = Usuarios::search($base.' '.$where);
-        }else{
-            $arrUsuarios = Usuarios::getAll();
-        }
-
-        $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."' style='width: 100%;'>";
-        $htmlSelect .= "<option value='' >Seleccione</option>";
-        if(count($arrUsuarios) > 0){
-            foreach ($arrUsuarios as $usuario)
-                if (!UsuariosController::usuarioIsInArray($usuario->getId(),$arrExcluir))
-                    $htmlSelect .= "<option ".(($usuario != "") ? (($defaultValue == $usuario->getId()) ? "selected" : "" ) : "")." value='".$usuario->getId()."'>".$usuario->getDocumento()." - ".$usuario->getNombres()." ".$usuario->getApellidos()."</option>";
-        }
-        $htmlSelect .= "</select>";
-        return $htmlSelect;
     }
 
     /*

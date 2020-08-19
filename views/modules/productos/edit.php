@@ -94,11 +94,18 @@ use App\Controllers\ProductosController; ?>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="apellidos" class="col-sm-2 col-form-label">Precio</label>
+                                                <label for="precio" class="col-sm-2 col-form-label">Precio</label>
                                                 <div class="col-sm-10">
                                                     <input required type="text" class="form-control" id="precio"
                                                            name="precio" value="<?= $DataProducto->getPrecio(); ?>"
                                                            placeholder="Ingrese el precio">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="porcentaje_ganancia" class="col-sm-2 col-form-label">Porcentaje de Ganancia</label>
+                                                <div class="col-sm-10">
+                                                    <input required type="number" min="1" step="0.1" class="form-control" id="porcentaje_ganancia" name="porcentaje_ganancia"
+                                                           value="<?= $DataProducto->getPorcentajeGanancia(); ?>" placeholder="Ingrese el porcentaje de ganancia">
                                                 </div>
                                             </div>
                                             <div class="form-group row">

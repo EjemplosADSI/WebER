@@ -1,19 +1,22 @@
 <?php
 
 namespace App\Controllers;
-require_once(__DIR__.'/../Models/DetalleVentas.php');
-require_once(__DIR__.'/../Models/GeneralFunctions.php');
+require_once(__DIR__ . '/../Models/GeneralFunctions.php');
+require_once(__DIR__ . '/../Models/DetalleVentas.php');
+require_once(__DIR__ . '/../Models/Productos.php');
+require_once(__DIR__ . '/../Models/Ventas.php');
 
-use App\Models\GeneralFunctions;
 use App\Models\DetalleVentas;
+use App\Models\GeneralFunctions;
 use App\Models\Productos;
 use App\Models\Ventas;
 
-if(!empty($_GET['action'])){
+if (!empty($_GET['action'])) {
     DetalleVentasController::main($_GET['action']);
 }
 
-class DetalleVentasController{
+class DetalleVentasController
+{
 
     static function main($action)
     {
@@ -39,48 +42,51 @@ class DetalleVentasController{
             $arrayDetalleVentas['ventas_id'] = Ventas::searchForId($_POST['ventas_id']);
             $arrayDetalleVentas['producto_id'] = Productos::searchForId($_POST['producto_id']);
             $arrayDetalleVentas['cantidad'] = $_POST['cantidad'];
-            $arrayDetalleVentas['precio_venta'] = $_POST['fecha_venta'];
+            $arrayDetalleVentas['precio_venta'] = $_POST['precio_venta'];
             $DetalleVentas = new Ventas($arrayDetalleVentas);
-            if($DetalleVentas->create()){
+            if ($DetalleVentas->create()) {
                 header("Location: ../../views/modules/detalle_ventas/index.php?respuesta=correcto");
             }
         } catch (Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::console($e, 'error', 'errorStack');
             header("Location: ../../views/modules/detalle_ventas/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
 
-    static public function edit (){
+    static public function edit()
+    {
         try {
             $arrayDetalleVentas = array();
             $arrayDetalleVentas['ventas_id'] = Ventas::searchForId($_POST['ventas_id']);
             $arrayDetalleVentas['producto_id'] = Productos::searchForId($_POST['producto_id']);
             $arrayDetalleVentas['cantidad'] = $_POST['cantidad'];
-            $arrayDetalleVentas['precio_venta'] = $_POST['fecha_venta'];
+            $arrayDetalleVentas['precio_venta'] = $_POST['precio_venta'];
             $arrayDetalleVentas['id'] = $_POST['id'];
             $DetalleVenta = new Ventas($arrayDetalleVentas);
             $DetalleVenta->update();
-            header("Location: ../../views/modules/detalle_ventas/show.php?id=".$DetalleVenta->getId()."&respuesta=correcto");
+            header("Location: ../../views/modules/detalle_ventas/show.php?id=" . $DetalleVenta->getId() . "&respuesta=correcto");
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
-            header("Location: ../../views/modules/detalle_ventas/edit.php?respuesta=error&mensaje=".$e->getMessage());
+            GeneralFunctions::console($e, 'error', 'errorStack');
+            header("Location: ../../views/modules/detalle_ventas/edit.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
 
-    static public function searchForID ($id){
+    static public function searchForID($id)
+    {
         try {
             return DetalleVentas::searchForId($id);
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::console($e, 'error', 'errorStack');
             header("Location: ../../views/modules/detalle_ventas/manager.php?respuesta=error");
         }
     }
 
-    static public function getAll (){
+    static public function getAll()
+    {
         try {
             return DetalleVentas::getAll();
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'log', 'errorStack');
+            GeneralFunctions::console($e, 'log', 'errorStack');
             header("Location: ../Vista/modules/detalle_ventas/manager.php?respuesta=error");
         }
     }

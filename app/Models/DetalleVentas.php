@@ -26,7 +26,7 @@ class DetalleVentas extends BasicModel
         parent::__construct();
         $this->id = $venta['id'] ?? 0;
         $this->ventas_id = $venta['ventas_id'] ?? new Ventas();
-        $this->precio_venta = $venta['precio_venta'] ?? new Productos();
+        $this->producto_id = $venta['producto_id'] ?? new Productos();
         $this->cantidad = $venta['cantidad'] ?? 0;
         $this->precio_venta = $venta['precio_venta'] ?? 0.0;
     }
@@ -200,7 +200,7 @@ class DetalleVentas extends BasicModel
         $DetalleVenta = null;
         if ($id > 0) {
             $DetalleVenta = new DetalleVentas();
-            $getrow = $DetalleVenta->getRow("SELECT * FROM weber.detalle_venta WHERE id =?", array($id));
+            $getrow = $DetalleVenta->getRow("SELECT * FROM weber.detalle_ventas WHERE id =?", array($id));
             $DetalleVenta->id = $getrow['id'];
             $DetalleVenta->ventas_id = Ventas::searchForId($getrow['ventas_id']);
             $DetalleVenta->producto_id = Productos::searchForId($getrow['producto_id']);

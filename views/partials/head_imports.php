@@ -16,5 +16,7 @@
     <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <!-- Custom CSS User -->
     <link rel="stylesheet" href="<?= $baseURL ?>/views/public/css/main.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= $baseURL ?>/views/public/img/favicon-32x32.png">
 
 <!-- End Importaciones CSS -->

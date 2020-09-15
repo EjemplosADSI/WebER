@@ -17,7 +17,7 @@
                 <img src="<?= $baseURL ?>/views/public/img/user.png" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">Diego Ojeda</a>
+                <a href="#" class="d-block"> <?= $_SESSION['UserInSession']['nombres'] ?> </a>
             </div>
         </div>
 

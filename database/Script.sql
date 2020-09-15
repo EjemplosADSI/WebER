@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
                                           `fecha_nacimiento` date NOT NULL,
                                           `user` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                                           `password` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                                          `rol` enum('Empleado','Cliente') COLLATE utf8mb4_unicode_ci NOT NULL,
+                                          `rol` enum('Administrador', 'Empleado','Cliente') COLLATE utf8mb4_unicode_ci NOT NULL,
                                           `estado` enum('Activo','Inactivo') COLLATE utf8mb4_unicode_ci NOT NULL,
                                           `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                           PRIMARY KEY (`id`),
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombres`, `apellidos`, `tipo_documento`, `documento`, `telefono`, `direccion`, `fecha_nacimiento`, `user`, `password`, `rol`, `estado`, `fecha_registro`) VALUES
-(1, 'Diego Alonso', 'Ojeda Medina', 'C.C', 12312312, 311324325, 'Transveral 27 15 -35', '2020-03-03', NULL, NULL, 'Cliente', 'Activo', '2020-07-27 00:00:00'),
+(1, 'Diego Alonso', 'Ojeda Medina', 'C.C', 12312312, 311324325, 'Transveral 27 15 -35', '2020-03-03', 'daom89', '123456', 'Administrador', 'Activo', '2020-07-27 00:00:00'),
 (2, 'Juan Pablo', 'Garcia Gonzales', 'C.C', 46357159, 3118864151, 'Transveral 27 18-34', '2019-09-09', NULL, NULL, 'Cliente', 'Activo', '2020-07-27 00:00:00'),
 (3, 'Juan Ricardo', 'Gonzales', 'C.C', 18328382, 42534647, 'Cra 27 N 2F - 05', '2019-07-16', NULL, NULL, 'Empleado', 'Activo', '2020-07-27 00:00:00');
 

@@ -6,8 +6,9 @@ require_once (__DIR__ .'/../../vendor/autoload.php');
 require_once('BasicModel.php');
 
 use Carbon\Carbon;
+use JsonSerializable;
 
-class Usuarios extends BasicModel
+class Usuarios extends BasicModel implements JsonSerializable
 {
     /* Tipos de Datos => bool, int, float,  */
     private int $id;
@@ -441,4 +442,46 @@ class Usuarios extends BasicModel
         return "Nombres: $this->nombres, Apellidos: $this->nombres, Tipo Documento: $this->tipo_documento, Documento: $this->documento, Telefono: $this->telefono, Direccion: $this->direccion, Direccion: $this->fecha_nacimiento->toDateTimeString()";
     }
 
+    public function Login($User, $Password){
+        $resultUsuarios = Usuarios::search("SELECT * FROM usuarios WHERE user = '$User'");
+        if(count($resultUsuarios) >= 1){
+            if($resultUsuarios[0]->password == $Password){
+                if($resultUsuarios[0]->estado == 'Activo'){
+                    return $resultUsuarios[0];
+                }else{
+                    return "Usuario Inactivo";
+                }
+            }else{
+                return "Contraseña Incorrecta";
+            }
+        }else{
+            return "Usuario Incorrecto";
+        }
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'nombres' => $this->getNombres(),
+            'apellidos' => $this->getApellidos(),
+            'tipo_documento' => $this->getTipoDocumento(),
+            'documento' => $this->getDocumento(),
+            'telefono' => $this->getTelefono(),
+            'direccion' => $this->getDireccion(),
+            'fecha_nacimiento' => $this->getFechaNacimiento()->toDateString(),
+            'user' => $this->getUser(),
+            'password' => $this->getPassword(),
+            'rol' => $this->getRol(),
+            'estado' => $this->getEstado(),
+            'fecha_registro' => $this->getFechaRegistro()->toDateTimeString(),
+        ];
+    }
 }

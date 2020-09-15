@@ -10,6 +10,9 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
         <!-- Notifications Dropdown Menu -->
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="<?= $baseURL; ?>/app/Controllers/UsuariosController.php?action=cerrarSession" class="nav-link">Cerrar Session</a>
+        </li>
         <li class="nav-item">
             <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
                 <i class="fas fa-th-large"></i>

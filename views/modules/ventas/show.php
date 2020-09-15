@@ -1,6 +1,7 @@
 <?php
 require("../../partials/routes.php");
 require("../../../app/Controllers/VentasController.php");
+require_once("../../partials/check_login.php");
 
 use App\Controllers\VentasController; ?>
 <!DOCTYPE html>

@@ -1,6 +1,8 @@
 <?php use Carbon\Carbon;
+    require("../../partials/routes.php");
+    require_once("../../partials/check_login.php");
+?>
 
-require("../../partials/routes.php"); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -123,6 +125,43 @@ require("../../partials/routes.php"); ?>
                                                    name="fecha_nacimiento" placeholder="Ingrese su Fecha de Nacimiento">
                                         </div>
                                     </div>
+                                    <?php if ($_SESSION['UserInSession']['rol'] == 'Administrador'){ ?>
+                                        <div class="form-group row">
+                                            <label for="user" class="col-sm-2 col-form-label">Usuario</label>
+                                            <div class="col-sm-10">
+                                                <input required type="text" class="form-control" id="user" name="user" placeholder="Ingrese su Usuario">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="password" class="col-sm-2 col-form-label">Password</label>
+                                            <div class="col-sm-10">
+                                                <input required type="password" class="form-control" id="password" name="password" placeholder="Ingrese su Usuario">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="rol" class="col-sm-2 col-form-label">Rol</label>
+                                            <div class="col-sm-10">
+                                                <select id="rol" name="rol" class="custom-select">
+                                                    <option value="Administrador">Administrador</option>
+                                                    <option value="Empleado">Empleado</option>
+                                                    <option value="Cliente">Cliente</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label for="estado" class="col-sm-2 col-form-label">Estado</label>
+                                            <div class="col-sm-10">
+                                                <select id="rol" name="Estado" class="custom-select">
+                                                    <option value="Activo">Activo</option>
+                                                    <option value="Inactivo">Inactivo</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
+
                                     <hr>
                                     <button type="submit" class="btn btn-info">Enviar</button>
                                     <a href="index.php" role="button" class="btn btn-default float-right">Cancelar</a>

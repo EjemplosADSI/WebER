@@ -1,5 +1,6 @@
 <?php
 require("../../partials/routes.php");
+require_once("../../partials/check_login.php");
 require("../../../app/Controllers/UsuariosController.php");
 
 use App\Controllers\UsuariosController;
@@ -162,32 +163,42 @@ use Carbon\Carbon; ?>
                                                            name="fecha_nacimiento" placeholder="Ingrese su Fecha de Nacimiento">
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
-                                                <label for="rol" class="col-sm-2 col-form-label">Rol</label>
-                                                <div class="col-sm-10">
-                                                    <select id="rol" name="rol" class="custom-select">
-                                                        <option <?= ($DataUsuario->getRol() == "Empleado") ? "selected" : ""; ?>
-                                                                value="Empleado">Empleado
-                                                        </option>
-                                                        <option <?= ($DataUsuario->getRol() == "Cliente") ? "selected" : ""; ?>
-                                                                value="Cliente">Cliente
-                                                        </option>
-                                                    </select>
+                                            <?php if ($_SESSION['UserInSession']['rol'] == 'Administrador'){ ?>
+                                                <div class="form-group row">
+                                                    <label for="user" class="col-sm-2 col-form-label">Usuario</label>
+                                                    <div class="col-sm-10">
+                                                        <input required type="text" class="form-control" id="user" name="user" value="<?= $DataUsuario->getUser(); ?>" placeholder="Ingrese su Usuario">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="estado" class="col-sm-2 col-form-label">Estado</label>
-                                                <div class="col-sm-10">
-                                                    <select id="estado" name="estado" class="custom-select">
-                                                        <option <?= ($DataUsuario->getEstado() == "Activo") ? "selected" : ""; ?>
-                                                                value="Activo">Activo
-                                                        </option>
-                                                        <option <?= ($DataUsuario->getEstado() == "Inactivo") ? "selected" : ""; ?>
-                                                                value="Inactivo">Inactivo
-                                                        </option>
-                                                    </select>
+
+                                                <div class="form-group row">
+                                                    <label for="password" class="col-sm-2 col-form-label">Password</label>
+                                                    <div class="col-sm-10">
+                                                        <input required type="password" class="form-control" id="password" name="password" value="<?= $DataUsuario->getPassword(); ?>" placeholder="Ingrese su Password">
+                                                    </div>
                                                 </div>
-                                            </div>
+
+                                                <div class="form-group row">
+                                                    <label for="rol" class="col-sm-2 col-form-label">Rol</label>
+                                                    <div class="col-sm-10">
+                                                        <select id="rol" name="rol" class="custom-select">
+                                                            <option <?= ($DataUsuario->getRol() == "Administrador") ? "selected" : ""; ?> value="Administrador">Administrador</option>
+                                                            <option <?= ($DataUsuario->getRol() == "Empleado") ? "selected" : ""; ?> value="Empleado">Empleado</option>
+                                                            <option <?= ($DataUsuario->getRol() == "Cliente") ? "selected" : ""; ?> value="Cliente">Cliente</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label for="estado" class="col-sm-2 col-form-label">Estado</label>
+                                                    <div class="col-sm-10">
+                                                        <select id="estado" name="estado" class="custom-select">
+                                                            <option <?= ($DataUsuario->getEstado() == "Activo") ? "selected" : ""; ?> value="Activo">Activo</option>
+                                                            <option <?= ($DataUsuario->getEstado() == "Inactivo") ? "selected" : ""; ?> value="Inactivo">Inactivo</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            <?php } ?>
                                             <hr>
                                             <button type="submit" class="btn btn-info">Enviar</button>
                                             <a href="index.php" role="button" class="btn btn-default float-right">Cancelar</a>

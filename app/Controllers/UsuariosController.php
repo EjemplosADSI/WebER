@@ -1,6 +1,12 @@
 <?php
 
 namespace App\Controllers;
+
+if(session_status() == PHP_SESSION_NONE){ //Si la session no ha iniciado
+    session_start();
+}
+
+require (__DIR__.'/../../vendor/autoload.php'); //Requerido para convertir un objeto en Array
 require_once(__DIR__ . '/../Models/Usuarios.php');
 require_once(__DIR__ . '/../Models/GeneralFunctions.php');
 
@@ -29,11 +35,11 @@ class UsuariosController
             UsuariosController::activate();
         } else if ($action == "inactivate") {
             UsuariosController::inactivate();
-        }/*else if ($action == "login"){
+        }else if ($action == "login"){
             UsuariosController::login();
         }else if($action == "cerrarSession"){
             UsuariosController::cerrarSession();
-        }*/
+        }
 
     }
 
@@ -46,8 +52,10 @@ class UsuariosController
             $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
             $arrayUsuario['documento'] = $_POST['documento'];
             $arrayUsuario['telefono'] = $_POST['telefono'];
-            $arrayUsuario['fecha_nacimiento'] = Carbon::parse($_POST['fecha_nacimiento']);
             $arrayUsuario['direccion'] = $_POST['direccion'];
+            $arrayUsuario['fecha_nacimiento'] = Carbon::parse($_POST['fecha_nacimiento']);
+            $arrayUsuario['user'] = $_POST['user'] ?? null;
+            $arrayUsuario['password'] = $_POST['password'] ?? null;
             $arrayUsuario['rol'] = 'Cliente';
             $arrayUsuario['estado'] = 'Activo';
             $arrayUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
@@ -76,6 +84,8 @@ class UsuariosController
             $arrayUsuario['telefono'] = $_POST['telefono'];
             $arrayUsuario['fecha_nacimiento'] = Carbon::parse($_POST['fecha_nacimiento']);
             $arrayUsuario['direccion'] = $_POST['direccion'];
+            $arrayUsuario['user'] = $_POST['user'];
+            $arrayUsuario['password'] = $_POST['password'];
             $arrayUsuario['rol'] = $_POST['rol'];
             $arrayUsuario['estado'] = $_POST['estado'];
             $arrayUsuario['id'] = $_POST['id'];
@@ -193,6 +203,30 @@ class UsuariosController
         return false;
     }
 
+    public static function login (){
+        try {
+            if(!empty($_POST['user']) && !empty($_POST['password'])){
+                $tmpUser = new Usuarios();
+                $respuesta = $tmpUser->Login($_POST['user'], $_POST['password']);
+                if (is_a($respuesta,"App\Models\Usuarios")) {
+                    $_SESSION['UserInSession'] = $respuesta->jsonSerialize();
+                    header("Location: ../../views/index.php");
+                }else{
+                    header("Location: ../../views/modules/site/login.php?respuesta=error&mensaje=".$respuesta);
+                }
+            }else{
+                header("Location: ../../views/modules/site/login.php?respuesta=error&mensaje=Datos Vacíos");
+            }
+        } catch (\Exception $e) {
+            header("Location: ../../views/modules/site/login.php?respuesta=error".$e->getMessage());
+        }
+    }
+
+    public static function cerrarSession (){
+        session_unset();
+        session_destroy();
+        header("Location: ../../views/modules/site/login.php");
+    }
     /*
     public function buscar ($Query){
         try {
@@ -225,37 +259,6 @@ class UsuariosController
             var_dump($e);
             //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
-    }
-
-    public static function login (){
-        try {
-            if(!empty($_POST['Usuario']) && !empty($_POST['Contrasena'])){
-                $tmpPerson = new Persona();
-                $respuesta = $tmpPerson->Login($_POST['Usuario'], $_POST['Contrasena']);
-                if (is_a($respuesta,"Persona")) {
-                    $hydrator = new ReflectionHydrator(); //Instancia de la clase para convertir objetos
-                    $ArrDataPersona = $hydrator->extract($respuesta); //Convertimos el objeto persona en un array
-                    unset($ArrDataPersona["datab"],$ArrDataPersona["isConnected"],$ArrDataPersona["relEspecialidades"]); //Limpiamos Campos no Necesarios
-                    $_SESSION['UserInSession'] = $ArrDataPersona;
-                    echo json_encode(array('type' => 'success', 'title' => 'Ingreso Correcto', 'text' => 'Sera redireccionado en un momento...'));
-                }else{
-                    echo json_encode(array('type' => 'error', 'title' => 'Error al ingresar', 'text' => $respuesta)); //Si la llamda es por Ajax
-                }
-                return $respuesta; //Si la llamada es por funcion
-            }else{
-                echo json_encode(array('type' => 'error', 'title' => 'Datos Vacios', 'text' => 'Debe ingresar la informacion del usuario y contraseña'));
-                return "Datos Vacios"; //Si la llamada es por funcion
-            }
-        } catch (Exception $e) {
-            var_dump($e);
-            header("Location: ../login.php?respuesta=error");
-        }
-    }
-
-    public static function cerrarSession (){
-        session_unset();
-        session_destroy();
-        header("Location: ../Vista/modules/persona/login.php");
     }*/
 
 }

@@ -16,10 +16,10 @@
   ],
   "require":{
     "php": ">=7.4",
-    "almasaeed2010/adminlte": "^3.0",
-    "vlucas/phpdotenv": "^3.6",
     "ext-json": "*",
     "ext-pdo": "*",
+    "almasaeed2010/adminlte": "^3.0",
+    "vlucas/phpdotenv": "^3.6",
     "nesbot/carbon": "^2.37"
   },
   "require-dev": {

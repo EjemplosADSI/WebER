@@ -1,6 +1,8 @@
 RewriteEngine on
-RewriteRule ^$ Vistas [L]
-<FilesMatch "\.(env)$">
-Order allow,deny
-Deny from all
+RewriteRule ^$ views [L]
+RewriteRule ^(app/|app/Models/|app/Controllers/|bin/|database/|views/partials/)?$ - [F,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+<FilesMatch "\.(env|json|lock|gitignore)$">
+    Order allow,deny
+    Deny from all
 </FilesMatch>

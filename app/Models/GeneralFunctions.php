@@ -2,9 +2,24 @@
 
 namespace App\Models;
 
+use Dotenv\Dotenv;
+
 require(__DIR__ .'/../../vendor/autoload.php');
 class GeneralFunctions
 {
+
+    static function loadEnv (array $requiredVars = [], array $integerVars = []){
+        try {
+            $dotenv = Dotenv::create(__DIR__ ."/../../");
+            $dotenv->load();
+            $dotenv->required($requiredVars)->notEmpty();
+            $dotenv->required($integerVars)->isInteger();
+        }catch (\Exception $re){
+            echo "Variables faltantes o vaciás: ";
+            throw new \RuntimeException($re->getMessage());
+        }
+    }
+
     static function SubirArchivo($File, $Ruta)
     {
         $archivos = new upload($File);

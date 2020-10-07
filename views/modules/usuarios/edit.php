@@ -8,7 +8,7 @@ use Carbon\Carbon; ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= getenv('TITLE_SITE') ?> | Editar Usuario</title>
+    <title><?= $_ENV['TITLE_SITE']  ?> | Editar Usuario</title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">

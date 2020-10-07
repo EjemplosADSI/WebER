@@ -16,7 +16,7 @@ use App\Models\DetalleVentas;
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= getenv('TITLE_SITE') ?> | Crear Venta</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Crear Venta</title>
     <?php require("../../partials/head_imports.php"); ?>
     <!-- DataTables -->
     <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/datatables-bs4/css/dataTables.bootstrap4.css">

@@ -4,7 +4,9 @@ namespace App\Models;
 require(__DIR__ .'/../../vendor/autoload.php');
 
 use Exception;
+use http\Exception\RuntimeException;
 use PDOException;
+use Dotenv\Dotenv;
 
 /**
  * Created by PhpStorm.
@@ -17,11 +19,6 @@ abstract class BasicModel {
     //TODO: Agregar PHPDoc
     public $isConnected;
     protected $datab;
-    private $username = "weber";
-    private $password = "weber2019";
-    private $host = "localhost";
-    private $driver = "mysql"; //mysql, postgres, oracle, sql server, sqlite
-    private $dbname = "weber";
 
     # métodos abstractos para ABM de clases que hereden
     abstract protected static function search($query);
@@ -32,14 +29,17 @@ abstract class BasicModel {
     abstract protected function deleted($id);
 
     public function __construct(){
+
         $this->isConnected = true;
         try {
-            if(array_search($this->driver, \PDO::getAvailableDrivers()) !== false){
+            GeneralFunctions::loadEnv(['DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'],['DB_PORT']);
+
+            if(array_search($_ENV['DB_CONNECTION'], \PDO::getAvailableDrivers()) !== false){
                 $this->datab = new \PDO(
-                    ($this->driver != "sqlsrv") ?
-                        "$this->driver:host={$this->host};dbname={$this->dbname};charset=utf8" :
-                        "$this->driver:Server=$this->host;database=$this->dbname",
-                    $this->username, $this->password, array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
+                    ($_ENV['DB_CONNECTION'] != "sqlsrv") ?
+                        "{$_ENV['DB_CONNECTION']}:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_DATABASE']};charset={$_ENV['DB_CHAR_SET']}" :
+                        "{$_ENV['DB_CONNECTION']}:Server={$_ENV['DB_HOST']},{$_ENV['DB_PORT']};database={$_ENV['DB_DATABASE']}",
+                    $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
                 );
                 $this->datab->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                 $this->datab->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);

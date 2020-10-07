@@ -6,7 +6,7 @@
              alt="AdminLTE Logo"
              class="brand-image img-circle elevation-3"
              style="opacity: .8">
-        <span class="brand-text font-weight-light"><?= getenv('ALIASE_SITE') ?></span>
+        <span class="brand-text font-weight-light"><?= $_ENV['ALIASE_SITE'] ?></span>
     </a>
 
     <!-- Sidebar -->

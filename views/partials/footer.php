@@ -2,7 +2,7 @@
     <div class="float-right d-none d-sm-block">
         <b>Version</b> <?= date('Y') ?>
     </div>
-    <strong>Copyright &copy; <?= date('Y') ?> <a href="<?= $baseURL; ?>"><?= getenv('ALIASE_SITE') ?></a>.</strong>
+    <strong>Copyright &copy; <?= date('Y') ?> <a href="<?= $baseURL; ?>"><?= $_ENV['ALIASE_SITE'] ?></a>.</strong>
     Derechos Reservados.
 </footer>
 

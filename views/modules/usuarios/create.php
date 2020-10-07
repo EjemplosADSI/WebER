@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= getenv('TITLE_SITE') ?> | Crear Usuario</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Crear Usuario</title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">

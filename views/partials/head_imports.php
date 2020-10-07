@@ -1,5 +1,5 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta charset="<?= getenv('CHAR_SET') ?>">
+<meta charset="<?= $_ENV['CHAR_SET'] ?>">
 <!-- Tell the browser to be responsive to screen width -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Start Importaciones CSS -->

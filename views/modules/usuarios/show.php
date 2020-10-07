@@ -7,7 +7,7 @@ use App\Controllers\UsuariosController; ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= getenv('TITLE_SITE') ?> | Datos del Usuario</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Datos del Usuario</title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">

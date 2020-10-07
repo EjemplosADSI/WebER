@@ -7,7 +7,7 @@ use App\Controllers\ProductosController; ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= getenv('TITLE_SITE') ?> | Datos del Producto</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Datos del Producto</title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">

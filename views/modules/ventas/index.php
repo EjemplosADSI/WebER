@@ -9,7 +9,7 @@ use App\Controllers\VentasController;
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= getenv('TITLE_SITE') ?> | Layout</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Layout</title>
     <?php require("../../partials/head_imports.php"); ?>
     <!-- DataTables -->
     <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/datatables-bs4/css/dataTables.bootstrap4.css">

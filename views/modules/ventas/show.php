@@ -7,7 +7,7 @@ use App\Controllers\VentasController; ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= getenv('TITLE_SITE') ?> | Datos de la Venta</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Datos de la Venta</title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">

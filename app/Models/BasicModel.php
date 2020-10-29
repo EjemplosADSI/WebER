@@ -2,6 +2,7 @@
 
 namespace App\Models;
 require(__DIR__ .'/../../vendor/autoload.php');
+require_once('GeneralFunctions.php');
 
 use Exception;
 use http\Exception\RuntimeException;

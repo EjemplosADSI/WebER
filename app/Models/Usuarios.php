@@ -101,7 +101,8 @@ class Usuarios extends BasicModel implements JsonSerializable
      */
     public function setNombres(string $nombres): void
     {
-        $this->nombres = $nombres;
+
+        $this->nombres = trim($nombres);
     }
 
     /**
@@ -287,18 +288,18 @@ class Usuarios extends BasicModel implements JsonSerializable
     public function create(): bool
     {
         $result = $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
-                $this->nombres,
-                $this->apellidos,
-                $this->tipo_documento,
-                $this->documento,
-                $this->telefono,
-                $this->direccion,
-                $this->fecha_nacimiento->toDateString(), //YYYY-MM-DD
-                $this->user,
-                $this->password,
-                $this->rol,
-                $this->estado,
-                $this->fecha_registro->toDateTimeString() //YYYY-MM-DD HH:MM:SS
+                $this->getNombres(),
+                $this->getApellidos(),
+                $this->getTipoDocumento(),
+                $this->getDocumento(),
+                $this->getTelefono(),
+                $this->getDireccion(),
+                $this->getFechaNacimiento()->toDateString(), //YYYY-MM-DD
+                $this->getUser(),
+                $this->getPassword(),
+                $this->getRol(),
+                $this->getEstado(),
+                $this->getFechaRegistro()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
             )
         );
         $this->Disconnect();

@@ -6,10 +6,7 @@ if(session_status() == PHP_SESSION_NONE){ //Si la session no ha iniciado
     session_start();
 }
 
-require (__DIR__.'/../../vendor/autoload.php'); //Requerido para convertir un objeto en Array
-require_once(__DIR__ . '/../Models/Usuarios.php');
-require_once(__DIR__ . '/../Models/GeneralFunctions.php');
-
+require (__DIR__.'/../../vendor/autoload.php');
 use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
 use Carbon\Carbon;
@@ -61,7 +58,7 @@ class UsuariosController
             $arrayUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
             if (!Usuarios::usuarioRegistrado($arrayUsuario['documento'])) {
                 $Usuario = new Usuarios ($arrayUsuario);
-                if ($Usuario->create()) {
+                if ($Usuario->insert()) {
                     header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto");
                 }
             } else {
@@ -91,7 +88,7 @@ class UsuariosController
             $arrayUsuario['id'] = $_POST['id'];
             $arrayUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
 
-            $user = new Usuarios($arrayUsuario);
+            $user = (new Usuarios($arrayUsuario));
             $user->update();
 
             header("Location: ../../views/modules/usuarios/show.php?id=" . $user->getId() . "&respuesta=correcto");
@@ -117,7 +114,7 @@ class UsuariosController
      * @param string $fileName
      * @param string $delimiter
      * @param string $path
-     * @return Iterator
+     * @return array
      * @throws Exception
      */
     static public function getAll()

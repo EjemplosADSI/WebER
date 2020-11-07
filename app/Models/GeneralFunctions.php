@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Dotenv\Dotenv;
+use Verot\Upload\Upload;
 
-require(__DIR__ .'/../../vendor/autoload.php');
 class GeneralFunctions
 {
 
+    /**
+     * @param array $requiredVars
+     * @param array $integerVars
+     */
     static function loadEnv (array $requiredVars = [], array $integerVars = []){
         try {
             $dotenv = Dotenv::create(__DIR__ ."/../../");
@@ -20,9 +24,14 @@ class GeneralFunctions
         }
     }
 
+    /**
+     * @param $File
+     * @param $Ruta
+     * @return bool|string
+     */
     static function SubirArchivo($File, $Ruta)
     {
-        $archivos = new upload($File);
+        $archivos = new Upload($File);
         if ($archivos->uploaded){
             $archivos->file_new_name_body = (date('H-M-s')."-".$archivos->file_src_name_body);
             $archivos->Process($Ruta);
@@ -38,7 +47,12 @@ class GeneralFunctions
         }
     }
 
-    static function console ($data, $type = 'log', $typePrint = 'simple' ) : void
+    /**
+     * @param object|string $data $e Exception Object
+     * @param string $type (info, warn, log, error)
+     * @param string $typePrint (simple or errorStack)
+     */
+    static function console ($data, string $type = 'log', string $typePrint = 'simple' ) : void
     {
         echo '<script>';
         if ($typePrint == 'errorStack'){

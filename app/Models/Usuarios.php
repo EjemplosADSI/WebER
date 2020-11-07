@@ -2,16 +2,14 @@
 
 namespace App\Models;
 
-require_once (__DIR__ .'/../../vendor/autoload.php');
-require_once('BasicModel.php');
-
 use Carbon\Carbon;
+use Exception;
 use JsonSerializable;
 
-class Usuarios extends BasicModel implements JsonSerializable
+class Usuarios extends DBConnection implements Model, JsonSerializable
 {
     /* Tipos de Datos => bool, int, float,  */
-    private int $id;
+    private ?int $id;
     private string $nombres;
     private string $apellidos;
     private string $tipo_documento;
@@ -26,47 +24,31 @@ class Usuarios extends BasicModel implements JsonSerializable
     private Carbon $fecha_registro;
 
     /* Relaciones */
-    private $VentasCliente;
-    private $VentasEmpleado;
+    private array $VentasCliente;
+    private array $VentasEmpleado;
 
     /**
-     * Usuarios constructor.
-     * @param int $id
-     * @param string $nombres
-     * @param string $apellidos
-     * @param string $tipo_documento
-     * @param int $documento
-     * @param int $telefono
-     * @param string $direccion
-     * @param Carbon $fecha_nacimiento
-     * @param string $user
-     * @param string $password
-     * @param string $rol
-     * @param string $estado
-     * @param Carbon $fecha_registro
+     * Usuarios constructor. Recibe un array asociativo
+     * @param array $usuario
      */
-    public function __construct($usuario = array())
+    public function __construct(array $usuario = [])
     {
-        parent::__construct(); //Llama al contructor padre "la clase conexion" para conectarme a la BD
-        $this->id = $usuario['id'] ?? 0;
-        $this->nombres = $usuario['nombres'] ?? '';
-        $this->apellidos = $usuario['apellidos'] ?? '';
-        $this->tipo_documento = $usuario['tipo_documento'] ?? '';
-        $this->documento = $usuario['documento'] ?? 0;
-        $this->telefono = $usuario['telefono'] ?? 0;
-        $this->direccion = $usuario['direccion'] ?? '';
-        $this->fecha_nacimiento = $usuario['fecha_nacimiento'] ?? new Carbon();
-        $this->user = $usuario['user'] ?? null;
-        $this->password = $usuario['password'] ?? null;
-        $this->rol = $usuario['rol'] ?? '';
-        $this->estado = $usuario['estado'] ?? '';
-        $this->fecha_registro = $usuario['fecha_creacion'] ?? new Carbon();
+        parent::__construct(); //Llama al contructor padre "la clase conexion" para conectarse a la BD
+        $this->setId($usuario['id'] ?? NULL);
+        $this->setNombres($usuario['nombres'] ?? '');
+        $this->setApellidos($usuario['apellidos'] ?? '');
+        $this->setTipoDocumento($usuario['tipo_documento'] ?? '');
+        $this->setDocumento($usuario['documento'] ?? 0);
+        $this->setTelefono($usuario['telefono'] ?? 0);
+        $this->setDireccion($usuario['direccion'] ?? '');
+        $this->setFechaNacimiento( !empty($usuario['fecha_nacimiento']) ? Carbon::parse($usuario['fecha_nacimiento']) : new Carbon());
+        $this->setUser($usuario['user'] ?? null);
+        $this->setPassword($usuario['password'] ?? null);
+        $this->setRol($usuario['rol'] ?? '');
+        $this->setEstado($usuario['estado'] ?? '');
+        $this->setFechaRegistro(!empty($usuario['fecha_nacimiento']) ? Carbon::parse($usuario['fecha_registro']) : new Carbon());
     }
 
-    /* Metodo destructor cierra la conexion. */
-    /**
-     *
-     */
     function __destruct()
     {
         $this->Disconnect();
@@ -75,15 +57,15 @@ class Usuarios extends BasicModel implements JsonSerializable
     /**
      * @return int|mixed
      */
-    public function getId() : int
+    public function getId() : ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int|mixed $id
+     * @param int|null $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -282,58 +264,97 @@ class Usuarios extends BasicModel implements JsonSerializable
     }
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @param string $query
+     * @return bool|null
      */
-    public function create(): bool
+    protected function save(string $query): ?bool
     {
-        $result = $this->insertRow("INSERT INTO weber.usuarios VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(
-                $this->getNombres(),
-                $this->getApellidos(),
-                $this->getTipoDocumento(),
-                $this->getDocumento(),
-                $this->getTelefono(),
-                $this->getDireccion(),
-                $this->getFechaNacimiento()->toDateString(), //YYYY-MM-DD
-                $this->getUser(),
-                $this->getPassword(),
-                $this->getRol(),
-                $this->getEstado(),
-                $this->getFechaRegistro()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
-            )
-        );
+        $arrData = [
+            ':id' =>    $this->getId(),
+            ':nombres' =>   $this->getNombres(),
+            ':apellidos' =>   $this->getApellidos(),
+            ':tipo_documento' =>  $this->getTipoDocumento(),
+            ':documento' =>   $this->getDocumento(),
+            ':telefono' =>   $this->getTelefono(),
+            ':direccion' =>   $this->getDireccion(),
+            ':fecha_nacimiento' =>  $this->getFechaNacimiento()->toDateString(), //YYYY-MM-DD
+            ':user' =>  $this->getUser(),
+            ':password' =>   $this->getPassword(),
+            ':rol' =>   $this->getRol(),
+            ':estado' =>   $this->getEstado(),
+            ':fecha_registro' =>  $this->getFechaRegistro()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
+        ];
+        $result = $this->insertRow($query, $arrData);
         $this->Disconnect();
         return $result;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function update(): bool
+    public function insert(): ?bool
     {
-        $result = $this->updateRow("UPDATE weber.usuarios SET nombres = ?, apellidos = ?, tipo_documento = ?, documento = ?, telefono = ?, direccion = ?, fecha_nacimiento = ?, user = ?, password = ?, rol = ?, estado = ?, fecha_registro = ? WHERE id = ?", array(
-                $this->nombres,
-                $this->apellidos,
-                $this->tipo_documento,
-                $this->documento,
-                $this->telefono,
-                $this->direccion,
-                $this->fecha_nacimiento->toDateString(),
-                $this->user,
-                $this->password,
-                $this->rol,
-                $this->estado,
-                $this->fecha_registro->toDateTimeString(),
-                $this->id
-            )
-        );
-        $this->Disconnect();
-        return $result;
+        $query = "INSERT INTO weber.usuarios VALUES (
+            :id,:nombres,:apellidos,:tipo_documento,:documento,
+            :telefono,:direccion,:fecha_nacimiento,:user,:password,
+            :rol,:estado,:fecha_registro
+        )";
+        return $this->save($query);
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function update(): ?bool
+    {
+        $query = "UPDATE weber.usuarios SET 
+            nombres = :nombres, apellidos = :apellidos, tipo_documento = :tipo_documento, 
+            documento = :documento, telefono = :telefono, direccion = :direccion, 
+            fecha_nacimiento = :fecha_nacimiento, user = :user, password = :password, 
+            rol = :rol, estado = :estado, fecha_registro = :fecha_registro WHERE id = :id";
+        return $this->save($query);
+    }
+
+    /**
+     * @param $query
+     * @return Usuarios|array
+     * @throws Exception
+     */
+    public static function search($query) : array
+    {
+        $arrUsuarios = array();
+        $tmp = new Usuarios();
+        $getrows = $tmp->getRows($query);
+        foreach ($getrows as $valor) {
+            $Usuario = new Usuarios($valor);
+            array_push($arrUsuarios, $Usuario);
+            $Usuario->Disconnect();
+        }
+        $tmp->Disconnect();
+        return $arrUsuarios;
+    }
+
+    /**
+     * @param $id
+     * @return Usuarios
+     * @throws Exception
+     */
+    public static function searchForId(int $id): Usuarios
+    {
+        if ($id > 0) {
+            $getrow = (new Usuarios())->getRow("SELECT * FROM weber.usuarios WHERE id =?", array($id));
+            $Usuario = new Usuarios($getrow);
+            //$Usuario->Disconnect();
+            return $Usuario;
+        }else{
+            throw new Exception('Id de usuario Invalido');
+        }
     }
 
     /**
      * @param $id
      * @return bool
+     * @throws Exception
      */
     public function deleted($id): bool
     {
@@ -343,69 +364,8 @@ class Usuarios extends BasicModel implements JsonSerializable
     }
 
     /**
-     * @param $query
-     * @return Usuarios|array
-     * @throws \Exception
-     */
-    public static function search($query) : array
-    {
-        $arrUsuarios = array();
-        $tmp = new Usuarios();
-        $getrows = $tmp->getRows($query);
-
-        foreach ($getrows as $valor) {
-            $Usuario = new Usuarios();
-            $Usuario->id = $valor['id'];
-            $Usuario->nombres = $valor['nombres'];
-            $Usuario->apellidos = $valor['apellidos'];
-            $Usuario->tipo_documento = $valor['tipo_documento'];
-            $Usuario->documento = $valor['documento'];
-            $Usuario->telefono = $valor['telefono'];
-            $Usuario->direccion = $valor['direccion'];
-            $Usuario->fecha_nacimiento = Carbon::parse($valor['fecha_nacimiento']);
-            $Usuario->user = $valor['user'];
-            $Usuario->password = $valor['password'];
-            $Usuario->rol = $valor['rol'];
-            $Usuario->estado = $valor['estado'];
-            $Usuario->fecha_registro = Carbon::parse($valor['fecha_registro']);
-            $Usuario->Disconnect();
-            array_push($arrUsuarios, $Usuario);
-        }
-        $tmp->Disconnect();
-        return $arrUsuarios;
-    }
-
-    /**
-     * @param $id
-     * @return Usuarios
-     * @throws \Exception
-     */
-    public static function searchForId($id): Usuarios
-    {
-        $Usuario = null;
-        if ($id > 0) {
-            $Usuario = new Usuarios();
-            $getrow = $Usuario->getRow("SELECT * FROM weber.usuarios WHERE id =?", array($id));
-            $Usuario->id = $getrow['id'];
-            $Usuario->nombres = $getrow['nombres'];
-            $Usuario->apellidos = $getrow['apellidos'];
-            $Usuario->tipo_documento = $getrow['tipo_documento'];
-            $Usuario->documento = $getrow['documento'];
-            $Usuario->telefono = $getrow['telefono'];
-            $Usuario->direccion = $getrow['direccion'];
-            $Usuario->fecha_nacimiento = Carbon::parse($getrow['fecha_nacimiento']);
-            $Usuario->user = $getrow['user'];
-            $Usuario->password = $getrow['password'];
-            $Usuario->rol = $getrow['rol'];
-            $Usuario->estado = $getrow['estado'];
-            $Usuario->fecha_registro = Carbon::parse($getrow['fecha_registro']);
-        }
-        $Usuario->Disconnect();
-        return $Usuario;
-    }
-
-    /**
      * @return array
+     * @throws Exception
      */
     public static function getAll(): array
     {
@@ -415,7 +375,7 @@ class Usuarios extends BasicModel implements JsonSerializable
     /**
      * @param $documento
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public static function usuarioRegistrado($documento): bool
     {
@@ -444,19 +404,24 @@ class Usuarios extends BasicModel implements JsonSerializable
     }
 
     public function Login($User, $Password){
-        $resultUsuarios = Usuarios::search("SELECT * FROM usuarios WHERE user = '$User'");
-        if(count($resultUsuarios) >= 1){
-            if($resultUsuarios[0]->password == $Password){
-                if($resultUsuarios[0]->estado == 'Activo'){
-                    return $resultUsuarios[0];
+        try {
+            $resultUsuarios = Usuarios::search("SELECT * FROM usuarios WHERE user = '$User'");
+            if(count($resultUsuarios) >= 1){
+                if($resultUsuarios[0]->password == $Password){
+                    if($resultUsuarios[0]->estado == 'Activo'){
+                        return $resultUsuarios[0];
+                    }else{
+                        return "Usuario Inactivo";
+                    }
                 }else{
-                    return "Usuario Inactivo";
+                    return "Contraseña Incorrecta";
                 }
             }else{
-                return "Contraseña Incorrecta";
+                return "Usuario Incorrecto";
             }
-        }else{
-            return "Usuario Incorrecto";
+        } catch (Exception $e) {
+            GeneralFunctions::console($e,'error','errorStack');
+            return "Error en Servidor";
         }
     }
 

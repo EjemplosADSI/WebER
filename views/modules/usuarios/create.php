@@ -90,10 +90,11 @@
                                         <div class="col-sm-10">
                                             <select id="tipo_documento" name="tipo_documento" class="custom-select">
                                                 <option value="C.C">Cedula de Ciudadania</option>
+                                                <option value="C.E">Cedula de Extranjeria</option>
                                                 <option value="T.I">Tarjeta de Identidad</option>
                                                 <option value="R.C">Registro Civil</option>
                                                 <option value="Pasaporte">Pasaporte</option>
-                                                <option value="C.E">Cedula de Extranjeria</option>
+
                                             </select>
                                         </div>
                                     </div>

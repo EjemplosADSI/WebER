@@ -9,7 +9,7 @@ require_once('BasicModel.php');
 use Carbon\Carbon;
 use App\Models\Usuarios;
 
-class Ventas extends BasicModel
+class Ventas extends DBConnection
 {
     private int $id;
     private string $numero_serie;
@@ -276,4 +276,8 @@ class Ventas extends BasicModel
         return "Numero Serie: $this->numero_serie, Cliente: $this->cliente_id->nombresCompletos(), Empleado: $this->empleado_id->nombresCompletos(), Fecha Venta: $this->fecha_venta->toDateTimeString(), Monto: $this->monto, Estado: $this->estado";
     }
 
+    protected function save(string $query): ?bool
+    {
+        // TODO: Implement save() method.
+    }
 }

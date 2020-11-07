@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Controllers;
-require_once(__DIR__.'/../Models/Productos.php');
-require_once(__DIR__.'/../Models/GeneralFunctions.php');
 
 use App\Models\GeneralFunctions;
 use App\Models\Productos;
@@ -53,7 +51,7 @@ class ProductosController{
             }else{
                 header("Location: ../../views/modules/productos/create.php?respuesta=error&mensaje=Producto ya registrado");
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             GeneralFunctions::console( $e, 'error', 'errorStack');
             header("Location: ../../views/modules/productos/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }

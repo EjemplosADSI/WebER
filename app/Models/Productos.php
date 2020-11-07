@@ -7,7 +7,7 @@ use JsonSerializable;
 require_once (__DIR__ .'/../../vendor/autoload.php');
 require_once('BasicModel.php');
 
-class Productos extends BasicModel implements JsonSerializable
+class Productos extends DBConnection implements JsonSerializable
 {
     private int $id;
     private string $nombres;
@@ -291,5 +291,10 @@ class Productos extends BasicModel implements JsonSerializable
             'stock' => $this->getStock(),
             'estado' => $this->getEstado(),
         ];
+    }
+
+    protected function save(string $query): ?bool
+    {
+        // TODO: Implement save() method.
     }
 }

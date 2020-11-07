@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Controllers;
-require_once(__DIR__.'/../Models/Ventas.php');
-require_once(__DIR__.'/../Models/Usuarios.php');
 
 use App\Models\GeneralFunctions;
 use App\Models\Usuarios;

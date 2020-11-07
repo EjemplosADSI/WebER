@@ -5,7 +5,7 @@ namespace App\Models;
 require_once (__DIR__ .'/../../vendor/autoload.php');
 require_once('BasicModel.php');
 
-class DetalleVentas extends BasicModel
+class DetalleVentas extends DBConnection
 {
     private int $id;
     private Ventas $ventas_id;
@@ -239,5 +239,10 @@ class DetalleVentas extends BasicModel
     public function __toString() : string
     {
         return "Venta: $this->ventas_id->getNumeroSerie(), Producto: $this->producto_id->getNombres(), Cantidad: $this->cantidad, Precio Venta: $this->precio_venta";
+    }
+
+    protected function save(string $query): ?bool
+    {
+        // TODO: Implement save() method.
     }
 }

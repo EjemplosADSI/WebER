@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
                                           `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                                           `nombres` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
                                           `apellidos` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
-                                          `tipo_documento` enum('C.C','C.E','T.I') COLLATE utf8mb4_unicode_ci NOT NULL,
+                                          `tipo_documento` enum('C.C','C.E','T.I','R.C','Pasaporte') COLLATE utf8mb4_unicode_ci NOT NULL,
                                           `documento` bigint(19) UNSIGNED NOT NULL,
                                           `telefono` bigint(19) UNSIGNED NOT NULL,
                                           `direccion` varchar(70) COLLATE utf8mb4_unicode_ci NOT NULL,

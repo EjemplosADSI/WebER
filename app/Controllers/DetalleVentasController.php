@@ -1,10 +1,6 @@
 <?php
 
 namespace App\Controllers;
-require_once(__DIR__ . '/../Models/GeneralFunctions.php');
-require_once(__DIR__ . '/../Models/DetalleVentas.php');
-require_once(__DIR__ . '/../Models/Productos.php');
-require_once(__DIR__ . '/../Models/Ventas.php');
 
 use App\Models\DetalleVentas;
 use App\Models\GeneralFunctions;

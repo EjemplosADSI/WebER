@@ -4,7 +4,9 @@ require_once("../../partials/check_login.php");
 require("../../../app/Controllers/UsuariosController.php");
 
 use App\Controllers\UsuariosController;
-use Carbon\Carbon; ?>
+use Carbon\Carbon;
+
+?>
 <!DOCTYPE html>
 <html>
 <head>

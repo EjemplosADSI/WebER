@@ -4,12 +4,14 @@ require_once("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 
 use App\Controllers\UsuariosController;
-
+$nameModel = "Usuario";
+$pluralModel = $nameModel.'s';
+$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $_ENV['TITLE_SITE'] ?> | Layout</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Gestiona del <?= $pluralModel ?></title>
     <?php require("../../partials/head_imports.php"); ?>
     <!-- DataTables -->
     <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
@@ -35,8 +37,8 @@ use App\Controllers\UsuariosController;
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/Views/">WebER</a></li>
-                            <li class="breadcrumb-item active">Inicio</li>
+                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
+                            <li class="breadcrumb-item active"><?= $pluralModel ?></li>
                         </ol>
                     </div>
                 </div>
@@ -52,9 +54,9 @@ use App\Controllers\UsuariosController;
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <h5><i class="icon fas fa-check"></i> Correcto!</h5>
                         <?php if ($_GET['action'] == "create") { ?>
-                            El usuario ha sido creado con exito!
+                            El <?= $nameModel ?> ha sido creado con exito!
                         <?php } else if ($_GET['action'] == "update") { ?>
-                            Los datos del usuario han sido actualizados correctamente!
+                            Los datos del <?= $nameModel ?> han sido actualizados correctamente!
                         <?php } ?>
                     </div>
                 <?php } ?>
@@ -66,7 +68,7 @@ use App\Controllers\UsuariosController;
                         <!-- Default box -->
                         <div class="card card-dark">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-user"></i> &nbsp; Gestionar Usuarios</h3>
+                                <h3 class="card-title"><i class="fas fa-user"></i> &nbsp; Gestionar <?= $pluralModel ?></h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                             data-source="index.php" data-source-selector="#card-refresh-content"
@@ -87,13 +89,13 @@ use App\Controllers\UsuariosController;
                                     <div class="col-auto">
                                         <a role="button" href="create.php" class="btn btn-primary float-right"
                                            style="margin-right: 5px;">
-                                            <i class="fas fa-plus"></i> Crear Usuario
+                                            <i class="fas fa-plus"></i> Crear <?= $nameModel ?>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <table id="tblUsuarios" class="datatable table table-bordered table-striped">
+                                        <table id="tbl<?= $pluralModel ?>" class="datatable table table-bordered table-striped">
                                             <thead>
                                             <tr>
                                                 <th>#</th>
@@ -105,6 +107,7 @@ use App\Controllers\UsuariosController;
                                                 <th>Direccion</th>
                                                 <th>Fecha Nacimiento</th>
                                                 <th>Rol</th>
+                                                <th>Foto</th>
                                                 <th>Estado</th>
                                                 <th>Registro</th>
                                                 <th>Acciones</th>
@@ -117,17 +120,24 @@ use App\Controllers\UsuariosController;
                                             foreach ($arrUsuarios as $usuario) {
                                                 ?>
                                                 <tr>
-                                                    <td><?php echo $usuario->getId(); ?></td>
-                                                    <td><?php echo $usuario->getNombres(); ?></td>
-                                                    <td><?php echo $usuario->getApellidos(); ?></td>
-                                                    <td><?php echo $usuario->getTipoDocumento(); ?></td>
-                                                    <td><?php echo $usuario->getDocumento(); ?></td>
-                                                    <td><?php echo $usuario->getTelefono(); ?></td>
-                                                    <td><?php echo $usuario->getDireccion(); ?></td>
-                                                    <td><?php echo $usuario->getFechaNacimiento()->translatedFormat('l, j \\de F Y'); ?></td>
-                                                    <td><?php echo $usuario->getRol(); ?></td>
-                                                    <td><?php echo $usuario->getEstado(); ?></td>
-                                                    <td><?php echo $usuario->getFechaRegistro()->toDateTimeString(); ?></td>
+                                                    <td><?= $usuario->getId(); ?></td>
+                                                    <td><?= $usuario->getNombres(); ?></td>
+                                                    <td><?= $usuario->getApellidos(); ?></td>
+                                                    <td><?= $usuario->getTipoDocumento(); ?></td>
+                                                    <td><?= $usuario->getDocumento(); ?></td>
+                                                    <td><?= $usuario->getTelefono(); ?></td>
+                                                    <td><?= $usuario->getDireccion(); ?>, <?= $usuario->getMunicipio()->getNombre(); ?></td>
+                                                    <td><?= $usuario->getFechaNacimiento()->translatedFormat('l, j \\de F Y'); ?></td>
+                                                    <td><?= $usuario->getRol(); ?></td>
+                                                    <td>
+                                                        <?php if(!empty($usuario->getFoto())){ ?>
+                                                        <span class="badge badge-info" data-toggle="tooltip" data-html="true"
+                                                              title="<img class='img-thumbnail' src='../../public/uploadFiles/photos/<?= $usuario->getFoto(); ?>'>">Foto
+                                                        </span>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td><?= $usuario->getEstado(); ?></td>
+                                                    <td><?= $usuario->getCreatedat()->toDateTimeString(); ?></td>
                                                     <td>
                                                         <a href="edit.php?id=<?php echo $usuario->getId(); ?>"
                                                            type="button" data-toggle="tooltip" title="Actualizar"
@@ -138,13 +148,13 @@ use App\Controllers\UsuariosController;
                                                            class="btn docs-tooltip btn-warning btn-xs"><i
                                                                     class="fa fa-eye"></i></a>
                                                         <?php if ($usuario->getEstado() != "Activo") { ?>
-                                                            <a href="../../../app/Controllers/UsuariosController.php?action=activate&Id=<?php echo $usuario->getId(); ?>"
+                                                            <a href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=activate&id=<?php echo $usuario->getId(); ?>"
                                                                type="button" data-toggle="tooltip" title="Activar"
                                                                class="btn docs-tooltip btn-success btn-xs"><i
                                                                         class="fa fa-check-square"></i></a>
                                                         <?php } else { ?>
                                                             <a type="button"
-                                                               href="../../../app/Controllers/UsuariosController.php?action=inactivate&Id=<?php echo $usuario->getId(); ?>"
+                                                               href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=inactivate&id=<?php echo $usuario->getId(); ?>"
                                                                data-toggle="tooltip" title="Inactivar"
                                                                class="btn docs-tooltip btn-danger btn-xs"><i
                                                                         class="fa fa-times-circle"></i></a>
@@ -165,6 +175,7 @@ use App\Controllers\UsuariosController;
                                                 <th>Direccion</th>
                                                 <th>Fecha Nacimiento</th>
                                                 <th>Rol</th>
+                                                <th>Foto</th>
                                                 <th>Estado</th>
                                                 <th>Registro</th>
                                                 <th>Acciones</th>

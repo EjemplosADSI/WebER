@@ -5,7 +5,7 @@ namespace App\Models;
 use Dotenv\Dotenv;
 use Verot\Upload\Upload;
 
-class GeneralFunctions
+final class GeneralFunctions
 {
 
     /**
@@ -34,15 +34,30 @@ class GeneralFunctions
         $archivos = new Upload($File);
         if ($archivos->uploaded){
             $archivos->file_new_name_body = (date('H-M-s')."-".$archivos->file_src_name_body);
-            $archivos->Process($Ruta);
+            $archivos->Process(__DIR__."/../../".$Ruta);
             if($archivos->processed){
                 return $archivos->file_dst_name;
             }else{
-                echo "Archivo No Subido, Error en la carpeta..".$archivos->error;
+                GeneralFunctions::console("Archivo No Subido, Error en la carpeta..".$archivos->error,'error');
                 return false;
             }
         }else{
-            echo "Archivo No Subido, Error en la carpeta..".$archivos->error;
+            GeneralFunctions::console("Archivo No Subido, Error en la carpeta..".$archivos->error,'error');
+            return false;
+        }
+    }
+
+    /**
+     * @param $File
+     * @param $Ruta
+     * @return bool|string
+     */
+    static function EliminarArchivo($Ruta)
+    {
+        if (file_exists(__DIR__."/../../".$Ruta)) {
+            unlink(__DIR__."/../../".$Ruta);
+        } else {
+            GeneralFunctions::console("Archivo No Encontrado",'error');
             return false;
         }
     }

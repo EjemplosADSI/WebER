@@ -5,3 +5,7 @@ $verde : #18F483;
   font-size: $base-font-size;
   color: $verde;
 }
+
+.select2-container .select2-selection--single {
+  height: 36px !important;
+}

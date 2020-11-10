@@ -1,7 +1,7 @@
 RewriteEngine on
 RewriteRule ^$ views [L]
 RewriteRule ^(app/|app/Models/|app/Controllers/|bin/|database/|views/partials/)?$ - [F,L]
-<FilesMatch "\.(env|json|lock|gitignore)$">
+<FilesMatch "\.(env|lock|gitignore)$">
     Order allow,deny
     Deny from all
 </FilesMatch>

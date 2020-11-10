@@ -10,8 +10,8 @@ class UsuariosTest extends TestCase
     public function testGetNombres()
     {
         $usuario = new Usuarios([]);
-        $actualNumber = $card->getNumber();
-        $this->assertEquals(4, $actualNumber, 'Number should be <4>');
+        //$actualNumber = $card->getNumber();
+        //$this->assertEquals(4, $actualNumber, 'Number should be <4>');
 
     }
 

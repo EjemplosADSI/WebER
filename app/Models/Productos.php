@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\Model;
+use Exception;
 use JsonSerializable;
 
-require_once (__DIR__ .'/../../vendor/autoload.php');
-require_once('BasicModel.php');
-
-class Productos extends DBConnection implements JsonSerializable
+class Productos extends AbstractDBConnection implements Model, JsonSerializable
 {
-    private int $id;
+    private ?int $id;
     private string $nombres;
     private float $precio;
     private float $porcentaje_ganancia;
@@ -17,45 +16,37 @@ class Productos extends DBConnection implements JsonSerializable
     private string $estado;
 
     /**
-     * Producto constructor.
-     * @param int $id
-     * @param string $nombres
-     * @param float $precio
-     * @param float $porcentaje_ganancia
-     * @param int $stock
-     * @param string $estado
+     * Producto constructor. Recibe un array asociativo
+     * @param array $producto
      */
-    public function __construct($venta = array())
+    public function __construct(array $producto = [])
     {
         parent::__construct();
-        $this->id = $venta['id'] ?? 0;
-        $this->nombres = $venta['nombres'] ?? '';
-        $this->precio = $venta['precio'] ?? 0.0;
-        $this->porcentaje_ganancia = $venta['porcentaje_ganancia'] ?? 0.0;
-        $this->stock = $venta['stock'] ?? 0;
-        $this->estado = $venta['estado'] ?? '';
+        $this->setId($producto['id'] ?? NULL);
+        $this->setNombres($producto['nombres'] ?? '');
+        $this->setPrecio($producto['precio'] ?? 0.0);
+        $this->setPorcentajeGanancia($producto['porcentaje_ganancia'] ?? 0.0);
+        $this->setStock($producto['stock'] ?? 0);
+        $this->setEstado($producto['estado'] ?? '');
     }
 
-    /**
-     *
-     */
     function __destruct()
     {
         $this->Disconnect();
     }
 
     /**
-     * @return int|mixed
+     * @return int|null
      */
-    public function getId() : int
+    public function getId() : ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int|mixed $id
+     * @param int|null $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -138,6 +129,27 @@ class Productos extends DBConnection implements JsonSerializable
     public function setEstado(string $estado): void
     {
         $this->estado = $estado;
+    }
+
+    protected function save(string $query): ?bool
+    {
+        $arrData = [
+            ':id' =>    $this->getId(),
+            ':nombres' =>   $this->getNombres(),
+            ':precio' =>   $this->getApellidos(),
+            ':porcentaje_ganancia' =>  $this->getTipoDocumento(),
+            ':stock' =>   $this->getDocumento(),
+            ':estado' =>   $this->getEstado(),
+            ':fecha_registro' =>  $this->getFechaRegistro()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
+        ];
+        $result = $this->insertRow($query, $arrData);
+        $this->Disconnect();
+        return $result;
+    }
+
+    function insert()
+    {
+        // TODO: Implement insert() method.
     }
 
     /**
@@ -291,10 +303,5 @@ class Productos extends DBConnection implements JsonSerializable
             'stock' => $this->getStock(),
             'estado' => $this->getEstado(),
         ];
-    }
-
-    protected function save(string $query): ?bool
-    {
-        // TODO: Implement save() method.
     }
 }

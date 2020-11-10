@@ -13,14 +13,25 @@ use PDOException;
  * Time: 9:17
  */
 
-abstract class DBConnection {
+abstract class AbstractDBConnection {
 
-    public bool $isConnected;
+    public bool $isConnected = false;
     protected PDO $datab;
 
     abstract protected function save(string $query) : ?bool;
 
     public function __construct(){
+
+    }
+
+    public function __destruct()
+    {
+        if($this->isConnected){
+            $this->Disconnect();
+        }
+    }
+
+    public function Connect(){
         $this->isConnected = true;
         try {
             GeneralFunctions::loadEnv(['DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'],['DB_PORT']);

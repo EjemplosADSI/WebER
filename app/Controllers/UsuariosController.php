@@ -2,99 +2,79 @@
 
 namespace App\Controllers;
 
-if(session_status() == PHP_SESSION_NONE){ //Si la session no ha iniciado
-    session_start();
-}
-
 require (__DIR__.'/../../vendor/autoload.php');
 use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
 use Carbon\Carbon;
 
-if (!empty($_GET['action'])) {
-    UsuariosController::main($_GET['action']);
-}
-
 class UsuariosController
 {
+    private array $dataUsuario;
 
-    static function main($action)
+    public function __construct(array $_FORM)
     {
-        if ($action == "create") {
-            UsuariosController::create();
-        } else if ($action == "edit") {
-            UsuariosController::edit();
-        } else if ($action == "searchForID") {
-            UsuariosController::searchForID($_REQUEST['idPersona']);
-        } else if ($action == "searchAll") {
-            UsuariosController::getAll();
-        } else if ($action == "activate") {
-            UsuariosController::activate();
-        } else if ($action == "inactivate") {
-            UsuariosController::inactivate();
-        }else if ($action == "login"){
-            UsuariosController::login();
-        }else if($action == "cerrarSession"){
-            UsuariosController::cerrarSession();
-        }
-
+        $this->dataUsuario = array();
+        $this->dataUsuario['id'] = $_FORM['id'] ?? NULL;
+        $this->dataUsuario['nombres'] = $_FORM['nombres'] ?? NULL;
+        $this->dataUsuario['apellidos'] = $_FORM['apellidos'] ?? null;
+        $this->dataUsuario['tipo_documento'] = $_FORM['tipo_documento'] ?? NULL;
+        $this->dataUsuario['documento'] = $_FORM['documento'] ?? NULL;
+        $this->dataUsuario['telefono'] = $_FORM['telefono'] ?? NULL;
+        $this->dataUsuario['direccion'] = $_FORM['direccion'] ?? NULL;
+        $this->dataUsuario['municipios_id'] = $_FORM['municipios_id'] ?? NULL;
+        $this->dataUsuario['fecha_nacimiento'] = !empty($_FORM['fecha_nacimiento']) ? Carbon::parse($_FORM['fecha_nacimiento']) : new Carbon();
+        $this->dataUsuario['user'] = $_FORM['user'] ?? NULL;
+        $this->dataUsuario['password'] = $_FORM['password'] ?? NULL;
+        $this->dataUsuario['rol'] = $_FORM['rol'] ?? 'Cliente';
+        $this->dataUsuario['foto'] = $_FORM['nameFoto'] ?? NULL;
+        $this->dataUsuario['estado'] = $_FORM['estado'] ?? 'Activo';
+        $this->dataUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
     }
 
-    static public function create()
-    {
+    public function create($withFiles = null) {
         try {
-            $arrayUsuario = array();
-            $arrayUsuario['nombres'] = $_POST['nombres'];
-            $arrayUsuario['apellidos'] = $_POST['apellidos'];
-            $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
-            $arrayUsuario['documento'] = $_POST['documento'];
-            $arrayUsuario['telefono'] = $_POST['telefono'];
-            $arrayUsuario['direccion'] = $_POST['direccion'];
-            $arrayUsuario['fecha_nacimiento'] = Carbon::parse($_POST['fecha_nacimiento']);
-            $arrayUsuario['user'] = $_POST['user'] ?? null;
-            $arrayUsuario['password'] = $_POST['password'] ?? null;
-            $arrayUsuario['rol'] = 'Cliente';
-            $arrayUsuario['estado'] = 'Activo';
-            $arrayUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
-            if (!Usuarios::usuarioRegistrado($arrayUsuario['documento'])) {
-                $Usuario = new Usuarios ($arrayUsuario);
+            if (!empty($this->dataUsuario['documento']) && !Usuarios::usuarioRegistrado($this->dataUsuario['documento'])) {
+                if(!empty($withFiles)){
+                    $fotoUsuario = $withFiles['foto'];
+                    $resultUpload = GeneralFunctions::SubirArchivo($fotoUsuario, "views/public/uploadFiles/photos/");
+                    $this->dataUsuario['foto'] = ($resultUpload != false) ? $resultUpload : NULL;
+                }
+
+                $Usuario = new Usuarios ($this->dataUsuario);
                 if ($Usuario->insert()) {
+                    unset($_SESSION['frmUsuarios']);
                     header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto");
                 }
             } else {
                 header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             GeneralFunctions::console($e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
 
-    static public function edit()
+    public function edit($withFiles = null)
     {
         try {
-            $arrayUsuario = array();
-            $arrayUsuario['nombres'] = $_POST['nombres'];
-            $arrayUsuario['apellidos'] = $_POST['apellidos'];
-            $arrayUsuario['tipo_documento'] = $_POST['tipo_documento'];
-            $arrayUsuario['documento'] = $_POST['documento'];
-            $arrayUsuario['telefono'] = $_POST['telefono'];
-            $arrayUsuario['fecha_nacimiento'] = Carbon::parse($_POST['fecha_nacimiento']);
-            $arrayUsuario['direccion'] = $_POST['direccion'];
-            $arrayUsuario['user'] = $_POST['user'];
-            $arrayUsuario['password'] = $_POST['password'];
-            $arrayUsuario['rol'] = $_POST['rol'];
-            $arrayUsuario['estado'] = $_POST['estado'];
-            $arrayUsuario['id'] = $_POST['id'];
-            $arrayUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
+            if(!empty($withFiles)){
+                $fotoUsuario = $withFiles['foto'];
+                if($fotoUsuario['error'] == 0){ //Si la foto se selecciono correctamente
+                    $resultUpload = GeneralFunctions::SubirArchivo($fotoUsuario, "views/public/uploadFiles/photos/");
+                    if($resultUpload != false){
+                        GeneralFunctions::EliminarArchivo("views/public/uploadFiles/photos/".$this->dataUsuario['foto']);
+                        $this->dataUsuario['foto'] = $resultUpload;
+                    }
+                }
+            }
 
-            $user = (new Usuarios($arrayUsuario));
-            $user->update();
+            $user = new Usuarios($this->dataUsuario);
+            if($user->update()){
+                unset($_SESSION['frmUsuarios']);
+            }
 
             header("Location: ../../views/modules/usuarios/show.php?id=" . $user->getId() . "&respuesta=correcto");
         } catch (\Exception $e) {
             GeneralFunctions::console($e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/edit.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
 
@@ -108,15 +88,6 @@ class UsuariosController
         }
     }
 
-    /**
-     * Retorna la lectura de un archivo en formato csv
-     *
-     * @param string $fileName
-     * @param string $delimiter
-     * @param string $path
-     * @return array
-     * @throws Exception
-     */
     static public function getAll()
     {
         try {
@@ -127,10 +98,10 @@ class UsuariosController
         }
     }
 
-    static public function activate()
+    static public function activate(int $id)
     {
         try {
-            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
+            $ObjUsuario = Usuarios::searchForId($id);
             $ObjUsuario->setEstado("Activo");
             if ($ObjUsuario->update()) {
                 header("Location: ../../views/modules/usuarios/index.php");
@@ -143,10 +114,10 @@ class UsuariosController
         }
     }
 
-    static public function inactivate()
+    static public function inactivate(int $id)
     {
         try {
-            $ObjUsuario = Usuarios::searchForId($_GET['Id']);
+            $ObjUsuario = Usuarios::searchForId($id);
             $ObjUsuario->setEstado("Inactivo");
             if ($ObjUsuario->update()) {
                 header("Location: ../../views/modules/usuarios/index.php");
@@ -224,38 +195,5 @@ class UsuariosController
         session_destroy();
         header("Location: ../../views/modules/site/login.php");
     }
-    /*
-    public function buscar ($Query){
-        try {
-            return Persona::buscar($Query);
-        } catch (Exception $e) {
-            header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
-        }
-    }
-
-    static public function asociarEspecialidad (){
-        try {
-            $Persona = new Persona();
-            $Persona->asociarEspecialidad($_POST['Persona'],$_POST['Especialidad']);
-            header("Location: ../Vista/modules/persona/managerSpeciality.php?respuesta=correcto&id=".$_POST['Persona']);
-        } catch (Exception $e) {
-            header("Location: ../Vista/modules/persona/managerSpeciality.php?respuesta=error&mensaje=".$e->getMessage());
-        }
-    }
-
-    static public function eliminarEspecialidad (){
-        try {
-            $ObjPersona = new Persona();
-            if(!empty($_GET['Persona']) && !empty($_GET['Especialidad'])){
-                $ObjPersona->eliminarEspecialidad($_GET['Persona'],$_GET['Especialidad']);
-            }else{
-                throw new Exception('No se recibio la informacion necesaria.');
-            }
-            header("Location: ../Vista/modules/persona/managerSpeciality.php?id=".$_GET['Persona']);
-        } catch (Exception $e) {
-            var_dump($e);
-            //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
-        }
-    }*/
 
 }

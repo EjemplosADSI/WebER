@@ -9,7 +9,7 @@ require_once('BasicModel.php');
 use Carbon\Carbon;
 use App\Models\Usuarios;
 
-class Ventas extends DBConnection
+class Ventas extends AbstractDBConnection
 {
     private int $id;
     private string $numero_serie;
@@ -29,16 +29,16 @@ class Ventas extends DBConnection
      * @param float $monto
      * @param string $estado
      */
-    public function __construct($venta = array())
+    public function __construct($producto = array())
     {
         parent::__construct();
-        $this->id = $venta['id'] ?? 0;
-        $this->numero_serie = $venta['numero_serie'] ?? '';
-        $this->cliente_id = $venta['cliente_id'] ?? null;
-        $this->empleado_id = $venta['empleado_id'] ?? null;
-        $this->fecha_venta = $venta['fecha_venta'] ?? new Carbon();
-        $this->monto = $venta['monto'] ?? 0.0;
-        $this->estado = $venta['estado'] ?? '';
+        $this->id = $producto['id'] ?? 0;
+        $this->numero_serie = $producto['numero_serie'] ?? '';
+        $this->cliente_id = $producto['cliente_id'] ?? null;
+        $this->empleado_id = $producto['empleado_id'] ?? null;
+        $this->fecha_venta = $producto['fecha_venta'] ?? new Carbon();
+        $this->monto = $producto['monto'] ?? 0.0;
+        $this->estado = $producto['estado'] ?? '';
     }
 
     /**

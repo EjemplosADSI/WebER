@@ -5,7 +5,7 @@ namespace App\Models;
 require_once (__DIR__ .'/../../vendor/autoload.php');
 require_once('BasicModel.php');
 
-class DetalleVentas extends DBConnection
+class DetalleVentas extends AbstractDBConnection
 {
     private int $id;
     private Ventas $ventas_id;
@@ -21,14 +21,14 @@ class DetalleVentas extends DBConnection
      * @param int $cantidad
      * @param float $precio_venta
      */
-    public function __construct($venta = array())
+    public function __construct($producto = array())
     {
         parent::__construct();
-        $this->id = $venta['id'] ?? 0;
-        $this->ventas_id = $venta['ventas_id'] ?? new Ventas();
-        $this->producto_id = $venta['producto_id'] ?? new Productos();
-        $this->cantidad = $venta['cantidad'] ?? 0;
-        $this->precio_venta = $venta['precio_venta'] ?? 0.0;
+        $this->id = $producto['id'] ?? 0;
+        $this->ventas_id = $producto['ventas_id'] ?? new Ventas();
+        $this->producto_id = $producto['producto_id'] ?? new Productos();
+        $this->cantidad = $producto['cantidad'] ?? 0;
+        $this->precio_venta = $producto['precio_venta'] ?? 0.0;
     }
 
     /**

@@ -68,7 +68,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                         <!-- Horizontal Form -->
                         <div class="card card-green">
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) {
-                                $DataUsuario = UsuariosController::searchForID($_GET["id"]);
+                                $DataUsuario = UsuariosController::searchForID(["id" => $_GET["id"]]);
                                 if (!empty($DataUsuario)) {
                                     ?>
                                     <div class="card-header">

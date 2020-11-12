@@ -50,7 +50,7 @@ abstract class AbstractDBConnection {
             }
         }catch(PDOException | Exception $e) {
             $this->isConnected = false;
-            GeneralFunctions::console($e,'error',"errorStack");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
@@ -70,9 +70,9 @@ abstract class AbstractDBConnection {
      * $database->getRow("SELECT email, username FROM users WHERE username = ? and password = ?", array("diego","123456"));
      * @param string $query
      * @param array $params
-     * @return array|null
+     * @return array|false
      */
-    public function getRow(string $query, array $params = []) : ?array{
+    public function getRow(string $query, array $params = []){
         try{
             if(!empty($query)){
                 $stmt = $this->datab->prepare($query);
@@ -81,9 +81,9 @@ abstract class AbstractDBConnection {
             }
             throw new Exception("Consulta vacía o errónea");
         }catch(PDOException | Exception $e){
-            GeneralFunctions::console($e,'error',"errorStack");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
-        return null;
+        return false;
     }
 
     /**
@@ -103,7 +103,7 @@ abstract class AbstractDBConnection {
             }
             throw new Exception("Consulta vacía o errónea");
         }catch(PDOException | Exception $e){
-            GeneralFunctions::console($e,'error',"errorStack");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }
@@ -118,7 +118,7 @@ abstract class AbstractDBConnection {
         try{
             return $this->datab->lastInsertId();
         }catch(PDOException | Exception $e){
-            GeneralFunctions::console($e,'error',"errorStack");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }
@@ -142,7 +142,7 @@ abstract class AbstractDBConnection {
             }
             throw new Exception("Consulta vacía o errónea");
         }catch(PDOException | Exception $e){
-            GeneralFunctions::console($e,'error',"errorStack");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }

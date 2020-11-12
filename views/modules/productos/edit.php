@@ -3,11 +3,18 @@ require("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 require("../../../app/Controllers/ProductosController.php");
 
-use App\Controllers\ProductosController; ?>
+use App\Controllers\ProductosController;
+use Carbon\Carbon;
+
+$nameModel = "Producto";
+$pluralModel = $nameModel.'s';
+$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $_ENV['TITLE_SITE'] ?> | Editar Producto</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Editar <?= $nameModel ?></title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -25,12 +32,13 @@ use App\Controllers\ProductosController; ?>
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Editar Nuevo Producto</h1>
+                        <h1>Editar <?= $nameModel ?></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/Views/">WebER</a></li>
-                            <li class="breadcrumb-item active">Inicio</li>
+                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
+                            <li class="breadcrumb-item"><a href="index.php"><?= $pluralModel ?></a></li>
+                            <li class="breadcrumb-item active">Editar</li>
                         </ol>
                     </div>
                 </div>
@@ -45,7 +53,7 @@ use App\Controllers\ProductosController; ?>
                     <div class="alert alert-danger alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        Error al crear el Producto: <?= ($_GET['mensaje']) ?? "" ?>
+                        Error al crear el <?= $nameModel ?>: <?= ($_GET['mensaje']) ?? "" ?>
                     </div>
                 <?php } ?>
             <?php } else if (empty($_GET['id'])) { ?>
@@ -61,7 +69,7 @@ use App\Controllers\ProductosController; ?>
                         <!-- Horizontal Form -->
                         <div class="card card-info">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-box"></i>&nbsp; Información del Producto</h3>
+                                <h3 class="card-title"><i class="fas fa-box"></i>&nbsp; Información del <?= $nameModel ?></h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                             data-source="create.php" data-source-selector="#card-refresh-content"
@@ -76,21 +84,21 @@ use App\Controllers\ProductosController; ?>
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) { ?>
                                 <p>
                                 <?php
-                                $DataProducto = ProductosController::searchForID($_GET["id"]);
+                                $DataProducto = ProductosController::searchForID(["id" => $_GET["id"]]);
                                 if (!empty($DataProducto)) {
                                     ?>
                                     <div class="card-body">
                                         <!-- form start -->
                                         <form class="form-horizontal" method="post" id="frmEditProducto"
                                               name="frmEditProducto"
-                                              action="../../../app/Controllers/ProductosController.php?action=edit">
-                                            <input id="id" name="id" value="<?php echo $DataProducto->getId(); ?>"
+                                              action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=edit">
+                                            <input id="id" name="id" value="<?= $DataProducto->getId(); ?>"
                                                    hidden required="required" type="text">
                                             <div class="form-group row">
                                                 <label for="nombres" class="col-sm-2 col-form-label">Nombres</label>
                                                 <div class="col-sm-10">
-                                                    <input required type="text" class="form-control" id="nombres"
-                                                           name="nombres" value="<?= $DataProducto->getNombres(); ?>"
+                                                    <input required type="text" class="form-control" id="nombre"
+                                                           name="nombre" value="<?= $DataProducto->getNombre(); ?>"
                                                            placeholder="Ingrese el nombre">
                                                 </div>
                                             </div>

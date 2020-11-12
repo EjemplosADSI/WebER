@@ -45,7 +45,7 @@ class VentasController{
                 header("Location: ../../views/modules/ventas/create.php?id=".$Venta->getId());
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../../views/modules/ventas/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
@@ -66,7 +66,7 @@ class VentasController{
 
             header("Location: ../../views/modules/ventas/show.php?id=".$Venta->getId()."&respuesta=correcto");
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../../views/modules/ventas/edit.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
@@ -81,7 +81,7 @@ class VentasController{
                 header("Location: ../../views/modules/ventas/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../../views/modules/ventas/index.php?respuesta=error&mensaje=".$e->getMessage());
         }
     }
@@ -96,7 +96,7 @@ class VentasController{
                 header("Location: ../../views/modules/ventas/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../../views/modules/ventas/index.php?respuesta=error");
         }
     }
@@ -105,7 +105,7 @@ class VentasController{
         try {
             return Ventas::searchForId($id);
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             //header("Location: ../../views/modules/ventas/manager.php?respuesta=error");
         }
     }
@@ -114,7 +114,7 @@ class VentasController{
         try {
             return Ventas::getAll();
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'log', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
     }

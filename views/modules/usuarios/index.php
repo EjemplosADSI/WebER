@@ -4,6 +4,8 @@ require_once("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 
 use App\Controllers\UsuariosController;
+use App\Models\Usuarios;
+
 $nameModel = "Usuario";
 $pluralModel = $nameModel.'s';
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
@@ -11,7 +13,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $_ENV['TITLE_SITE'] ?> | Gestiona del <?= $pluralModel ?></title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Gestión de <?= $pluralModel ?></title>
     <?php require("../../partials/head_imports.php"); ?>
     <!-- DataTables -->
     <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
@@ -109,14 +111,13 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 <th>Rol</th>
                                                 <th>Foto</th>
                                                 <th>Estado</th>
-                                                <th>Registro</th>
                                                 <th>Acciones</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <?php
                                             $arrUsuarios = UsuariosController::getAll();
-                                            /* @var $arrUsuarios \App\Models\Usuarios[] */
+                                            /* @var $arrUsuarios Usuarios[] */
                                             foreach ($arrUsuarios as $usuario) {
                                                 ?>
                                                 <tr>
@@ -137,7 +138,6 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                         <?php } ?>
                                                     </td>
                                                     <td><?= $usuario->getEstado(); ?></td>
-                                                    <td><?= $usuario->getCreatedat()->toDateTimeString(); ?></td>
                                                     <td>
                                                         <a href="edit.php?id=<?php echo $usuario->getId(); ?>"
                                                            type="button" data-toggle="tooltip" title="Actualizar"
@@ -148,13 +148,13 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                            class="btn docs-tooltip btn-warning btn-xs"><i
                                                                     class="fa fa-eye"></i></a>
                                                         <?php if ($usuario->getEstado() != "Activo") { ?>
-                                                            <a href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=activate&id=<?php echo $usuario->getId(); ?>"
+                                                            <a href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=activate&id=<?= $usuario->getId(); ?>"
                                                                type="button" data-toggle="tooltip" title="Activar"
                                                                class="btn docs-tooltip btn-success btn-xs"><i
                                                                         class="fa fa-check-square"></i></a>
                                                         <?php } else { ?>
                                                             <a type="button"
-                                                               href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=inactivate&id=<?php echo $usuario->getId(); ?>"
+                                                               href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=inactivate&id=<?= $usuario->getId(); ?>"
                                                                data-toggle="tooltip" title="Inactivar"
                                                                class="btn docs-tooltip btn-danger btn-xs"><i
                                                                         class="fa fa-times-circle"></i></a>
@@ -177,7 +177,6 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 <th>Rol</th>
                                                 <th>Foto</th>
                                                 <th>Estado</th>
-                                                <th>Registro</th>
                                                 <th>Acciones</th>
                                             </tr>
                                             </tfoot>
@@ -204,41 +203,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 </div>
 <!-- ./wrapper -->
 <?php require('../../partials/scripts.php'); ?>
-<!-- DataTables -->
-<script src="<?= $adminlteURL ?>/plugins/datatables/jquery.dataTables.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-responsive/js/dataTables.responsive.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-responsive/js/responsive.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/dataTables.buttons.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/jszip/jszip.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/pdfmake/pdfmake.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.html5.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.print.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.colVis.js"></script>
-
-<script>
-    $(function () {
-        $('.datatable').DataTable({
-            "dom": 'Bfrtip',
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": true,
-            "language": {
-                "url": "../../public/Spanish.json" //Idioma
-            },
-            "buttons": [
-                'copy', 'print', 'excel', 'pdf'
-            ],
-            "pagingType": "full_numbers",
-            "responsive": true,
-            "stateSave": true, //Guardar la configuracion del usuario
-        });
-    });
-</script>
+<!-- Scripts requeridos para las datatables -->
+<?php require('../../partials/datatables_scripts.php'); ?>
 
 </body>
 </html>

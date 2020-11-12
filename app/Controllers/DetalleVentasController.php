@@ -44,7 +44,7 @@ class DetalleVentasController
                 header("Location: ../../views/modules/detalle_ventas/index.php?respuesta=correcto");
             }
         } catch (Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../../views/modules/detalle_ventas/create.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
@@ -62,7 +62,7 @@ class DetalleVentasController
             $DetalleVenta->update();
             header("Location: ../../views/modules/detalle_ventas/show.php?id=" . $DetalleVenta->getId() . "&respuesta=correcto");
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../../views/modules/detalle_ventas/edit.php?respuesta=error&mensaje=" . $e->getMessage());
         }
     }
@@ -72,7 +72,7 @@ class DetalleVentasController
         try {
             return DetalleVentas::searchForId($id);
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../../views/modules/detalle_ventas/manager.php?respuesta=error");
         }
     }
@@ -82,7 +82,7 @@ class DetalleVentasController
         try {
             return DetalleVentas::getAll();
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'log', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             header("Location: ../Vista/modules/detalle_ventas/manager.php?respuesta=error");
         }
     }

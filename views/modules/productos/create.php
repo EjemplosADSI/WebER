@@ -1,9 +1,16 @@
-<?php require("../../partials/routes.php"); ?>
-<?php require("../../partials/check_login.php"); ?>
+<?php
+require("../../partials/routes.php");
+require_once("../../partials/check_login.php");
+use Carbon\Carbon;
+
+$nameModel = "Producto";
+$pluralModel = $nameModel.'s';
+$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $_ENV['TITLE_SITE'] ?> | Crear Producto</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Crear <?= $nameModel ?></title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -21,12 +28,13 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Crear un Nuevo Producto</h1>
+                        <h1>Crear un Nuevo <?= $nameModel ?></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/Views/">WebER</a></li>
-                            <li class="breadcrumb-item active">Inicio</li>
+                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
+                            <li class="breadcrumb-item"><a href="index.php"><?= $pluralModel ?></a></li>
+                            <li class="breadcrumb-item active">Crear</li>
                         </ol>
                     </div>
                 </div>
@@ -40,7 +48,7 @@
                     <div class="alert alert-danger alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        Error al crear el producto: <?= $_GET['mensaje'] ?>
+                        Error al crear el <?= $nameModel ?>: <?= $_GET['mensaje'] ?>
                     </div>
                 <?php } ?>
             <?php } ?>
@@ -50,7 +58,7 @@
                         <!-- Horizontal Form -->
                         <div class="card card-info">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-box"></i> &nbsp; Información del Producto</h3>
+                                <h3 class="card-title"><i class="fas fa-box"></i> &nbsp; Información del <?= $nameModel ?></h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                             data-source="create.php" data-source-selector="#card-refresh-content"
@@ -64,35 +72,35 @@
                             <!-- /.card-header -->
                             <!-- form start -->
                             <div class="card-body">
-                                <form class="form-horizontal" method="post" id="frmCreateProductoController.php"
-                                      name="frmCreateProductoController.php"
-                                      action="../../../app/Controllers/ProductosController.php?action=create">
+                                <form class="form-horizontal" method="post" id="frmCreateProducto"
+                                      name="frmCreateProducto"
+                                      action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=create">
                                     <div class="form-group row">
-                                        <label for="nombres" class="col-sm-2 col-form-label">Nombres</label>
+                                        <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
                                         <div class="col-sm-10">
-                                            <input required type="text" class="form-control" id="nombres" name="nombres"
-                                                   placeholder="Ingrese nombre del producto">
+                                            <input required type="text" class="form-control" id="nombre" name="nombre"
+                                                   placeholder="Ingrese el nombre" value="<?= $frmSession['nombre'] ?? '' ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="precio" class="col-sm-2 col-form-label">Precio</label>
                                         <div class="col-sm-10">
                                             <input required type="number" class="form-control" id="precio" name="precio"
-                                                   placeholder="Ingrese el precio">
+                                                   placeholder="Ingrese el precio" value="<?= $frmSession['precio'] ?? '' ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="porcentaje_ganancia" class="col-sm-2 col-form-label">Porcentaje de Ganancia</label>
                                         <div class="col-sm-10">
                                             <input required type="number" min="1" step="0.1" class="form-control" id="porcentaje_ganancia" name="porcentaje_ganancia"
-                                                   placeholder="Ingrese el porcentaje de ganancia">
+                                                   placeholder="Ingrese el porcentaje de ganancia" value="<?= $frmSession['porcentaje_ganancia'] ?? '' ?>">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="stock" class="col-sm-2 col-form-label">Stock</label>
                                         <div class="col-sm-10">
                                             <input required type="number" minlength="6" class="form-control" id="stock"
-                                                   name="stock" placeholder="Ingrese el stock">
+                                                   name="stock" placeholder="Ingrese el stock" value="<?= $frmSession['stock'] ?? '' ?>">
                                         </div>
                                     </div>
                                     <hr>

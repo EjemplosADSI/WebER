@@ -86,7 +86,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) { ?>
                                 <p>
                                 <?php
-                                $DataUsuario = UsuariosController::searchForID($_GET["id"]);
+                                $DataUsuario = UsuariosController::searchForID(["id" => $_GET["id"]]);
                                 if (!empty($DataUsuario)) {
                                     ?>
                                     <!-- form start -->
@@ -293,7 +293,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 <script>
     $(function() {
         $('#departamento_id').on('change', function() {
-            $.post("../../../app/Controllers/MainController.php?controller=Municipios&action=selectAjax", {
+            $.post("../../../app/Controllers/MainController.php?controller=Municipios&action=selectMunicipios&request=ajax", {
                 isMultiple: false,
                 isRequired: true,
                 id: "municipios_id",

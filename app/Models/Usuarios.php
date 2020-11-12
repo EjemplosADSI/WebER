@@ -1,7 +1,6 @@
 <?php
 namespace App\Models;
 
-use App\Controllers\VentasController;
 use App\Models\Interfaces\Model;
 use Carbon\Carbon;
 use Exception;
@@ -441,7 +440,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
             }
             return $arrUsuarios;
         } catch (Exception $e) {
-            GeneralFunctions::console($e,'error','errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }
@@ -459,12 +458,12 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
                 $tmpUsuario->Connect();
                 $getrow = $tmpUsuario->getRow("SELECT * FROM weber.usuarios WHERE id =?", array($id));
                 $tmpUsuario->Disconnect();
-                return new Usuarios($getrow);
+                return ($getrow) ? new Usuarios($getrow) : null;
             }else{
                 throw new Exception('Id de usuario Invalido');
             }
         } catch (Exception $e) {
-            GeneralFunctions::console($e,'error','errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }
@@ -526,7 +525,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
                 return "Usuario Incorrecto";
             }
         } catch (Exception $e) {
-            GeneralFunctions::console($e,'error','errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
             return "Error en Servidor";
         }
     }

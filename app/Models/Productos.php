@@ -3,17 +3,24 @@
 namespace App\Models;
 
 use App\Models\Interfaces\Model;
+use Carbon\Carbon;
 use Exception;
 use JsonSerializable;
+
 
 class Productos extends AbstractDBConnection implements Model, JsonSerializable
 {
     private ?int $id;
-    private string $nombres;
+    private string $nombre;
     private float $precio;
     private float $porcentaje_ganancia;
     private int $stock;
     private string $estado;
+    private Carbon $created_at;
+    private Carbon $updated_at;
+
+    /* Relaciones */
+    private ?array $fotosProducto;
 
     /**
      * Producto constructor. Recibe un array asociativo
@@ -23,16 +30,20 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
     {
         parent::__construct();
         $this->setId($producto['id'] ?? NULL);
-        $this->setNombres($producto['nombres'] ?? '');
+        $this->setNombre($producto['nombre'] ?? '');
         $this->setPrecio($producto['precio'] ?? 0.0);
         $this->setPorcentajeGanancia($producto['porcentaje_ganancia'] ?? 0.0);
         $this->setStock($producto['stock'] ?? 0);
         $this->setEstado($producto['estado'] ?? '');
+        $this->setCreatedAt(!empty($producto['created_at']) ? Carbon::parse($producto['created_at']) : new Carbon());
+        $this->setUpdatedAt(!empty($producto['updated_at']) ? Carbon::parse($producto['updated_at']) : new Carbon());
     }
 
     function __destruct()
     {
-        $this->Disconnect();
+        if($this->isConnected){
+            $this->Disconnect();
+        }
     }
 
     /**
@@ -54,17 +65,17 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return mixed|string
      */
-    public function getNombres() : string
+    public function getNombre() : string
     {
-        return $this->nombres;
+        return ucfirst($this->nombre);
     }
 
     /**
-     * @param mixed|string $nombres
+     * @param mixed|string $nombre
      */
-    public function setNombres(string $nombres): void
+    public function setNombre(string $nombre): void
     {
-        $this->nombres = $nombres;
+        $this->nombre = trim(strtolower($nombre));
     }
 
     /**
@@ -131,124 +142,150 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
         $this->estado = $estado;
     }
 
+    /**
+     * @return Carbon
+     */
+    public function getCreatedAt(): Carbon
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param Carbon $created_at
+     */
+    public function setCreatedAt(Carbon $created_at): void
+    {
+        $this->created_at = $created_at;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getUpdatedAt(): Carbon
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @param Carbon $updated_at
+     */
+    public function setUpdatedAt(Carbon $updated_at): void
+    {
+        $this->updated_at = $updated_at;
+    }
+
+    /* Relaciones */
+    /**
+     * retorna un array de fotos que pertenecen al producto
+     * @return array
+     */
+    public function getFotosProducto(): ?array
+    {
+        $this->fotosProducto = Fotos::search("SELECT * FROM weber.fotos WHERE productos_id = ".$this->id);
+        return $this->fotosProducto;
+    }
+
     protected function save(string $query): ?bool
     {
         $arrData = [
             ':id' =>    $this->getId(),
-            ':nombres' =>   $this->getNombres(),
-            ':precio' =>   $this->getApellidos(),
-            ':porcentaje_ganancia' =>  $this->getTipoDocumento(),
-            ':stock' =>   $this->getDocumento(),
+            ':nombre' =>   $this->getNombre(),
+            ':precio' =>   $this->getPrecio(),
+            ':porcentaje_ganancia' =>  $this->getPorcentajeGanancia(),
+            ':stock' =>   $this->getStock(),
             ':estado' =>   $this->getEstado(),
-            ':fecha_registro' =>  $this->getFechaRegistro()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
+            ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
+            ':updated_at' =>  $this->getUpdatedAt()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
         ];
+        $this->Connect();
         $result = $this->insertRow($query, $arrData);
         $this->Disconnect();
         return $result;
     }
 
-    function insert()
+    /**
+     * @return bool|null
+     */
+    function insert(): ?bool
     {
-        // TODO: Implement insert() method.
+        $query = "INSERT INTO weber.productos VALUES (:id,:nombre,:precio,:porcentaje_ganancia,:stock,:estado,:created_at,:updated_at)";
+        return $this->save($query);
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function update(): ?bool
+    {
+        $query = "UPDATE weber.productos SET 
+            nombre = :nombre, precio = :precio, porcentaje_ganancia = :porcentaje_ganancia, 
+            stock = :stock, estado = :estado, created_at = :created_at, 
+            updated_at = :updated_at WHERE id = :id";
+        return $this->save($query);
     }
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
-    public function create() : bool
+    public function deleted(): bool
     {
-        $result = $this->insertRow("INSERT INTO weber.productos VALUES (NULL, ?, ?, ?, ?, ?)", array(
-                $this->nombres,
-                $this->precio,
-                $this->porcentaje_ganancia,
-                $this->stock,
-                $this->estado
-            )
-        );
-        $this->Disconnect();
-        return $result;
-    }
-
-    /**
-     * @return bool
-     */
-    public function update() : bool
-    {
-        $result = $this->updateRow("UPDATE weber.productos SET nombres = ?, precio = ?, porcentaje_ganancia = ?, stock = ?, estado = ? WHERE id = ?", array(
-                $this->nombres,
-                $this->precio,
-                $this->porcentaje_ganancia,
-                $this->stock,
-                $this->estado,
-                $this->id
-            )
-        );
-        $this->Disconnect();
-        return $result;
-    }
-
-    /**
-     * @param $id
-     * @return bool
-     * @throws \Exception
-     */
-    public function deleted($id) : bool
-    {
-        $Producto = Productos::searchForId($id); //Buscando un usuario por el ID
-        $Producto->setEstado("Inactivo"); //Cambia el estado del Usuario
-        return $Producto->update();                    //Guarda los cambios..
+        $this->setEstado("Inactivo"); //Cambia el estado del Usuario
+        return $this->update();                    //Guarda los cambios..
     }
 
     /**
      * @param $query
-     * @return mixed
+     * @return Usuarios|array
+     * @throws Exception
      */
-    public static function search($query) : array
+    public static function search($query) : ?array
     {
-        $arrProductos = array();
-        $tmp = new Productos();
-        $getrows = $tmp->getRows($query);
+        try {
+            $arrProductos = array();
+            $tmp = new Productos();
+            $tmp->Connect();
+            $getrows = $tmp->getRows($query);
+            $tmp->Disconnect();
 
-        foreach ($getrows as $valor) {
-            $Producto = new Productos();
-            $Producto->id = $valor['id'];
-            $Producto->nombres = $valor['nombres'];
-            $Producto->precio = $valor['precio'];
-            $Producto->porcentaje_ganancia = $valor['porcentaje_ganancia'];
-            $Producto->stock = $valor['stock'];
-            $Producto->estado = $valor['estado'];
-            $Producto->Disconnect();
-            array_push($arrProductos, $Producto);
+            foreach ($getrows as $valor) {
+                $Producto = new Productos($valor);
+                array_push($arrProductos, $Producto);
+                unset($Producto);
+            }
+            return $arrProductos;
+        } catch (Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
-        $tmp->Disconnect();
-        return $arrProductos;
+        return null;
     }
 
     /**
      * @param $id
      * @return Productos
-     * @throws \Exception
+     * @throws Exception
      */
-    public static function searchForId($id) : Productos
+    public static function searchForId($id) : ?Productos
     {
-        $Producto = null;
-        if ($id > 0) {
-            $Producto = new Productos();
-            $getrow = $Producto->getRow("SELECT * FROM weber.productos WHERE id =?", array($id));
-            $Producto->id = $getrow['id'];
-            $Producto->nombres = $getrow['nombres'];
-            $Producto->precio = $getrow['precio'];
-            $Producto->porcentaje_ganancia = $getrow['porcentaje_ganancia'];
-            $Producto->stock = $getrow['stock'];
-            $Producto->estado = $getrow['estado'];
+        try {
+            if ($id > 0) {
+                $Producto = new Productos();
+                $Producto->Connect();
+                $getrow = $Producto->getRow("SELECT * FROM weber.productos WHERE id =?", array($id));
+                $Producto->Disconnect();
+                return ($getrow) ? new Productos($getrow) : null;
+            }else{
+                throw new Exception('Id de usuario Invalido');
+            }
+        } catch (Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
-        $Producto->Disconnect();
-        return $Producto;
+        return null;
     }
 
     /**
-     * @return Productos|array|mixed
+     * @return array
+     * @throws Exception
      */
     public static function getAll() : array
     {
@@ -256,13 +293,15 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
     }
 
     /**
-     * @param $nombres
+     * @param $nombre
      * @return bool
+     * @throws Exception
      */
-    public static function productoRegistrado($nombres): bool
+    public static function productoRegistrado($nombre): bool
     {
-        $result = Productos::search("SELECT id FROM weber.productos where nombres = '" . $nombres. "'");
-        if (count($result) > 0) {
+        $nombre = trim(strtolower($nombre));
+        $result = Productos::search("SELECT id FROM weber.productos where nombre = '" . $nombre. "'");
+        if ( !empty($result) && count ($result) > 0 ) {
             return true;
         } else {
             return false;
@@ -282,7 +321,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function __toString() : string
     {
-        return "Nombre: $this->nombres, Precio: $this->precio, Porcentaje: $this->porcentaje_ganancia, Stock: $this->stock, Estado: $this->estado";
+        return "Nombre: $this->nombre, Precio: $this->precio, Porcentaje: $this->porcentaje_ganancia, Stock: $this->stock, Estado: $this->estado";
     }
 
 
@@ -296,7 +335,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'nombres' => $this->getNombres(),
+            'nombre' => $this->getNombre(),
             'precio' => $this->getPrecio(),
             'porcentaje_ganancias' => $this->getPorcentajeGanancia(),
             'precio_venta' => $this->getPrecioVenta(),

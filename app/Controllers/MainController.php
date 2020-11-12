@@ -17,9 +17,9 @@ if (!empty($_GET['controller'])){
     if(class_exists($nameController)){
         $controller = new $nameController($_POST);
         if (!empty($_GET['action']) and method_exists($controller, $_GET['action'])) {
-            if($_GET['action'] === "activate" or $_GET['action'] === "inactivate"){
+            if(!empty($_GET['id'])){
                 $controller->{$_GET['action']}($_GET['id']);
-            }else if($_GET['action'] === "selectAjax"){
+            }else if(!empty($_GET['request']) && $_GET['request'] == "ajax"){
                 echo $controller->{$_GET['action']}($_POST);
             }else{
                 if(!empty($_FILES)){

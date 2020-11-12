@@ -11,22 +11,34 @@ use App\Models\Departamentos;
 class DepartamentosController
 {
 
-    static public function searchForID($id)
+    static public function searchForID(array $data)
     {
         try {
-            return Departamentos::searchForId($id);
+            $result = Departamentos::searchForId($data['id']);
+            if (!empty($data['request']) and $data['request'] === 'ajax' and !empty($result)) {
+                header('Content-type: application/json; charset=utf-8');
+                $result = json_encode($result->jsonSerialize());
+            }
+            return $result;
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
+        return null;
     }
 
-    static public function getAll()
+    static public function getAll(array $data = null)
     {
         try {
-            return Departamentos::getAll();
+            $result = Departamentos::getAll();
+            if (!empty($data['request']) and $data['request'] === 'ajax') {
+                header('Content-type: application/json; charset=utf-8');
+                $result = json_encode($result);
+            }
+            return $result;
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'log', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
+        return null;
     }
 
     static public function selectDepartamentos($isMultiple = false,

@@ -202,7 +202,7 @@ use App\Models\DetalleVentas;
                                                         ?>
                                                         <tr>
                                                             <td><?php echo $detalleVenta->getId(); ?></td>
-                                                            <td><?php echo $detalleVenta->getProductoId()->getNombres(); ?></td>
+                                                            <td><?php echo $detalleVenta->getProductoId()->getNombre(); ?></td>
                                                             <td><?php echo $detalleVenta->getCantidad(); ?></td>
                                                             <td><?php echo $detalleVenta->getPrecio(); ?></td>
                                                             <td>

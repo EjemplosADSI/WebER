@@ -245,7 +245,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 <script>
     $(function() {
         $('#departamento_id').on('change', function() {
-            $.post("../../../app/Controllers/MainController.php?controller=Municipios&action=selectAjax", {
+            $.post("../../../app/Controllers/MainController.php?controller=Municipios&action=selectMunicipios&request=ajax", {
                 isMultiple: false,
                 isRequired: true,
                 id: "municipios_id",

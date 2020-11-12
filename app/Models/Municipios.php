@@ -207,7 +207,7 @@ final class Municipios extends AbstractDBConnection implements Model, JsonSerial
             }
             return $arrMunicipios;
         } catch (Exception $e) {
-            GeneralFunctions::console($e,'error','errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }
@@ -225,12 +225,12 @@ final class Municipios extends AbstractDBConnection implements Model, JsonSerial
                 $tmpMun->Connect();
                 $getrow = $tmpMun->getRow("SELECT * FROM weber.municipios WHERE id =?", array($id));
                 $tmpMun->Disconnect();
-                return new Municipios($getrow);
+                return ($getrow) ? new Municipios($getrow) : null;
             }else{
                 throw new Exception('Id de municipio Invalido');
             }
         } catch (Exception $e) {
-            GeneralFunctions::console($e,'error','errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }

@@ -2,84 +2,87 @@
 
 namespace App\Controllers;
 
+require (__DIR__.'/../../vendor/autoload.php');
 use App\Models\GeneralFunctions;
 use App\Models\Productos;
-
-if(!empty($_GET['action'])){
-    ProductosController::main($_GET['action']);
-}
+use Carbon\Carbon;
 
 class ProductosController{
 
-    static function main($action)
+    private array $dataProducto;
+
+    public function __construct(array $_FORM)
     {
-        if ($action == "create") {
-            ProductosController::create();
-        } else if ($action == "edit") {
-            ProductosController::edit();
-        } else if ($action == "searchForID") {
-            ProductosController::searchForID($_REQUEST['idProducto']);
-        } else if ($action == "searchForIDAjax") {
-            ProductosController::searchForID($_REQUEST['idProducto'], 'Ajax');
-        } else if ($action == "searchAll") {
-            ProductosController::getAll();
-        } else if ($action == "activate") {
-            ProductosController::activate();
-        } else if ($action == "inactivate") {
-            ProductosController::inactivate();
-        }/*else if ($action == "login"){
-            UsuariosController::login();
-        }else if($action == "cerrarSession"){
-            UsuariosController::cerrarSession();
-        }*/
+        $this->dataProducto = array();
+        $this->dataProducto['id'] = $_FORM['id'] ?? NULL;
+        $this->dataProducto['nombre'] = $_FORM['nombre'] ?? '';
+        $this->dataProducto['precio'] = $_FORM['precio'] ?? 0.0;
+        $this->dataProducto['porcentaje_ganancia'] = $_FORM['porcentaje_ganancia'] ?? 0.0;
+        $this->dataProducto['stock'] = $_FORM['stock'] ?? 0.0;
+        $this->dataProducto['estado'] = $_FORM['estado'] ?? 'Activo';
     }
 
-    static public function create()
-    {
+    public function create() {
         try {
-            $arrayProducto = array();
-            $arrayProducto['nombres'] = $_POST['nombres'];
-            $arrayProducto['precio'] = $_POST['precio'];
-            $arrayProducto['porcentaje_ganancia'] = $_POST['porcentaje_ganancia'];
-            $arrayProducto['stock'] = $_POST['stock'];
-            $arrayProducto['estado'] = 'Activo';
-            if(!Productos::productoRegistrado($arrayProducto['nombres'])){
-                $Producto = new Productos($arrayProducto);
-                if($Producto->create()){
+            if (!empty($this->dataProducto['nombre']) && !Productos::productoRegistrado($this->dataProducto['nombre'])) {
+                $Producto = new Productos ($this->dataProducto);
+                if ($Producto->insert()) {
+                    unset($_SESSION['frmProductos']);
                     header("Location: ../../views/modules/productos/index.php?respuesta=correcto");
                 }
-            }else{
+            } else {
                 header("Location: ../../views/modules/productos/create.php?respuesta=error&mensaje=Producto ya registrado");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
-            header("Location: ../../views/modules/productos/create.php?respuesta=error&mensaje=" . $e->getMessage());
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
-    static public function edit (){
+    public function edit()
+    {
         try {
-            $arrayProducto = array();
-            $arrayProducto['nombres'] = $_POST['nombres'];
-            $arrayProducto['precio'] = $_POST['precio'];
-            $arrayProducto['porcentaje_ganancia'] = $_POST['porcentaje_ganancia'];
-            $arrayProducto['stock'] = $_POST['stock'];
-            $arrayProducto['estado'] = $_POST['estado'];
-            $arrayProducto['id'] = $_POST['id'];
+            $producto = new Productos($this->dataProducto);
+            if($producto->update()){
+                unset($_SESSION['frmProductos']);
+            }
 
-            $Producto = new Productos($arrayProducto);
-            $Producto->update();
-
-            header("Location: ../../views/modules/productos/show.php?id=".$Producto->getId()."&respuesta=correcto");
+            header("Location: ../../views/modules/productos/show.php?id=" . $producto->getId() . "&respuesta=correcto");
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
-            header("Location: ../../views/modules/productos/edit.php?respuesta=error&mensaje=".$e->getMessage());
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
-    static public function activate (){
+    static public function searchForID (array $data){
         try {
-            $ObjProducto = Productos::searchForId($_GET['Id']);
+            $result = Productos::searchForId($data['id']);
+            if (!empty($data['request']) and $data['request'] === 'ajax' and !empty($result)) {
+                header('Content-type: application/json; charset=utf-8');
+                $result = json_encode($result->jsonSerialize());
+            }
+            return $result;
+        } catch (\Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
+        }
+        return null;
+    }
+
+    static public function getAll (array $data = null){
+        try {
+            $result = Productos::getAll();
+            if (!empty($data['request']) and $data['request'] === 'ajax') {
+                header('Content-type: application/json; charset=utf-8');
+                $result = json_encode($result);
+            }
+            return $result;
+        } catch (\Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
+        }
+        return null;
+    }
+
+    static public function activate (int $id){
+        try {
+            $ObjProducto = Productos::searchForId($id);
             $ObjProducto->setEstado("Activo");
             if($ObjProducto->update()){
                 header("Location: ../../views/modules/productos/index.php");
@@ -87,14 +90,13 @@ class ProductosController{
                 header("Location: ../../views/modules/productos/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
-            header("Location: ../../views/modules/productos/index.php?respuesta=error&mensaje=".$e->getMessage());
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
-    static public function inactivate (){
+    static public function inactivate (int $id){
         try {
-            $ObjProducto = Productos::searchForId($_GET['Id']);
+            $ObjProducto = Productos::searchForId($id);
             $ObjProducto->setEstado("Inactivo");
             if($ObjProducto->update()){
                 header("Location: ../../views/modules/productos/index.php");
@@ -102,49 +104,8 @@ class ProductosController{
                 header("Location: ../../views/modules/productos/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
-            header("Location: ../../views/modules/productos/index.php?respuesta=error");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
-    }
-
-    static public function searchForID ($id, $method = 'normal'){
-        try {
-            $result = Productos::searchForId($id);
-            if ($method === 'normal') {
-                return $result;
-            }else{
-                header('Content-type: application/json; charset=utf-8');
-                echo json_encode($result->jsonSerialize());
-            }
-        } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'error', 'errorStack');
-            if ($method === 'normal'){
-                header("Location: ../../views/modules/productos/manager.php?respuesta=error");
-            }else{
-                header('Content-type: application/json; charset=utf-8');
-                echo json_encode($e);
-            }
-        }
-    }
-
-    static public function getAll (){
-        try {
-            return Productos::getAll();
-        } catch (\Exception $e) {
-            GeneralFunctions::console( $e, 'log', 'errorStack');
-            header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
-        }
-    }
-
-    public static function productoIsInArray($idProducto, $ArrProducto){
-        if(count($ArrProducto) > 0){
-            foreach ($ArrProducto as $Producto){
-                if($Producto->getId() == $idProducto){
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     static public function selectProducto ($isMultiple=false,
@@ -166,47 +127,24 @@ class ProductosController{
         $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if(count($arrProducto) > 0){
-            /* @var $arrProducto \App\Models\Productos[] */
+            /* @var $arrProducto Productos[] */
             foreach ($arrProducto as $producto)
                 if (!ProductosController::productoIsInArray($producto->getId(),$arrExcluir))
-                    $htmlSelect .= "<option ".(($producto != "") ? (($defaultValue == $producto->getId()) ? "selected" : "" ) : "")." value='".$producto->getId()."'>".$producto->getNombres()."</option>";
+                    $htmlSelect .= "<option ".(($producto != "") ? (($defaultValue == $producto->getId()) ? "selected" : "" ) : "")." value='".$producto->getId()."'>".$producto->getNombre()."</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;
     }
 
-    /*
-    public function buscar ($Query){
-        try {
-            return Persona::buscar($Query);
-        } catch (Exception $e) {
-            header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
-        }
-    }
-
-    static public function asociarEspecialidad (){
-        try {
-            $Persona = new Persona();
-            $Persona->asociarEspecialidad($_POST['Persona'],$_POST['Especialidad']);
-            header("Location: ../Vista/modules/persona/managerSpeciality.php?respuesta=correcto&id=".$_POST['Persona']);
-        } catch (Exception $e) {
-            header("Location: ../Vista/modules/persona/managerSpeciality.php?respuesta=error&mensaje=".$e->getMessage());
-        }
-    }
-
-    static public function eliminarEspecialidad (){
-        try {
-            $ObjPersona = new Persona();
-            if(!empty($_GET['Persona']) && !empty($_GET['Especialidad'])){
-                $ObjPersona->eliminarEspecialidad($_GET['Persona'],$_GET['Especialidad']);
-            }else{
-                throw new Exception('No se recibio la informacion necesaria.');
+    public static function productoIsInArray($idProducto, $ArrProducto){
+        if(count($ArrProducto) > 0){
+            foreach ($ArrProducto as $Producto){
+                if($Producto->getId() == $idProducto){
+                    return true;
+                }
             }
-            header("Location: ../Vista/modules/persona/managerSpeciality.php?id=".$_GET['Persona']);
-        } catch (Exception $e) {
-            var_dump($e);
-            //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
         }
-    }*/
+        return false;
+    }
 
 }

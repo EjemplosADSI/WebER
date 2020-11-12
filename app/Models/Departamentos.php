@@ -183,7 +183,7 @@ final class Departamentos extends AbstractDBConnection implements Model, JsonSer
             }
             return $arrDepartamentos;
         } catch (Exception $e) {
-            GeneralFunctions::console($e,'error','errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }
@@ -196,12 +196,12 @@ final class Departamentos extends AbstractDBConnection implements Model, JsonSer
                 $tmpDepartamento->Connect();
                 $getrow = $tmpDepartamento->getRow("SELECT * FROM weber.departamentos WHERE id =?", array($id));
                 $tmpDepartamento->Disconnect();
-                return new Departamentos($getrow);
+                return ($getrow) ? new Departamentos($getrow) : null;
             }else{
                 throw new Exception('Id de departamento Invalido');
             }
         } catch (Exception $e) {
-            GeneralFunctions::console($e,'error','errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
         return null;
     }

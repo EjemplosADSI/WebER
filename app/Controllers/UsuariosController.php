@@ -28,7 +28,6 @@ class UsuariosController
         $this->dataUsuario['rol'] = $_FORM['rol'] ?? 'Cliente';
         $this->dataUsuario['foto'] = $_FORM['nameFoto'] ?? NULL;
         $this->dataUsuario['estado'] = $_FORM['estado'] ?? 'Activo';
-        $this->dataUsuario['fecha_registro'] = Carbon::now(); //Fecha Actual
     }
 
     public function create($withFiles = null) {
@@ -36,7 +35,7 @@ class UsuariosController
             if (!empty($this->dataUsuario['documento']) && !Usuarios::usuarioRegistrado($this->dataUsuario['documento'])) {
                 if(!empty($withFiles)){
                     $fotoUsuario = $withFiles['foto'];
-                    $resultUpload = GeneralFunctions::SubirArchivo($fotoUsuario, "views/public/uploadFiles/photos/");
+                    $resultUpload = GeneralFunctions::subirArchivo($fotoUsuario, "views/public/uploadFiles/photos/");
                     $this->dataUsuario['foto'] = ($resultUpload != false) ? $resultUpload : NULL;
                 }
 
@@ -49,7 +48,7 @@ class UsuariosController
                 header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
@@ -59,9 +58,9 @@ class UsuariosController
             if(!empty($withFiles)){
                 $fotoUsuario = $withFiles['foto'];
                 if($fotoUsuario['error'] == 0){ //Si la foto se selecciono correctamente
-                    $resultUpload = GeneralFunctions::SubirArchivo($fotoUsuario, "views/public/uploadFiles/photos/");
+                    $resultUpload = GeneralFunctions::subirArchivo($fotoUsuario, "views/public/uploadFiles/photos/");
                     if($resultUpload != false){
-                        GeneralFunctions::EliminarArchivo("views/public/uploadFiles/photos/".$this->dataUsuario['foto']);
+                        GeneralFunctions::eliminarArchivo("views/public/uploadFiles/photos/".$this->dataUsuario['foto']);
                         $this->dataUsuario['foto'] = $resultUpload;
                     }
                 }
@@ -74,28 +73,38 @@ class UsuariosController
 
             header("Location: ../../views/modules/usuarios/show.php?id=" . $user->getId() . "&respuesta=correcto");
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
-    static public function searchForID($id)
+    static public function searchForID(array $data)
     {
         try {
-            return Usuarios::searchForId($id);
+            $result = Usuarios::searchForId($data['id']);
+            if (!empty($data['request']) and $data['request'] === 'ajax' and !empty($result)) {
+                header('Content-type: application/json; charset=utf-8');
+                $result = json_encode($result->jsonSerialize());
+            }
+            return $result;
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/manager.php?respuesta=error");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
+        return null;
     }
 
-    static public function getAll()
+    static public function getAll(array $data = null)
     {
         try {
-            return Usuarios::getAll();
+            $result = Usuarios::getAll();
+            if (!empty($data['request']) and $data['request'] === 'ajax') {
+                header('Content-type: application/json; charset=utf-8');
+                $result = json_encode($result);
+            }
+            return $result;
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'log', 'errorStack');
-            //header("Location: ../Vista/modules/persona/manager.php?respuesta=error");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
+        return null;
     }
 
     static public function activate(int $id)
@@ -109,8 +118,7 @@ class UsuariosController
                 header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=".$e->getMessage());
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
@@ -125,8 +133,7 @@ class UsuariosController
                 header("Location: ../../views/modules/usuarios/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::console($e, 'error', 'errorStack');
-            //header("Location: ../../views/modules/usuarios/index.php?respuesta=error");
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
@@ -150,7 +157,7 @@ class UsuariosController
         $htmlSelect = "<select " . (($isMultiple) ? "multiple" : "") . " " . (($isRequired) ? "required" : "") . " id= '" . $id . "' name='" . $nombre . "' class='" . $class . "' style='width: 100%;'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if (count($arrUsuarios) > 0) {
-            /* @var $arrUsuarios \App\Models\Usuarios[] */
+            /* @var $arrUsuarios Usuarios[] */
             foreach ($arrUsuarios as $usuario)
                 if (!UsuariosController::usuarioIsInArray($usuario->getId(), $arrExcluir))
                     $htmlSelect .= "<option " . (($usuario != "") ? (($defaultValue == $usuario->getId()) ? "selected" : "") : "") . " value='" . $usuario->getId() . "'>" . $usuario->getDocumento() . " - " . $usuario->getNombres() . " " . $usuario->getApellidos() . "</option>";

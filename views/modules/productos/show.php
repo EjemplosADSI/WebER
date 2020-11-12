@@ -3,11 +3,16 @@ require("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 require("../../../app/Controllers/ProductosController.php");
 
-use App\Controllers\ProductosController; ?>
+use App\Controllers\ProductosController;
+
+$nameModel = "Producto";
+$pluralModel = $nameModel.'s';
+$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $_ENV['TITLE_SITE'] ?> | Datos del Producto</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Datos del <?= $nameModel ?></title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -25,12 +30,13 @@ use App\Controllers\ProductosController; ?>
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Informacion del Producto</h1>
+                        <h1>Informacion del <?= $nameModel ?></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/Views/">WebER</a></li>
-                            <li class="breadcrumb-item active">Inicio</li>
+                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
+                            <li class="breadcrumb-item"><a href="index.php"><?= $pluralModel ?></a></li>
+                            <li class="breadcrumb-item active">Ver</li>
                         </ol>
                     </div>
                 </div>
@@ -45,7 +51,7 @@ use App\Controllers\ProductosController; ?>
                     <div class="alert alert-danger alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        Error al consultar el Producto: <?= ($_GET['mensaje']) ?? "" ?>
+                        Error al consultar el <?= $nameModel ?>: <?= ($_GET['mensaje']) ?? "" ?>
                     </div>
                 <?php } ?>
             <?php } else if (empty($_GET['id'])) { ?>
@@ -62,12 +68,12 @@ use App\Controllers\ProductosController; ?>
                         <!-- Horizontal Form -->
                         <div class="card card-green">
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) {
-                                $DataProducto = ProductosController::searchForID($_GET["id"]);
+                                $DataProducto = ProductosController::searchForID(["id" => $_GET["id"]]);
                                 if (!empty($DataProducto)) {
                                     ?>
                                     <div class="card-header">
                                         <h3 class="card-title"><i class="fas fa-box"></i> &nbsp; Ver Información
-                                            de <?= $DataProducto->getNombres() ?></h3>
+                                            de <?= $DataProducto->getNombre() ?></h3>
                                         <div class="card-tools">
                                             <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                                     data-source="show.php" data-source-selector="#card-refresh-content"
@@ -87,11 +93,14 @@ use App\Controllers\ProductosController; ?>
 
                                             <strong><i class="fas fa-book mr-1"></i> Nombre</strong>
                                         <p class="text-muted">
-                                            <?= $DataProducto->getNombres() ?>
+                                            <?= $DataProducto->getNombre() ?>
                                         </p>
                                         <hr>
-                                        <strong><i class="fas fa-dollar-sign mr-1"></i> Precio</strong>
+                                        <strong><i class="fas fa-dollar-sign mr-1"></i> Precio Base</strong>
                                         <p class="text-muted"><?= $DataProducto->getPrecio() ?></p>
+                                        <hr>
+                                        <strong><i class="fas fa-dollar-sign mr-1"></i> Precio Venta</strong>
+                                        <p class="text-muted"><?= $DataProducto->getPrecioVenta(); ?></p>
                                         <hr>
                                         <strong><i class="fas fa-dollar-sign mr-1"></i> Porcentaje Ganancia</strong>
                                         <p class="text-muted"><?= $DataProducto->getPorcentajeGanancia() ?>%</p>
@@ -109,13 +118,13 @@ use App\Controllers\ProductosController; ?>
                                             <div class="col-auto mr-auto">
                                                 <a role="button" href="index.php" class="btn btn-success float-right"
                                                    style="margin-right: 5px;">
-                                                    <i class="fas fa-tasks"></i> Gestionar Productos
+                                                    <i class="fas fa-tasks"></i> Gestionar <?= $pluralModel ?>
                                                 </a>
                                             </div>
                                             <div class="col-auto">
-                                                <a role="button" href="create.php" class="btn btn-primary float-right"
+                                                <a role="button" href="edit.php?id=<?= $DataProducto->getId(); ?>" class="btn btn-primary float-right"
                                                    style="margin-right: 5px;">
-                                                    <i class="fas fa-plus"></i> Crear Producto
+                                                    <i class="fas fa-edit"></i> Editar <?= $nameModel ?>
                                                 </a>
                                             </div>
                                         </div>

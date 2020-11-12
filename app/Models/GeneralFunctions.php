@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Dotenv\Dotenv;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Verot\Upload\Upload;
 
 final class GeneralFunctions
 {
 
+    public static $PathLogFile = __DIR__."/../../resources/logs/general.log";
     /**
      * @param array $requiredVars
      * @param array $integerVars
@@ -29,7 +32,7 @@ final class GeneralFunctions
      * @param $Ruta
      * @return bool|string
      */
-    static function SubirArchivo($File, $Ruta)
+    static function subirArchivo($File, $Ruta)
     {
         $archivos = new Upload($File);
         if ($archivos->uploaded){
@@ -38,11 +41,11 @@ final class GeneralFunctions
             if($archivos->processed){
                 return $archivos->file_dst_name;
             }else{
-                GeneralFunctions::console("Archivo No Subido, Error en la carpeta..".$archivos->error,'error');
+                GeneralFunctions::logFile("Archivo No Subido, Error en la carpeta..",$archivos->error,'error');
                 return false;
             }
         }else{
-            GeneralFunctions::console("Archivo No Subido, Error en la carpeta..".$archivos->error,'error');
+            GeneralFunctions::logFile("Archivo No Subido, Error en la carpeta..",$archivos->error,'error');
             return false;
         }
     }
@@ -52,14 +55,25 @@ final class GeneralFunctions
      * @param $Ruta
      * @return bool|string
      */
-    static function EliminarArchivo($Ruta)
+    static function eliminarArchivo($Ruta)
     {
         if (file_exists(__DIR__."/../../".$Ruta)) {
             unlink(__DIR__."/../../".$Ruta);
         } else {
-            GeneralFunctions::console("Archivo No Encontrado",'error');
+            GeneralFunctions::logFile("Archivo No Eliminado",'El archivo no fue encontrado en la ruta: '.__DIR__."/../../".$Ruta,'error');
             return false;
         }
+    }
+
+    /**
+     * @param $title (titulo del log)
+     * @param $description (array)
+     * @param string $type (debug, info, notice, warning, error, critical, alert, emergency)
+     */
+    static function logFile($title, $description, $type = 'error'){
+        $log = new Logger('General');
+        $log->pushHandler(new StreamHandler(GeneralFunctions::$PathLogFile, Logger::DEBUG));
+        $log->$type($title, (array) $description);
     }
 
     /**

@@ -21,7 +21,8 @@
     "almasaeed2010/adminlte": "^3.0",
     "vlucas/phpdotenv": "^3.6",
     "nesbot/carbon": "^2.37",
-    "verot/class.upload.php": "^2.0"
+    "verot/class.upload.php": "^2.0",
+    "monolog/monolog": "^2.1"
   },
   "require-dev": {
     "phpunit/phpunit": "9"

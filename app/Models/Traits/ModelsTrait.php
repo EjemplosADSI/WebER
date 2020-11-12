@@ -9,7 +9,7 @@ class ModelsTrait
 
     public function __call($name, $arguments)
     {
-        GeneralFunctions::console('Método '.$name." no existe");
+        GeneralFunctions::logFile('Metodo Inexistente','El método '.$name." en la clase ".__CLASS__." no existe");
     }
 
     /*

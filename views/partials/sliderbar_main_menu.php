@@ -1,5 +1,5 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-success elevation-4">
     <!-- Brand Logo -->
     <a href="../../index3.html" class="brand-link">
         <img src="<?= $baseURL ?>/views/public/img/weber-icon.png"
@@ -75,6 +75,29 @@
                         </li>
                         <li class="nav-item">
                             <a href="<?= $baseURL ?>/views/modules/productos/create.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Registrar</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item has-treeview <?= strpos($_SERVER['REQUEST_URI'],'fotos') ? 'menu-open' : '' ?>">
+                    <a href="#" class="nav-link <?= strpos($_SERVER['REQUEST_URI'],'fotos') ? 'active' : '' ?>">
+                        <i class="nav-icon fas fa-photo-video"></i>
+                        <p>
+                            Fotos
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?= $baseURL ?>/views/modules/fotos/index.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Gestionar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= $baseURL ?>/views/modules/fotos/create.php" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Registrar</p>
                             </a>

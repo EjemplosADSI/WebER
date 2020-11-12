@@ -236,7 +236,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
 
     /**
      * @param $query
-     * @return Usuarios|array
+     * @return Productos|array
      * @throws Exception
      */
     public static function search($query) : ?array
@@ -287,7 +287,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
      * @return array
      * @throws Exception
      */
-    public static function getAll() : array
+    public static function getAll() : ?array
     {
         return Productos::search("SELECT * FROM weber.productos");
     }

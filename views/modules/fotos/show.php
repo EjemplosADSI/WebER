@@ -1,11 +1,13 @@
 <?php
 require("../../partials/routes.php");
 require_once("../../partials/check_login.php");
-require("../../../app/Controllers/ProductosController.php");
+require("../../../app/Controllers/FotosController.php");
 
+use App\Controllers\FotosController;
 use App\Controllers\ProductosController;
+use App\Models\Fotos;
 
-$nameModel = "Producto";
+$nameModel = "Foto";
 $pluralModel = $nameModel.'s';
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 ?>
@@ -68,12 +70,13 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                         <!-- Horizontal Form -->
                         <div class="card card-green">
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) {
-                                $DataProducto = ProductosController::searchForID(["id" => $_GET["id"]]);
-                                if (!empty($DataProducto)) {
+                                $DataFoto = FotosController::searchForID(["id" => $_GET["id"]]);
+                                /* @var $DataFoto Fotos */
+                                if (!empty($DataFoto)) {
                                     ?>
                                     <div class="card-header">
                                         <h3 class="card-title"><i class="fas fa-box"></i> &nbsp; Ver Información
-                                            de <?= $DataProducto->getNombre() ?></h3>
+                                            de <?= $DataFoto->getNombre() ?? '' ?></h3>
                                         <div class="card-tools">
                                             <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                                     data-source="show.php" data-source-selector="#card-refresh-content"
@@ -89,29 +92,37 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                         </div>
                                     </div>
                                     <div class="card-body">
-                                        <p>
-
-                                            <strong><i class="fas fa-book mr-1"></i> Nombre</strong>
-                                        <p class="text-muted">
-                                            <?= $DataProducto->getNombre() ?>
-                                        </p>
-                                        <hr>
-                                        <strong><i class="fas fa-dollar-sign mr-1"></i> Precio Base</strong>
-                                        <p class="text-muted"><?= $DataProducto->getPrecio() ?></p>
-                                        <hr>
-                                        <strong><i class="fas fa-dollar-sign mr-1"></i> Precio Venta</strong>
-                                        <p class="text-muted"><?= $DataProducto->getPrecioVenta(); ?></p>
-                                        <hr>
-                                        <strong><i class="fas fa-dollar-sign mr-1"></i> Porcentaje Ganancia</strong>
-                                        <p class="text-muted"><?= $DataProducto->getPorcentajeGanancia() ?>%</p>
-                                        <hr>
-                                        <strong><i class="fas fa-archive mr-1"></i> Stock</strong>
-                                        <p class="text-muted"><?= $DataProducto->getStock() ?></p>
-                                        <hr>
-                                        <strong><i class="far fa-file-alt mr-1"></i> Estado</strong>
-                                        <p class="text-muted"><?= $DataProducto->getEstado() ?></p>
-                                        </p>
-
+                                        <div class="row">
+                                            <div class="col-sm-10">
+                                                <p>
+                                                    <strong><i class="fas fa-book mr-1"></i> Nombre</strong>
+                                                <p class="text-muted">
+                                                    <?= $DataFoto->getNombre() ?>
+                                                </p>
+                                                <hr>
+                                                <strong><i class="fas fa-align-justify mr-1"></i> Descripción</strong>
+                                                <p class="text-muted"><?= $DataFoto->getDescripcion() ?></p>
+                                                <hr>
+                                                <strong><i class="fas fa-archive mr-1"></i> Producto</strong>
+                                                <p class="text-muted"><?= $DataFoto->getProducto()->getNombre(); ?></p>
+                                                <hr>
+                                                <strong><i class="far fa-file-alt mr-1"></i> Estado</strong>
+                                                <p class="text-muted"><?= $DataFoto->getEstado() ?></p>
+                                                </p>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="row info-box">
+                                                    <div class="col-12">
+                                                        <h4>Foto Producto</h4>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <?php if(!empty($DataFoto->getRuta())){ ?>
+                                                            <img class='img-thumbnail rounded' src='../../public/uploadFiles/photos/products/<?= $DataFoto->getRuta(); ?>' alt="Foto Producto">
+                                                        <?php } ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="card-footer">
                                         <div class="row">
@@ -122,7 +133,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 </a>
                                             </div>
                                             <div class="col-auto">
-                                                <a role="button" href="edit.php?id=<?= $DataProducto->getId(); ?>" class="btn btn-primary float-right"
+                                                <a role="button" href="edit.php?id=<?= $DataFoto->getId(); ?>" class="btn btn-primary float-right"
                                                    style="margin-right: 5px;">
                                                     <i class="fas fa-edit"></i> Editar <?= $nameModel ?>
                                                 </a>

@@ -3,10 +3,10 @@ require_once("../../../app/Controllers/UsuariosController.php");
 require_once("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 
-use App\Controllers\ProductosController;
-use App\Models\Productos;
+use App\Controllers\FotosController;
+use App\Models\Fotos;
 
-$nameModel = "Producto";
+$nameModel = "Foto";
 $pluralModel = $nameModel.'s';
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 ?>
@@ -96,50 +96,54 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <table id="tblProductos" class="datatable table table-bordered table-striped">
+                                        <table id="tbl<?= $pluralModel ?>" class="datatable table table-bordered table-striped">
                                             <thead>
                                             <tr>
                                                 <th>#</th>
                                                 <th>Nombres</th>
-                                                <th>Precio</th>
-                                                <th>Ganancia</th>
-                                                <th>Venta</th>
-                                                <th>Stock</th>
+                                                <th>Descripción</th>
+                                                <th>Producto</th>
+                                                <th>Foto</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <?php
-                                            $arrProductos = ProductosController::getAll();
-                                            /* @var $arrProductos Productos[] */
-                                            foreach ($arrProductos as $producto) {
+                                            $arrFotos = FotosController::getAll();
+                                            /* @var $arrFotos Fotos[] */
+                                            foreach ($arrFotos as $foto) {
                                                 ?>
                                                 <tr>
-                                                    <td><?php echo $producto->getId(); ?></td>
-                                                    <td><?php echo $producto->getNombre(); ?></td>
-                                                    <td>$ <?php echo $producto->getPrecio(); ?></td>
-                                                    <td><?php echo $producto->getPorcentajeGanancia(); ?>%</td>
-                                                    <td>$ <?php echo $producto->getPrecioVenta(); ?></td>
-                                                    <td><?php echo $producto->getStock(); ?></td>
-                                                    <td><?php echo $producto->getEstado(); ?></td>
+                                                    <td><?= $foto->getId(); ?></td>
+                                                    <td><?= !empty($foto->getNombre()) ? $foto->getNombre() : 'Sin Nombre' ?></td>
+                                                    <td><?= !empty($foto->getDescripcion()) ? $foto->getDescripcion() : 'Sin Nombre' ?></td>
+                                                    <td><?= $foto->getProducto()->getNombre(); ?></td>
                                                     <td>
-                                                        <a href="edit.php?id=<?php echo $producto->getId(); ?>"
+                                                        <?php if(!empty($foto->getRuta())){ ?>
+                                                            <span class="badge badge-info" data-toggle="tooltip" data-html="true"
+                                                                  title="<img class='img-thumbnail' src='../../public/uploadFiles/photos/products/<?= $foto->getRuta(); ?>'>">Foto
+                                                            </span>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td><?= $foto->getEstado(); ?></td>
+                                                    <td>
+                                                        <a href="edit.php?id=<?= $foto->getId(); ?>"
                                                            type="button" data-toggle="tooltip" title="Actualizar"
                                                            class="btn docs-tooltip btn-primary btn-xs"><i
                                                                     class="fa fa-edit"></i></a>
-                                                        <a href="show.php?id=<?php echo $producto->getId(); ?>"
+                                                        <a href="show.php?id=<?= $foto->getId(); ?>"
                                                            type="button" data-toggle="tooltip" title="Ver"
                                                            class="btn docs-tooltip btn-warning btn-xs"><i
                                                                     class="fa fa-eye"></i></a>
-                                                        <?php if ($producto->getEstado() != "Activo") { ?>
-                                                            <a href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=activate&id=<?= $producto->getId(); ?>"
+                                                        <?php if ($foto->getEstado() != "Activo") { ?>
+                                                            <a href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=activate&id=<?= $foto->getId(); ?>"
                                                                type="button" data-toggle="tooltip" title="Activar"
                                                                class="btn docs-tooltip btn-success btn-xs"><i
                                                                         class="fa fa-check-square"></i></a>
                                                         <?php } else { ?>
                                                             <a type="button"
-                                                               href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=inactivate&id=<?= $producto->getId(); ?>"
+                                                               href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=inactivate&id=<?= $foto->getId(); ?>"
                                                                data-toggle="tooltip" title="Inactivar"
                                                                class="btn docs-tooltip btn-danger btn-xs"><i
                                                                         class="fa fa-times-circle"></i></a>
@@ -153,10 +157,9 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                             <tr>
                                                 <th>#</th>
                                                 <th>Nombres</th>
-                                                <th>Precio</th>
-                                                <th>Ganancia</th>
-                                                <th>Venta</th>
-                                                <th>Stock</th>
+                                                <th>Descripción</th>
+                                                <th>Producto</th>
+                                                <th>Foto</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
                                             </tr>

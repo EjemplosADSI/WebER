@@ -16,34 +16,59 @@ class FotosController
     {
         $this->dataFotos = array();
         $this->dataFotos['id'] = $_FORM['id'] ?? NULL;
-        $this->dataFotos['nombre'] = $_FORM['nombre'] ?? '';
-        $this->dataFotos['descripcion'] = $_FORM['descripcion'] ?? 0.0;
-        $this->dataFotos['productos_id'] = $_FORM['productos_id'] ?? 0.0;
-        $this->dataFotos['ruta'] = $_FORM['ruta'] ?? 0.0;
+        $this->dataFotos['nombre'] = $_FORM['nombre'] ?? NULL;
+        $this->dataFotos['descripcion'] = $_FORM['descripcion'] ?? NULL;
+        $this->dataFotos['productos_id'] = $_FORM['productos_id'] ?? 0;
+        $this->dataFotos['ruta'] = $_FORM['nameFoto'] ?? '';
         $this->dataFotos['estado'] = $_FORM['estado'] ?? 'Activo';
     }
 
-    public function create() {
+    public function create($withFiles) {
         try {
-            $Foto = new Fotos ($this->dataFotos);
-            if ($Foto->insert()) {
-                unset($_SESSION['frmFotos']);
-                header("Location: ../../views/modules/fotos/index.php?respuesta=correcto");
+            if(!empty($withFiles)){
+                $fotoProducto = $withFiles['foto'];
+                $resultUpload = GeneralFunctions::subirArchivo($fotoProducto, "views/public/uploadFiles/photos/products/");
+
+                if($resultUpload != false){
+                    $this->dataFotos['ruta'] = $resultUpload;
+                    $Foto = new Fotos ($this->dataFotos);
+                    if ($Foto->insert()) {
+                        unset($_SESSION['frmFotos']);
+                        header("Location: ../../views/modules/fotos/index.php?respuesta=correcto");
+                    }
+                }
+            }else{
+                GeneralFunctions::logFile('Error foto no encontrada');
+                header("Location: ../../views/modules/fotos/create.php?respuesta=error&mensaje=Foto no encontrada");
             }
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }
     }
 
-    public function edit()
+    public function edit($withFiles = null)
     {
         try {
-            $foto = new Fotos($this->dataFotos);
-            if($foto->update()){
-                unset($_SESSION['frmFotos']);
+            if(!empty($withFiles)){
+                $rutaFoto = $withFiles['foto'];
+                if($rutaFoto['error'] == 0){ //Si la foto se selecciono correctamente
+                    $resultUpload = GeneralFunctions::subirArchivo($rutaFoto, "views/public/uploadFiles/photos/products/");
+                    if($resultUpload != false){
+                        GeneralFunctions::eliminarArchivo("views/public/uploadFiles/photos/products/".$this->dataFotos['ruta']);
+                        $this->dataFotos['ruta'] = $resultUpload;
+                    }
+                }
+            }
+            if(!empty($this->dataFotos['ruta'])){
+                $foto = new Fotos($this->dataFotos);
+                if($foto->update()){
+                    unset($_SESSION['frmFotos']);
+                }
+                header("Location: ../../views/modules/fotos/show.php?id=" . $foto->getId() . "&respuesta=correcto");
+            }else{
+                GeneralFunctions::logFile('Error Foto Vaciá: ');
             }
 
-            header("Location: ../../views/modules/fotos/show.php?id=" . $foto->getId() . "&respuesta=correcto");
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }

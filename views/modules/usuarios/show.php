@@ -4,6 +4,7 @@ require_once("../../partials/check_login.php");
 require("../../../app/Controllers/UsuariosController.php");
 
 use App\Controllers\UsuariosController;
+use App\Models\Usuarios;
 
 $nameModel = "Usuario";
 $pluralModel = $nameModel.'s';
@@ -69,6 +70,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                         <div class="card card-green">
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) {
                                 $DataUsuario = UsuariosController::searchForID(["id" => $_GET["id"]]);
+                                /* @var $DataUsuario Usuarios */
                                 if (!empty($DataUsuario)) {
                                     ?>
                                     <div class="card-header">

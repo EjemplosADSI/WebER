@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Exception;
 use JsonSerializable;
 
-
 class Productos extends AbstractDBConnection implements Model, JsonSerializable
 {
     private ?int $id;

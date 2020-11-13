@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use Dotenv\Dotenv;
+use Exception;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use NumberFormatter;
 use Verot\Upload\Upload;
 
 final class GeneralFunctions
@@ -21,7 +24,7 @@ final class GeneralFunctions
             $dotenv->load();
             $dotenv->required($requiredVars)->notEmpty();
             $dotenv->required($integerVars)->isInteger();
-        }catch (\Exception $re){
+        }catch (Exception $re){
             echo "Variables faltantes o vaciás: ";
             throw new \RuntimeException($re->getMessage());
         }
@@ -55,25 +58,54 @@ final class GeneralFunctions
      * @param $Ruta
      * @return bool|string
      */
-    static function eliminarArchivo($Ruta)
+    static function eliminarArchivo($Ruta) : bool
     {
         if (file_exists(__DIR__."/../../".$Ruta)) {
             unlink(__DIR__."/../../".$Ruta);
+            return true;
         } else {
-            GeneralFunctions::logFile("Archivo No Eliminado",'El archivo no fue encontrado en la ruta: '.__DIR__."/../../".$Ruta,'error');
+            GeneralFunctions::logFile("Archivo No Eliminado",['El archivo no fue encontrado en la ruta: '.__DIR__."/../../".$Ruta,'error']);
             return false;
         }
+    }
+
+    static function formatCurrency($currency){
+        $fmt = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
+        return numfmt_format_currency($fmt, $currency, "COP");
     }
 
     /**
      * @param $title (titulo del log)
      * @param $description (array)
      * @param string $type (debug, info, notice, warning, error, critical, alert, emergency)
+     * @throws Exception
      */
-    static function logFile($title, $description, $type = 'error'){
+    static function logFile($title, $description = array(), $type = 'error'){
         $log = new Logger('General');
-        $log->pushHandler(new StreamHandler(GeneralFunctions::$PathLogFile, Logger::DEBUG));
-        $log->$type($title, (array) $description);
+
+        $formatter = new LineFormatter(
+            null, // Format of message in log, default [%datetime%] %channel%.%level_name%: %message% %context% %extra%\n
+            null, // Datetime format
+            true, // allowInlineLineBreaks option, default false
+            true  // discard empty Square brackets in the end, default false
+        );
+
+        $debugHandler = new StreamHandler(GeneralFunctions::$PathLogFile, Logger::DEBUG);
+        $debugHandler->setFormatter($formatter);
+        $log->pushHandler($debugHandler);
+
+        if(is_a($description,'Exception')){
+            $log->$type($title);
+            $log->$type("Archivo: ".$description->getFile());
+            $log->$type("Line: ".$description->getLine());
+            $log->$type("Mensaje: ".$description->getMessage());
+            $log->$type(print_r($description->getTrace(), true));
+            echo "<table class='xdebug-error xe-uncaught-exception' dir='ltr' border='1' cellspacing='0' cellpadding='1'>" .
+                    $description->xdebug_message.
+                "</table>";
+        }else{
+            $log->$type($title, $description);
+        }
     }
 
     /**

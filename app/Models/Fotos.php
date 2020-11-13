@@ -30,11 +30,11 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
     {
         parent::__construct();
         $this->setId($foto['id'] ?? NULL);
-        $this->setNombre($foto['nombre'] ?? '');
-        $this->setDescripcion($foto['descripcion'] ?? 0.0);
-        $this->setProductosId($foto['productos_id'] ?? 0.0);
-        $this->setRuta($foto['ruta'] ?? 0);
-        $this->setEstado($foto['estado'] ?? '');
+        $this->setNombre($foto['nombre'] ?? NULL);
+        $this->setDescripcion($foto['descripcion'] ?? NULL);
+        $this->setProductosId($foto['productos_id'] ?? 0);
+        $this->setRuta($foto['ruta'] ?? '');
+        $this->setEstado($foto['estado'] ?? 'Activo');
         $this->setCreatedAt(!empty($foto['created_at']) ? Carbon::parse($foto['created_at']) : new Carbon());
         $this->setUpdatedAt(!empty($foto['updated_at']) ? Carbon::parse($foto['updated_at']) : new Carbon());
     }
@@ -201,8 +201,8 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
             ':id' =>    $this->getId(),
             ':nombre' =>   $this->getNombre(),
             ':descripcion' =>   $this->getDescripcion(),
-            ':ruta' =>  $this->getRuta(),
             ':productos_id' =>   $this->getProductosId(),
+            ':ruta' =>  $this->getRuta(),
             ':estado' =>   $this->getEstado(),
             ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
             ':updated_at' =>  $this->getUpdatedAt()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
@@ -218,8 +218,7 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
      */
     function insert(): ?bool
     {
-        $query = "INSERT INTO weber.fotos VALUES (:id, :nombre, :descripcion, :ruta, 
-                                :productos_id, :estado, :created_at, :updated_at)";
+        $query = "INSERT INTO weber.fotos VALUES (:id, :nombre, :descripcion, :productos_id, :ruta, :estado, :created_at, :updated_at)";
         return $this->save($query);
     }
 

@@ -4,6 +4,7 @@ require_once("../../partials/check_login.php");
 require("../../../app/Controllers/ProductosController.php");
 
 use App\Controllers\ProductosController;
+use App\Models\Productos;
 use Carbon\Carbon;
 
 $nameModel = "Producto";
@@ -85,12 +86,13 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                 <p>
                                 <?php
                                 $DataProducto = ProductosController::searchForID(["id" => $_GET["id"]]);
+                                /* @var $DataProducto Productos */
                                 if (!empty($DataProducto)) {
                                     ?>
                                     <div class="card-body">
                                         <!-- form start -->
-                                        <form class="form-horizontal" method="post" id="frmEditProducto"
-                                              name="frmEditProducto"
+                                        <form class="form-horizontal" method="post" id="frmEdit<?= $nameModel ?>"
+                                              name="frmEdit<?= $nameModel ?>"
                                               action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=edit">
                                             <input id="id" name="id" value="<?= $DataProducto->getId(); ?>"
                                                    hidden required="required" type="text">

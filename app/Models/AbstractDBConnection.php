@@ -170,4 +170,35 @@ abstract class AbstractDBConnection {
     public function deleteRow(string $query, array $params = []){
         return $this->insertRow($query, $params);
     }
+
+    /**
+     * Retorna un query preparado
+     *
+     *  $database->getStringQuery("DELETE FROM users WHERE id = ?", array("1"));
+     * @param string $query
+     * @param array $params
+     * @return string|null
+     */
+    public function getStringQuery(string $query, array $params) {
+        $keys = array();
+        $values = $params;
+
+        foreach ($params as $key => $value) {
+            if (is_string($key)) {
+                $keys[] = '/'.$key.'/';
+            } else {
+                $keys[] = '/[?]/';
+            }
+            if (is_string($value))
+                $values[$key] = "'" . $value . "'";
+
+            if (is_array($value))
+                $values[$key] = "'" . implode("','", $value) . "'";
+
+            if (is_null($value))
+                $values[$key] = 'NULL';
+        }
+        $query = preg_replace($keys, array_values($values), $query);
+        return $query;
+    }
 }

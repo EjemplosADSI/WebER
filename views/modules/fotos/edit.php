@@ -3,7 +3,9 @@ require("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 require("../../../app/Controllers/FotosController.php");
 
+use App\Controllers\FotosController;
 use App\Controllers\ProductosController;
+use App\Models\Fotos;
 use Carbon\Carbon;
 
 $nameModel = "Foto";
@@ -84,59 +86,84 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) { ?>
                                 <p>
                                 <?php
-                                $DataProducto = ProductosController::searchForID(["id" => $_GET["id"]]);
-                                if (!empty($DataProducto)) {
+                                $DataFoto = FotosController::searchForID(["id" => $_GET["id"]]);
+                                /* @var $DataFoto Fotos */
+                                if (!empty($DataFoto)) {
                                     ?>
                                     <div class="card-body">
                                         <!-- form start -->
-                                        <form class="form-horizontal" method="post" id="frmEditProducto"
-                                              name="frmEditProducto"
+                                        <form class="form-horizontal" enctype="multipart/form-data" method="post" id="frmEdit<?= $nameModel ?>"
+                                              name="frmEdit<?= $nameModel ?>"
                                               action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=edit">
-                                            <input id="id" name="id" value="<?= $DataProducto->getId(); ?>"
-                                                   hidden required="required" type="text">
-                                            <div class="form-group row">
-                                                <label for="nombres" class="col-sm-2 col-form-label">Nombres</label>
+                                            <div class="row">
                                                 <div class="col-sm-10">
-                                                    <input required type="text" class="form-control" id="nombre"
-                                                           name="nombre" value="<?= $DataProducto->getNombre(); ?>"
-                                                           placeholder="Ingrese el nombre">
+                                                    <input id="id" name="id" value="<?= $DataFoto->getId(); ?>"
+                                                           hidden required="required" type="text">
+                                                    <div class="form-group row">
+                                                        <label for="nombres" class="col-sm-2 col-form-label">Nombres</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="nombre"
+                                                                   name="nombre" value="<?= $DataFoto->getNombre(); ?>"
+                                                                   placeholder="Ingrese el nombre">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="descripcion" class="col-sm-2 col-form-label">Descripción</label>
+                                                        <div class="col-sm-10">
+                                                    <textarea class="form-control" id="descripcion" name="descripcion" rows="4"
+                                                              placeholder="Ingrese una descripción"><?= $DataFoto->getDescripcion()?></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="productos_id" class="col-sm-2 col-form-label">Producto</label>
+                                                        <div class="col-sm-10">
+                                                            <?= ProductosController::selectProducto(false,
+                                                                true,
+                                                                'productos_id',
+                                                                'productos_id',
+                                                                $DataFoto->getProductosId() ?? '',
+                                                                'form-control select2bs4 select2-info',
+                                                                "estado = 'Activo'")
+                                                            ?>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="estado" class="col-sm-2 col-form-label">Estado</label>
+                                                        <div class="col-sm-10">
+                                                            <select id="estado" name="estado" class="custom-select">
+                                                                <option <?= ($DataFoto->getEstado() == "Activo") ? "selected" : ""; ?>
+                                                                        value="Activo">Activo
+                                                                </option>
+                                                                <option <?= ($DataFoto->getEstado() == "Inactivo") ? "selected" : ""; ?>
+                                                                        value="Inactivo">Inactivo
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="precio" class="col-sm-2 col-form-label">Precio</label>
-                                                <div class="col-sm-10">
-                                                    <input required type="text" class="form-control" id="precio"
-                                                           name="precio" value="<?= $DataProducto->getPrecio(); ?>"
-                                                           placeholder="Ingrese el precio">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="porcentaje_ganancia" class="col-sm-2 col-form-label">Porcentaje de Ganancia</label>
-                                                <div class="col-sm-10">
-                                                    <input required type="number" min="1" step="0.1" class="form-control" id="porcentaje_ganancia" name="porcentaje_ganancia"
-                                                           value="<?= $DataProducto->getPorcentajeGanancia(); ?>" placeholder="Ingrese el porcentaje de ganancia">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="stock" class="col-sm-2 col-form-label">Stock</label>
-                                                <div class="col-sm-10">
-                                                    <input required type="number" minlength="6" class="form-control"
-                                                           id="stock" name="stock"
-                                                           value="<?= $DataProducto->getStock(); ?>"
-                                                           placeholder="Ingrese el stock">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="estado" class="col-sm-2 col-form-label">Estado</label>
-                                                <div class="col-sm-10">
-                                                    <select id="estado" name="estado" class="custom-select">
-                                                        <option <?= ($DataProducto->getEstado() == "Activo") ? "selected" : ""; ?>
-                                                                value="Activo">Activo
-                                                        </option>
-                                                        <option <?= ($DataProducto->getEstado() == "Inactivo") ? "selected" : ""; ?>
-                                                                value="Inactivo">Inactivo
-                                                        </option>
-                                                    </select>
+                                                <div class="col-sm-2">
+                                                    <div class="info-box">
+                                                        <div class="imageupload panel panel-primary">
+                                                            <div class="panel-heading clearfix">
+                                                                <h5 class="panel-title pull-left">Foto de Perfil</h5>
+                                                            </div>
+                                                            <div class="file-tab panel-body">
+                                                                <label class="btn btn-default btn-file">
+                                                                    <span>Seleccionar</span>
+                                                                    <!-- The file is stored here. -->
+                                                                    <input value="<?= $DataFoto->getRuta(); ?>" type="file" id="foto" name="foto">
+                                                                </label>
+                                                                <button type="button" class="btn btn-default">Eliminar</button>
+                                                            </div>
+                                                            <div class="panel-footer">
+                                                                <?php if(!empty($DataFoto->getRuta())){?>
+                                                                    <img id="thumbFoto" src="../../public/uploadFiles/photos/products/<?= $DataFoto->getRuta(); ?>"
+                                                                         alt="Sin Foto de Perfil" class="thumbnail" style="max-width: 250px; max-height: 250px">
+                                                                <?php } ?>
+                                                                <input type="hidden" name="nameFoto" id="nameFoto" value="<?= $DataFoto->getRuta() ?? '' ?>">
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <hr>
@@ -172,5 +199,12 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 </div>
 <!-- ./wrapper -->
 <?php require('../../partials/scripts.php'); ?>
+<script>
+    $(function() {
+        $('#foto').on("change", function(){
+            $( "#thumbFoto" ).remove();
+        });
+    });
+</script>
 </body>
 </html>

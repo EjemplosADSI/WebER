@@ -4,6 +4,7 @@ require_once("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 
 use App\Controllers\ProductosController;
+use App\Models\GeneralFunctions;
 use App\Models\Productos;
 
 $nameModel = "Producto";
@@ -96,7 +97,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <table id="tblProductos" class="datatable table table-bordered table-striped">
+                                        <table id="tbl<?= $pluralModel ?>" class="datatable table table-bordered table-striped">
                                             <thead>
                                             <tr>
                                                 <th>#</th>
@@ -116,19 +117,19 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                             foreach ($arrProductos as $producto) {
                                                 ?>
                                                 <tr>
-                                                    <td><?php echo $producto->getId(); ?></td>
-                                                    <td><?php echo $producto->getNombre(); ?></td>
-                                                    <td>$ <?php echo $producto->getPrecio(); ?></td>
-                                                    <td><?php echo $producto->getPorcentajeGanancia(); ?>%</td>
-                                                    <td>$ <?php echo $producto->getPrecioVenta(); ?></td>
-                                                    <td><?php echo $producto->getStock(); ?></td>
-                                                    <td><?php echo $producto->getEstado(); ?></td>
+                                                    <td><?= $producto->getId(); ?></td>
+                                                    <td><?= $producto->getNombre(); ?></td>
+                                                    <td><?= GeneralFunctions::formatCurrency($producto->getPrecio()); ?></td>
+                                                    <td><?= $producto->getPorcentajeGanancia(); ?>%</td>
+                                                    <td><?= GeneralFunctions::formatCurrency($producto->getPrecioVenta()); ?></td>
+                                                    <td><?= $producto->getStock(); ?></td>
+                                                    <td><?= $producto->getEstado(); ?></td>
                                                     <td>
-                                                        <a href="edit.php?id=<?php echo $producto->getId(); ?>"
+                                                        <a href="edit.php?id=<?= $producto->getId(); ?>"
                                                            type="button" data-toggle="tooltip" title="Actualizar"
                                                            class="btn docs-tooltip btn-primary btn-xs"><i
                                                                     class="fa fa-edit"></i></a>
-                                                        <a href="show.php?id=<?php echo $producto->getId(); ?>"
+                                                        <a href="show.php?id=<?= $producto->getId(); ?>"
                                                            type="button" data-toggle="tooltip" title="Ver"
                                                            class="btn docs-tooltip btn-warning btn-xs"><i
                                                                     class="fa fa-eye"></i></a>

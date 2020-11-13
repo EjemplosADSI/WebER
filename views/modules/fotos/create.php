@@ -74,28 +74,28 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                             <!-- /.card-header -->
                             <!-- form start -->
                             <div class="card-body">
-                                <form class="form-horizontal" method="post" id="frmCreateProducto"
+                                <form class="form-horizontal" enctype="multipart/form-data" method="post" id="frmCreateProducto"
                                       name="frmCreateProducto"
                                       action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=create">
                                     <div class="row">
-                                        <div class="col-sm-9">
+                                        <div class="col-sm-10">
                                             <div class="form-group row">
                                                 <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
                                                 <div class="col-sm-10">
-                                                    <input required type="text" class="form-control" id="nombre" name="nombre"
+                                                    <input type="text" class="form-control" id="nombre" name="nombre"
                                                            placeholder="Ingrese el nombre" value="<?= $frmSession['nombre'] ?? '' ?>">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="descripcion" class="col-sm-2 col-form-label">Descripción</label>
                                                 <div class="col-sm-10">
-                                            <textarea class="form-control" id="descripcion" name="descripcion" rows="4"
+                                                    <textarea class="form-control" id="descripcion" name="descripcion" rows="4"
                                                       placeholder="Ingrese una descripción"><?= $frmSession['precio'] ?? '' ?></textarea>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="productos_id" class="col-sm-2 col-form-label">Producto</label>
-                                                <div class="col-sm-5">
+                                                <div class="col-sm-10">
                                                     <?= ProductosController::selectProducto(false,
                                                         true,
                                                         'productos_id',
@@ -106,32 +106,18 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                     ?>
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
-                                                <label for="porcentaje_ganancia" class="col-sm-2 col-form-label">Porcentaje de Ganancia</label>
-                                                <div class="col-sm-10">
-                                                    <input required type="number" min="1" step="0.1" class="form-control" id="porcentaje_ganancia" name="porcentaje_ganancia"
-                                                           placeholder="Ingrese el porcentaje de ganancia" value="<?= $frmSession['porcentaje_ganancia'] ?? '' ?>">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="stock" class="col-sm-2 col-form-label">Stock</label>
-                                                <div class="col-sm-10">
-                                                    <input required type="number" minlength="6" class="form-control" id="stock"
-                                                           name="stock" placeholder="Ingrese el stock" value="<?= $frmSession['stock'] ?? '' ?>">
-                                                </div>
-                                            </div>
                                         </div>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-2">
                                             <div class="info-box">
                                                 <div class="imageupload panel panel-primary">
                                                     <div class="panel-heading clearfix">
-                                                        <h5 class="panel-title pull-left">Foto de Perfil</h5>
+                                                        <h5 class="panel-title pull-left">Seleccionar foto:</h5>
                                                     </div>
                                                     <div class="file-tab panel-body">
                                                         <label class="btn btn-default btn-file">
                                                             <span>Seleccionar</span>
                                                             <!-- The file is stored here. -->
-                                                            <input type="file" id="foto" name="foto">
+                                                            <input required type="file" id="foto" name="foto">
                                                         </label>
                                                         <button type="button" class="btn btn-default">Eliminar</button>
                                                     </div>

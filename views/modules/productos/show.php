@@ -4,6 +4,8 @@ require_once("../../partials/check_login.php");
 require("../../../app/Controllers/ProductosController.php");
 
 use App\Controllers\ProductosController;
+use App\Models\GeneralFunctions;
+use App\Models\Productos;
 
 $nameModel = "Producto";
 $pluralModel = $nameModel.'s';
@@ -69,6 +71,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                         <div class="card card-green">
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) {
                                 $DataProducto = ProductosController::searchForID(["id" => $_GET["id"]]);
+                                /* @var $DataProducto Productos */
                                 if (!empty($DataProducto)) {
                                     ?>
                                     <div class="card-header">
@@ -97,10 +100,10 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                         </p>
                                         <hr>
                                         <strong><i class="fas fa-dollar-sign mr-1"></i> Precio Base</strong>
-                                        <p class="text-muted"><?= $DataProducto->getPrecio() ?></p>
+                                        <p class="text-muted"><?= GeneralFunctions::formatCurrency($DataProducto->getPrecio()) ?></p>
                                         <hr>
                                         <strong><i class="fas fa-dollar-sign mr-1"></i> Precio Venta</strong>
-                                        <p class="text-muted"><?= $DataProducto->getPrecioVenta(); ?></p>
+                                        <p class="text-muted"><?= GeneralFunctions::formatCurrency($DataProducto->getPrecioVenta()); ?></p>
                                         <hr>
                                         <strong><i class="fas fa-dollar-sign mr-1"></i> Porcentaje Ganancia</strong>
                                         <p class="text-muted"><?= $DataProducto->getPorcentajeGanancia() ?>%</p>

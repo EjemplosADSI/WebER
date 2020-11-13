@@ -6,6 +6,7 @@ require("../../../app/Controllers/UsuariosController.php");
 use App\Controllers\DepartamentosController;
 use App\Controllers\MunicipiosController;
 use App\Controllers\UsuariosController;
+use App\Models\Usuarios;
 use Carbon\Carbon;
 
 $nameModel = "Usuario";
@@ -87,12 +88,13 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                 <p>
                                 <?php
                                 $DataUsuario = UsuariosController::searchForID(["id" => $_GET["id"]]);
+                                /* @var $DataUsuario Usuarios */
                                 if (!empty($DataUsuario)) {
                                     ?>
                                     <!-- form start -->
                                     <div class="card-body">
-                                        <form class="form-horizontal" enctype="multipart/form-data" method="post" id="frmEditUsuario"
-                                              name="frmEditUsuario"
+                                        <form class="form-horizontal" enctype="multipart/form-data" method="post" id="frmEdit<?= $nameModel ?>"
+                                              name="frmEdit<?= $nameModel ?>"
                                               action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=edit">
                                             <input id="id" name="id" value="<?= $DataUsuario->getId(); ?>" hidden
                                                    required="required" type="text">

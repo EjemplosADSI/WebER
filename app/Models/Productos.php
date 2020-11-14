@@ -180,7 +180,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getFotosProducto(): ?array
     {
-        $this->fotosProducto = Fotos::search("SELECT * FROM weber.fotos WHERE productos_id = ".$this->id);
+        $this->fotosProducto = Fotos::search("SELECT * FROM weber.fotos WHERE productos_id = ".$this->id." and estado = 'Activo'");
         return $this->fotosProducto;
     }
 

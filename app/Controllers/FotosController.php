@@ -74,6 +74,20 @@ class FotosController
         }
     }
 
+    static public function search (array $data){
+        try {
+            $result = Fotos::search($data['query']);
+            if (!empty($data['request']) and $data['request'] === 'ajax' and !empty($result)) {
+                header('Content-type: application/json; charset=utf-8');
+                $result = json_encode($result->jsonSerialize());
+            }
+            return $result;
+        } catch (\Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
+        }
+        return null;
+    }
+
     static public function searchForID (array $data){
         try {
             $result = Fotos::searchForId($data['id']);

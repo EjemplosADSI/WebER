@@ -8,6 +8,8 @@ use Carbon\Carbon;
 $nameModel = "Foto";
 $pluralModel = $nameModel.'s';
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+
+/* @var $_SESSION['idProducto'] Fotos */
 ?>
 <!DOCTYPE html>
 <html>
@@ -30,7 +32,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Crear una nueva <?= $nameModel ?></h1>
+                        <h1>Crear una nueva <?= $nameModel ?> <?= !empty($_SESSION['idProducto']) ? 'de '.$_SESSION['idProducto']->getNombre() : '' ?></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -100,7 +102,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                         true,
                                                         'productos_id',
                                                         'productos_id',
-                                                        '',
+                                                        !empty($_SESSION['idProducto']) ? $_SESSION['idProducto']->getId() : '',
                                                         'form-control select2bs4 select2-info',
                                                         "estado = 'Activo'")
                                                     ?>

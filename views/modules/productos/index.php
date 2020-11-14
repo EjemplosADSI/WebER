@@ -133,6 +133,10 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                            type="button" data-toggle="tooltip" title="Ver"
                                                            class="btn docs-tooltip btn-warning btn-xs"><i
                                                                     class="fa fa-eye"></i></a>
+                                                        <a href="../fotos/index.php?idProducto=<?= $producto->getId(); ?>"
+                                                           type="button" data-toggle="tooltip" title="Gestionar Fotos"
+                                                           class="btn docs-tooltip btn-success btn-xs"><i
+                                                                    class="fa fa-photo-video"></i></a>
                                                         <?php if ($producto->getEstado() != "Activo") { ?>
                                                             <a href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=activate&id=<?= $producto->getId(); ?>"
                                                                type="button" data-toggle="tooltip" title="Activar"

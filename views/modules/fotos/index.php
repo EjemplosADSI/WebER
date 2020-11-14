@@ -4,11 +4,16 @@ require_once("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 
 use App\Controllers\FotosController;
+use App\Controllers\ProductosController;
 use App\Models\Fotos;
 
 $nameModel = "Foto";
 $pluralModel = $nameModel.'s';
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+$modelProducto = NULL;
+
+/* Si llega el idProducto cargar los datos del producto */
+$_SESSION['idProducto'] = !empty($_GET['idProducto']) ? ProductosController::searchForID(['id' => $_GET['idProducto']]) : NULL;
 ?>
 <!DOCTYPE html>
 <html>
@@ -69,7 +74,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                         <!-- Default box -->
                         <div class="card card-dark">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-boxes"></i> &nbsp; Gestionar <?= $pluralModel ?></h3>
+                                <h3 class="card-title"><i class="fas fa-boxes"></i> &nbsp; Gestionar <?= $pluralModel ?> <?= !empty($_SESSION['idProducto']) ? 'de '.$_SESSION['idProducto']->getNombre() : '' ?></h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                             data-source="index.php" data-source-selector="#card-refresh-content"
@@ -90,7 +95,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                     <div class="col-auto">
                                         <a role="button" href="create.php" class="btn btn-primary float-right"
                                            style="margin-right: 5px;">
-                                            <i class="fas fa-plus"></i> Crear <?= $nameModel ?>
+                                            <i class="fas fa-plus"></i> Agregar <?= $nameModel ?>
                                         </a>
                                     </div>
                                 </div>
@@ -110,7 +115,13 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                             </thead>
                                             <tbody>
                                             <?php
-                                            $arrFotos = FotosController::getAll();
+                                            $arrFotos = array();
+                                            if(!empty($_SESSION['idProducto'])){
+                                                $arrFotos = $_SESSION['idProducto']->getFotosProducto();
+                                            }else{
+                                                $arrFotos = FotosController::getAll();
+                                            }
+
                                             /* @var $arrFotos Fotos[] */
                                             foreach ($arrFotos as $foto) {
                                                 ?>

@@ -21,7 +21,7 @@ class UsuariosController
         $this->dataUsuario['documento'] = $_FORM['documento'] ?? NULL;
         $this->dataUsuario['telefono'] = $_FORM['telefono'] ?? NULL;
         $this->dataUsuario['direccion'] = $_FORM['direccion'] ?? NULL;
-        $this->dataUsuario['municipios_id'] = $_FORM['municipios_id'] ?? NULL;
+        $this->dataUsuario['municipio_id'] = $_FORM['municipio_id'] ?? NULL;
         $this->dataUsuario['fecha_nacimiento'] = !empty($_FORM['fecha_nacimiento']) ? Carbon::parse($_FORM['fecha_nacimiento']) : new Carbon();
         $this->dataUsuario['user'] = $_FORM['user'] ?? NULL;
         $this->dataUsuario['password'] = $_FORM['password'] ?? NULL;

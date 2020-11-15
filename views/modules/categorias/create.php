@@ -1,11 +1,9 @@
 <?php
 require("../../partials/routes.php");
 require_once("../../partials/check_login.php");
-
-use App\Controllers\CategoriasController;
 use Carbon\Carbon;
 
-$nameModel = "Producto";
+$nameModel = "Categoria";
 $pluralModel = $nameModel.'s';
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 ?>
@@ -30,7 +28,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Crear un Nuevo <?= $nameModel ?></h1>
+                        <h1>Crear una nueva <?= $nameModel ?></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -60,7 +58,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                         <!-- Horizontal Form -->
                         <div class="card card-info">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-box"></i> &nbsp; Información del <?= $nameModel ?></h3>
+                                <h3 class="card-title"><i class="fas fa-box"></i> &nbsp; Información de la <?= $nameModel ?></h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                             data-source="create.php" data-source-selector="#card-refresh-content"
@@ -85,37 +83,10 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="precio" class="col-sm-2 col-form-label">Precio</label>
+                                        <label for="descripcion" class="col-sm-2 col-form-label">Descripción</label>
                                         <div class="col-sm-10">
-                                            <input required type="number" class="form-control" id="precio" name="precio"
-                                                   placeholder="Ingrese el precio" value="<?= $frmSession['precio'] ?? '' ?>">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="porcentaje_ganancia" class="col-sm-2 col-form-label">Porcentaje de Ganancia</label>
-                                        <div class="col-sm-10">
-                                            <input required type="number" min="1" step="0.1" class="form-control" id="porcentaje_ganancia" name="porcentaje_ganancia"
-                                                   placeholder="Ingrese el porcentaje de ganancia" value="<?= $frmSession['porcentaje_ganancia'] ?? '' ?>">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="stock" class="col-sm-2 col-form-label">Stock</label>
-                                        <div class="col-sm-10">
-                                            <input required type="number" minlength="6" class="form-control" id="stock"
-                                                   name="stock" placeholder="Ingrese el stock" value="<?= $frmSession['stock'] ?? '' ?>">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="categoria_id" class="col-sm-2 col-form-label">Categoria</label>
-                                        <div class="col-sm-10 ">
-                                            <?= CategoriasController::selectCategoria(false,
-                                                true,
-                                                'categoria_id',
-                                                'categoria_id',
-                                                (!empty($frmSession['categoria_id'])) ? $frmSession['categoria_id'] : '',
-                                                'form-control select2bs4 select2-info',
-                                                "estado = 'Activo'")
-                                            ?>
+                                            <textarea class="form-control" id="descripcion" name="descripcion" rows="4"
+                                                      placeholder="Ingrese una descripción"><?= $frmSession['descripcion'] ?? '' ?></textarea>
                                         </div>
                                     </div>
                                     <hr>

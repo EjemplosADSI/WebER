@@ -18,7 +18,7 @@ class FotosController
         $this->dataFotos['id'] = $_FORM['id'] ?? NULL;
         $this->dataFotos['nombre'] = $_FORM['nombre'] ?? NULL;
         $this->dataFotos['descripcion'] = $_FORM['descripcion'] ?? NULL;
-        $this->dataFotos['productos_id'] = $_FORM['productos_id'] ?? 0;
+        $this->dataFotos['producto_id'] = $_FORM['producto_id'] ?? 0;
         $this->dataFotos['ruta'] = $_FORM['nameFoto'] ?? '';
         $this->dataFotos['estado'] = $_FORM['estado'] ?? 'Activo';
     }

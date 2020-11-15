@@ -77,8 +77,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <!-- form start -->
-                                <form class="form-horizontal" enctype="multipart/form-data" method="post" id="frmCreateUsuario"
-                                      name="frmCreateUsuario"
+                                <form class="form-horizontal" enctype="multipart/form-data" method="post" id="frmCreate<?= $nameModel ?>"
+                                      name="frmCreate<?= $nameModel ?>"
                                       action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=create">
                                     <div class="row">
                                         <div class="col-sm-10">
@@ -135,7 +135,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="municipios_id" class="col-sm-2 col-form-label">Municipio</label>
+                                                <label for="municipio_id" class="col-sm-2 col-form-label">Municipio</label>
                                                 <div class="col-sm-5">
                                                     <?= DepartamentosController::selectDepartamentos(false,
                                                         true,
@@ -149,9 +149,9 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 <div class="col-sm-5 ">
                                                     <?= MunicipiosController::selectMunicipios(false,
                                                         true,
-                                                        'municipios_id',
-                                                        'municipios_id',
-                                                        (!empty($frmSession['municipios_id'])) ? $frmSession['municipios_id'] : '',
+                                                        'municipio_id',
+                                                        'municipio_id',
+                                                        (!empty($frmSession['municipio_id'])) ? $frmSession['municipio_id'] : '',
                                                         'form-control select2bs4 select2-info',
                                                         "departamento_id = 15 and estado = 'Activo'")
                                                     ?>
@@ -248,15 +248,15 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
             $.post("../../../app/Controllers/MainController.php?controller=Municipios&action=selectMunicipios&request=ajax", {
                 isMultiple: false,
                 isRequired: true,
-                id: "municipios_id",
-                nombre: "municipios_id",
+                id: "municipio_id",
+                nombre: "municipio_id",
                 defaultValue: "",
                 class: "form-control select2bs4 select2-info",
                 where: "departamento_id = "+$('#departamento_id').val()+" and estado = 'Activo'"
             }, function(e) {
                 if (e)
                     console.log(e);
-                    $("#municipios_id").html(e).select2({ height: '100px'});
+                    $("#municipio_id").html(e).select2({ height: '100px'});
             });
         });
         $('.btn-file span').html('Seleccionar');

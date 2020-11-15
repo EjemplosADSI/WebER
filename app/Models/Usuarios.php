@@ -16,7 +16,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     private int $documento;
     private int $telefono;
     private string $direccion;
-    private int $municipios_id;
+    private int $municipio_id;
     private Carbon $fecha_nacimiento;
     private ?string $user;
     private ?string $password;
@@ -45,7 +45,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
         $this->setDocumento($usuario['documento'] ?? 0);
         $this->setTelefono($usuario['telefono'] ?? 0);
         $this->setDireccion($usuario['direccion'] ?? '');
-        $this->setMunicipiosId($usuario['municipios_id'] ?? 0);
+        $this->setMunicipioId($usuario['municipio_id'] ?? 0);
         $this->setFechaNacimiento( !empty($usuario['fecha_nacimiento']) ? Carbon::parse($usuario['fecha_nacimiento']) : new Carbon());
         $this->setUser($usuario['user'] ?? null);
         $this->setPassword($usuario['password'] ?? null);
@@ -84,7 +84,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getNombres() : string
     {
-        return $this->nombres;
+        return ucfirst($this->nombres);
     }
 
     /**
@@ -92,8 +92,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function setNombres(string $nombres): void
     {
-
-        $this->nombres = trim($nombres);
+        $this->nombres = trim(mb_strtolower($nombres, 'UTF-8'));
     }
 
     /**
@@ -101,7 +100,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getApellidos() : string
     {
-        return $this->apellidos;
+        return ucfirst($this->apellidos);
     }
 
     /**
@@ -109,7 +108,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function setApellidos(string $apellidos): void
     {
-        $this->apellidos = $apellidos;
+        $this->apellidos = trim(mb_strtolower($apellidos, 'UTF-8'));
     }
 
     /**
@@ -179,17 +178,17 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return int
      */
-    public function getMunicipiosId(): int
+    public function getMunicipioId(): int
     {
-        return $this->municipios_id;
+        return $this->municipio_id;
     }
 
     /**
-     * @param int $municipios_id
+     * @param int $municipio_id
      */
-    public function setMunicipiosId(int $municipios_id): void
+    public function setMunicipioId(int $municipio_id): void
     {
-        $this->municipios_id = $municipios_id;
+        $this->municipio_id = $municipio_id;
     }
 
     /**
@@ -325,9 +324,8 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getMunicipio(): ?Municipios
     {
-
-        if(!empty($this->municipios_id)){
-            $this->municipio = Municipios::searchForId($this->municipios_id) ?? new Municipios();
+        if(!empty($this->municipio_id)){
+            $this->municipio = Municipios::searchForId($this->municipio_id) ?? new Municipios();
             return $this->municipio;
         }
         return NULL;
@@ -365,7 +363,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
             ':documento' =>   $this->getDocumento(),
             ':telefono' =>   $this->getTelefono(),
             ':direccion' =>   $this->getDireccion(),
-            ':municipios_id' =>   $this->getMunicipiosId(),
+            ':municipio_id' =>   $this->getMunicipioId(),
             ':fecha_nacimiento' =>  $this->getFechaNacimiento()->toDateString(), //YYYY-MM-DD
             ':user' =>  $this->getUser(),
             ':password' =>   $this->getPassword(),
@@ -388,7 +386,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     {
         $query = "INSERT INTO weber.usuarios VALUES (
             :id,:nombres,:apellidos,:tipo_documento,:documento,
-            :telefono,:direccion,:municipios_id,:fecha_nacimiento,:user,
+            :telefono,:direccion,:municipio_id,:fecha_nacimiento,:user,
             :password,:foto,:rol,:estado,:created_at,:updated_at
         )";
         return $this->save($query);
@@ -402,7 +400,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
         $query = "UPDATE weber.usuarios SET 
             nombres = :nombres, apellidos = :apellidos, tipo_documento = :tipo_documento, 
             documento = :documento, telefono = :telefono, direccion = :direccion, 
-            municipios_id = :municipios_id, fecha_nacimiento = :fecha_nacimiento, user = :user,  
+            municipio_id = :municipio_id, fecha_nacimiento = :fecha_nacimiento, user = :user,  
             password = :password, foto = :foto, rol = :rol, estado = :estado, created_at = :created_at, 
             updated_at = :updated_at WHERE id = :id";
         return $this->save($query);
@@ -540,7 +538,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
             'documento' => $this->getDocumento(),
             'telefono' => $this->getTelefono(),
             'direccion' => $this->getDireccion(),
-            'municipios_id' => $this->getMunicipiosId(),
+            'municipio_id' => $this->getMunicipioId(),
             'fecha_nacimiento' => $this->getFechaNacimiento()->toDateString(),
             'user' => $this->getUser(),
             'password' => $this->getPassword(),

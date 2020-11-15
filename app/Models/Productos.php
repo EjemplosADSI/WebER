@@ -14,28 +14,31 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
     private float $precio;
     private float $porcentaje_ganancia;
     private int $stock;
+    private int $categoria_id;
     private string $estado;
     private Carbon $created_at;
     private Carbon $updated_at;
 
     /* Relaciones */
+    private ?Categorias $categoria;
     private ?array $fotosProducto;
 
     /**
      * Producto constructor. Recibe un array asociativo
-     * @param array $producto
+     * @param array $categoria
      */
-    public function __construct(array $producto = [])
+    public function __construct(array $categoria = [])
     {
         parent::__construct();
-        $this->setId($producto['id'] ?? NULL);
-        $this->setNombre($producto['nombre'] ?? '');
-        $this->setPrecio($producto['precio'] ?? 0.0);
-        $this->setPorcentajeGanancia($producto['porcentaje_ganancia'] ?? 0.0);
-        $this->setStock($producto['stock'] ?? 0);
-        $this->setEstado($producto['estado'] ?? '');
-        $this->setCreatedAt(!empty($producto['created_at']) ? Carbon::parse($producto['created_at']) : new Carbon());
-        $this->setUpdatedAt(!empty($producto['updated_at']) ? Carbon::parse($producto['updated_at']) : new Carbon());
+        $this->setId($categoria['id'] ?? NULL);
+        $this->setNombre($categoria['nombre'] ?? '');
+        $this->setPrecio($categoria['precio'] ?? 0.0);
+        $this->setPorcentajeGanancia($categoria['porcentaje_ganancia'] ?? 0.0);
+        $this->setStock($categoria['stock'] ?? 0);
+        $this->setCategoriaId($categoria['categoria_id'] ?? 0);
+        $this->setEstado($categoria['estado'] ?? '');
+        $this->setCreatedAt(!empty($categoria['created_at']) ? Carbon::parse($categoria['created_at']) : new Carbon());
+        $this->setUpdatedAt(!empty($categoria['updated_at']) ? Carbon::parse($categoria['updated_at']) : new Carbon());
     }
 
     function __destruct()
@@ -74,7 +77,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function setNombre(string $nombre): void
     {
-        $this->nombre = trim(strtolower($nombre));
+        $this->nombre = trim(mb_strtolower($nombre, 'UTF-8'));
     }
 
     /**
@@ -123,6 +126,22 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
     public function setStock(int $stock): void
     {
         $this->stock = $stock;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCategoriaId(): int
+    {
+        return $this->categoria_id;
+    }
+
+    /**
+     * @param int $categoria_id
+     */
+    public function setCategoriaId(int $categoria_id): void
+    {
+        $this->categoria_id = $categoria_id;
     }
 
     /**
@@ -175,12 +194,24 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
 
     /* Relaciones */
     /**
+     * @return Categorias
+     */
+    public function getCategoria(): ?Categorias
+    {
+        if(!empty($this->categoria_id)){
+            $this->categoria = Categorias::searchForId($this->categoria_id) ?? new Categorias();
+            return $this->categoria;
+        }
+        return NULL;
+    }
+
+    /**
      * retorna un array de fotos que pertenecen al producto
      * @return array
      */
     public function getFotosProducto(): ?array
     {
-        $this->fotosProducto = Fotos::search("SELECT * FROM weber.fotos WHERE productos_id = ".$this->id." and estado = 'Activo'");
+        $this->fotosProducto = Fotos::search("SELECT * FROM weber.fotos WHERE producto_id = ".$this->id." and estado = 'Activo'");
         return $this->fotosProducto;
     }
 
@@ -192,6 +223,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
             ':precio' =>   $this->getPrecio(),
             ':porcentaje_ganancia' =>  $this->getPorcentajeGanancia(),
             ':stock' =>   $this->getStock(),
+            ':categoria_id' =>   $this->getCategoriaId(),
             ':estado' =>   $this->getEstado(),
             ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
             ':updated_at' =>  $this->getUpdatedAt()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
@@ -207,7 +239,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
      */
     function insert(): ?bool
     {
-        $query = "INSERT INTO weber.productos VALUES (:id,:nombre,:precio,:porcentaje_ganancia,:stock,:estado,:created_at,:updated_at)";
+        $query = "INSERT INTO weber.productos VALUES (:id,:nombre,:precio,:porcentaje_ganancia,:stock,:categoria_id,:estado,:created_at,:updated_at)";
         return $this->save($query);
     }
 
@@ -218,7 +250,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
     {
         $query = "UPDATE weber.productos SET 
             nombre = :nombre, precio = :precio, porcentaje_ganancia = :porcentaje_ganancia, 
-            stock = :stock, estado = :estado, created_at = :created_at, 
+            stock = :stock, categoria_id = :categoria_id, estado = :estado, created_at = :created_at, 
             updated_at = :updated_at WHERE id = :id";
         return $this->save($query);
     }
@@ -274,7 +306,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
                 $Producto->Disconnect();
                 return ($getrow) ? new Productos($getrow) : null;
             }else{
-                throw new Exception('Id de usuario Invalido');
+                throw new Exception('Id de producto Invalido');
             }
         } catch (Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
@@ -339,6 +371,7 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
             'porcentaje_ganancias' => $this->getPorcentajeGanancia(),
             'precio_venta' => $this->getPrecioVenta(),
             'stock' => $this->getStock(),
+            'categoria' => $this->getCategoria()->jsonSerialize(),
             'estado' => $this->getEstado(),
         ];
     }

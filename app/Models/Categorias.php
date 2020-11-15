@@ -7,36 +7,31 @@ use Carbon\Carbon;
 use Exception;
 use JsonSerializable;
 
-
-class Fotos extends AbstractDBConnection implements Model, JsonSerializable
+class Categorias extends AbstractDBConnection implements Model, JsonSerializable
 {
     private ?int $id;
-    private ?string $nombre;
-    private ?string $descripcion;
-    private int $producto_id;
-    private string $ruta;
+    private string $nombre;
+    private string $descripcion;
     private string $estado;
     private Carbon $created_at;
     private Carbon $updated_at;
 
     /* Relaciones */
-    private Productos $producto;
+    private ?array $productosCategoria;
 
     /**
-     * Fotos constructor.
-     * @param array $foto
+     * Categorias constructor. Recibe un array asociativo
+     * @param array $categoria
      */
-    public function __construct(array $foto = [])
+    public function __construct(array $categoria = [])
     {
         parent::__construct();
-        $this->setId($foto['id'] ?? NULL);
-        $this->setNombre($foto['nombre'] ?? NULL);
-        $this->setDescripcion($foto['descripcion'] ?? NULL);
-        $this->setProductoId($foto['producto_id'] ?? 0);
-        $this->setRuta($foto['ruta'] ?? '');
-        $this->setEstado($foto['estado'] ?? 'Activo');
-        $this->setCreatedAt(!empty($foto['created_at']) ? Carbon::parse($foto['created_at']) : new Carbon());
-        $this->setUpdatedAt(!empty($foto['updated_at']) ? Carbon::parse($foto['updated_at']) : new Carbon());
+        $this->setId($categoria['id'] ?? NULL);
+        $this->setNombre($categoria['nombre'] ?? '');
+        $this->setDescripcion($categoria['descripcion'] ?? '');
+        $this->setEstado($categoria['estado'] ?? '');
+        $this->setCreatedAt(!empty($categoria['created_at']) ? Carbon::parse($categoria['created_at']) : new Carbon());
+        $this->setUpdatedAt(!empty($categoria['updated_at']) ? Carbon::parse($categoria['updated_at']) : new Carbon());
     }
 
     function __destruct()
@@ -49,7 +44,7 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return int|null
      */
-    public function getId(): ?int
+    public function getId() : ?int
     {
         return $this->id;
     }
@@ -63,79 +58,47 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
     }
 
     /**
-     * @return string|null
+     * @return mixed|string
      */
-    public function getNombre(): ?string
+    public function getNombre() : string
     {
         return ucfirst($this->nombre);
     }
 
     /**
-     * @param string|null $nombre
+     * @param mixed|string $nombre
      */
-    public function setNombre(?string $nombre): void
+    public function setNombre(string $nombre): void
     {
         $this->nombre = trim(mb_strtolower($nombre, 'UTF-8'));
     }
 
     /**
-     * @return string|null
+     * @return string|mixed
      */
-    public function getDescripcion(): ?string
+    public function getDescripcion() : string
     {
         return $this->descripcion;
     }
 
     /**
-     * @param string|null $descripcion
+     * @param string|mixed $descripcion
      */
-    public function setDescripcion(?string $descripcion): void
+    public function setDescripcion(string $descripcion): void
     {
         $this->descripcion = $descripcion;
     }
 
     /**
-     * @return int
+     * @return mixed|string
      */
-    public function getProductoId(): int
-    {
-        return $this->producto_id;
-    }
-
-    /**
-     * @param int $producto_id
-     */
-    public function setProductoId(int $producto_id): void
-    {
-        $this->producto_id = $producto_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRuta(): string
-    {
-        return $this->ruta;
-    }
-
-    /**
-     * @param string $ruta
-     */
-    public function setRuta(string $ruta): void
-    {
-        $this->ruta = $ruta;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEstado(): string
+    public function getEstado() : string
     {
         return $this->estado;
     }
 
     /**
-     * @param string $estado
+     * @param mixed|string $estado
      */
     public function setEstado(string $estado): void
     {
@@ -174,25 +137,15 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
         $this->updated_at = $updated_at;
     }
 
+    /* Relaciones */
     /**
-     * @return Productos
-     * @throws Exception
+     * retorna un array de productos que pertenecen a una categoria
+     * @return array
      */
-    public function getProducto(): ?Productos
+    public function getProductosCategoria(): ?array
     {
-        if(!empty($this->producto_id)){
-            $this->producto = Productos::searchForId($this->producto_id) ?? new Productos();
-            return $this->producto;
-        }
-        return null;
-    }
-
-    /**
-     * @param Productos $producto
-     */
-    public function setProducto(Productos $producto): void
-    {
-        $this->producto = $producto;
+        $this->productosCategoria = Productos::search("SELECT * FROM weber.productos WHERE categoria_id = ".$this->id." and estado = 'Activo'");
+        return $this->productosCategoria;
     }
 
     protected function save(string $query): ?bool
@@ -201,8 +154,6 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
             ':id' =>    $this->getId(),
             ':nombre' =>   $this->getNombre(),
             ':descripcion' =>   $this->getDescripcion(),
-            ':producto_id' =>   $this->getProductoId(),
-            ':ruta' =>  $this->getRuta(),
             ':estado' =>   $this->getEstado(),
             ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
             ':updated_at' =>  $this->getUpdatedAt()->toDateTimeString() //YYYY-MM-DD HH:MM:SS
@@ -218,18 +169,18 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
      */
     function insert(): ?bool
     {
-        $query = "INSERT INTO weber.fotos VALUES (:id, :nombre, :descripcion, :producto_id, :ruta, :estado, :created_at, :updated_at)";
+        $query = "INSERT INTO weber.categorias VALUES (:id,:nombre,:descripcion,:estado,:created_at,:updated_at)";
         return $this->save($query);
     }
 
     /**
      * @return bool|null
      */
-    function update(): ?bool
+    public function update(): ?bool
     {
-        $query = "UPDATE weber.fotos SET 
-            nombre = :nombre, descripcion = :descripcion, producto_id = :producto_id, 
-            ruta = :ruta, estado = :estado, created_at = :created_at, 
+        $query = "UPDATE weber.categorias SET 
+            nombre = :nombre, descripcion = :descripcion,
+            estado = :estado, created_at = :created_at, 
             updated_at = :updated_at WHERE id = :id";
         return $this->save($query);
     }
@@ -238,7 +189,7 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
      * @return bool
      * @throws Exception
      */
-    function deleted() : bool
+    public function deleted(): bool
     {
         $this->setEstado("Inactivo"); //Cambia el estado del Usuario
         return $this->update();                    //Guarda los cambios..
@@ -246,24 +197,47 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
 
     /**
      * @param $query
-     * @return Usuarios|array
+     * @return Categorias|array
      * @throws Exception
      */
-    static function search($query): ?array
+    public static function search($query) : ?array
     {
         try {
-            $arrFotos = array();
-            $tmp = new Fotos();
+            $arrCategorias = array();
+            $tmp = new Categorias();
             $tmp->Connect();
             $getrows = $tmp->getRows($query);
             $tmp->Disconnect();
 
             foreach ($getrows as $valor) {
-                $Foto = new Fotos($valor);
-                array_push($arrFotos, $Foto);
-                unset($Foto);
+                $Categoria = new Categorias($valor);
+                array_push($arrCategorias, $Categoria);
+                unset($Categoria);
             }
-            return $arrFotos;
+            return $arrCategorias;
+        } catch (Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
+        }
+        return null;
+    }
+
+    /**
+     * @param $id
+     * @return Categorias
+     * @throws Exception
+     */
+    public static function searchForId($id) : ?Categorias
+    {
+        try {
+            if ($id > 0) {
+                $Categoria = new Categorias();
+                $Categoria->Connect();
+                $getrow = $Categoria->getRow("SELECT * FROM weber.categorias WHERE id =?", array($id));
+                $Categoria->Disconnect();
+                return ($getrow) ? new Categorias($getrow) : null;
+            }else{
+                throw new Exception('Id de categoria Invalido');
+            }
         } catch (Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }
@@ -274,27 +248,25 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
      * @return array
      * @throws Exception
      */
-    static function getAll(): ?array
+    public static function getAll() : ?array
     {
-        return Fotos::search("SELECT * FROM weber.fotos");
+        return Categorias::search("SELECT * FROM weber.categorias");
     }
 
-    static function searchForId(int $id): ?object
+    /**
+     * @param $nombre
+     * @return bool
+     * @throws Exception
+     */
+    public static function categoriaRegistrada($nombre): bool
     {
-        try {
-            if ($id > 0) {
-                $Foto = new Fotos();
-                $Foto->Connect();
-                $getrow = $Foto->getRow("SELECT * FROM weber.fotos WHERE id =?", array($id));
-                $Foto->Disconnect();
-                return ($getrow) ? new Fotos($getrow) : null;
-            }else{
-                throw new Exception('Id de foto Invalido');
-            }
-        } catch (Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+        $nombre = trim(strtolower($nombre));
+        $result = Categorias::search("SELECT id FROM weber.categorias where nombre = '" . $nombre. "'");
+        if ( !empty($result) && count ($result) > 0 ) {
+            return true;
+        } else {
+            return false;
         }
-        return null;
     }
 
     /**
@@ -302,8 +274,9 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function __toString() : string
     {
-        return "Nombre: $this->nombre, Descripcion: $this->descripcion, producto_id: $this->producto_id, Ruta: $this->ruta, Estado: $this->estado";
+        return "Nombre: $this->nombre, Descripción: $this->descripcion, Estado: $this->estado";
     }
+
 
     /**
      * Specify data which should be serialized to JSON
@@ -317,8 +290,6 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
         return [
             'nombre' => $this->getNombre(),
             'descripcion' => $this->getDescripcion(),
-            'producto_id' => $this->getProductoId(),
-            'ruta' => $this->getRuta(),
             'estado' => $this->getEstado(),
         ];
     }

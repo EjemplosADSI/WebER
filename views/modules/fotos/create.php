@@ -76,8 +76,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                             <!-- /.card-header -->
                             <!-- form start -->
                             <div class="card-body">
-                                <form class="form-horizontal" enctype="multipart/form-data" method="post" id="frmCreateProducto"
-                                      name="frmCreateProducto"
+                                <form class="form-horizontal" enctype="multipart/form-data" method="post" id="frmCreate<?= $nameModel ?>"
+                                      name="frmCreate<?= $nameModel ?>"
                                       action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=create">
                                     <div class="row">
                                         <div class="col-sm-10">
@@ -92,16 +92,16 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 <label for="descripcion" class="col-sm-2 col-form-label">Descripción</label>
                                                 <div class="col-sm-10">
                                                     <textarea class="form-control" id="descripcion" name="descripcion" rows="4"
-                                                      placeholder="Ingrese una descripción"><?= $frmSession['precio'] ?? '' ?></textarea>
+                                                      placeholder="Ingrese una descripción"><?= $frmSession['descripcion'] ?? '' ?></textarea>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="productos_id" class="col-sm-2 col-form-label">Producto</label>
+                                                <label for="producto_id" class="col-sm-2 col-form-label">Producto</label>
                                                 <div class="col-sm-10">
                                                     <?= ProductosController::selectProducto(false,
                                                         true,
-                                                        'productos_id',
-                                                        'productos_id',
+                                                        'producto_id',
+                                                        'producto_id',
                                                         !empty($_SESSION['idProducto']) ? $_SESSION['idProducto']->getId() : '',
                                                         'form-control select2bs4 select2-info',
                                                         "estado = 'Activo'")

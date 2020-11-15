@@ -29,16 +29,16 @@ class Ventas extends AbstractDBConnection
      * @param float $monto
      * @param string $estado
      */
-    public function __construct($producto = array())
+    public function __construct($categoria = array())
     {
         parent::__construct();
-        $this->id = $producto['id'] ?? 0;
-        $this->numero_serie = $producto['numero_serie'] ?? '';
-        $this->cliente_id = $producto['cliente_id'] ?? null;
-        $this->empleado_id = $producto['empleado_id'] ?? null;
-        $this->fecha_venta = $producto['fecha_venta'] ?? new Carbon();
-        $this->monto = $producto['monto'] ?? 0.0;
-        $this->estado = $producto['estado'] ?? '';
+        $this->id = $categoria['id'] ?? 0;
+        $this->numero_serie = $categoria['numero_serie'] ?? '';
+        $this->cliente_id = $categoria['cliente_id'] ?? null;
+        $this->empleado_id = $categoria['empleado_id'] ?? null;
+        $this->fecha_venta = $categoria['fecha_venta'] ?? new Carbon();
+        $this->monto = $categoria['monto'] ?? 0.0;
+        $this->estado = $categoria['estado'] ?? '';
     }
 
     /**

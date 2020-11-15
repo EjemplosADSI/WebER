@@ -167,7 +167,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="municipios_id" class="col-sm-2 col-form-label">Municipio</label>
+                                                        <label for="municipio_id" class="col-sm-2 col-form-label">Municipio</label>
                                                         <div class="col-sm-5">
                                                             <?= DepartamentosController::selectDepartamentos(false,
                                                                 true,
@@ -181,9 +181,9 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                         <div class="col-sm-5 ">
                                                             <?= MunicipiosController::selectMunicipios(false,
                                                                 true,
-                                                                'municipios_id',
-                                                                'municipios_id',
-                                                                (!empty($DataUsuario)) ? $DataUsuario->getMunicipio()->getId() : '',
+                                                                'municipio_id',
+                                                                'municipio_id',
+                                                                (!empty($DataUsuario)) ? $DataUsuario->getMunicipioId() : '',
                                                                 'form-control select2bs4 select2-info',
                                                                 "departamento_id = ".$DataUsuario->getMunicipio()->getDepartamento()->getId()." and estado = 'Activo'")
                                                             ?>
@@ -298,15 +298,15 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
             $.post("../../../app/Controllers/MainController.php?controller=Municipios&action=selectMunicipios&request=ajax", {
                 isMultiple: false,
                 isRequired: true,
-                id: "municipios_id",
-                nombre: "municipios_id",
+                id: "municipio_id",
+                nombre: "municipio_id",
                 defaultValue: "",
                 class: "form-control select2bs4 select2-info",
                 where: "departamento_id = "+$('#departamento_id').val()+" and estado = 'Activo'"
             }, function(e) {
                 if (e)
                     console.log(e);
-                $("#municipios_id").html(e).select2({ height: '100px'});
+                $("#municipio_id").html(e).select2({ height: '100px'});
             })
         });
         $('#foto').on("change", function(){

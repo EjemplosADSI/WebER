@@ -21,14 +21,14 @@ class DetalleVentas extends AbstractDBConnection
      * @param int $cantidad
      * @param float $precio_venta
      */
-    public function __construct($producto = array())
+    public function __construct($categoria = array())
     {
         parent::__construct();
-        $this->id = $producto['id'] ?? 0;
-        $this->ventas_id = $producto['ventas_id'] ?? new Ventas();
-        $this->producto_id = $producto['producto_id'] ?? new Productos();
-        $this->cantidad = $producto['cantidad'] ?? 0;
-        $this->precio_venta = $producto['precio_venta'] ?? 0.0;
+        $this->id = $categoria['id'] ?? 0;
+        $this->ventas_id = $categoria['ventas_id'] ?? new Ventas();
+        $this->producto_id = $categoria['producto_id'] ?? new Productos();
+        $this->cantidad = $categoria['cantidad'] ?? 0;
+        $this->precio_venta = $categoria['precio_venta'] ?? 0.0;
     }
 
     /**

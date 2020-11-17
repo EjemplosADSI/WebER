@@ -3,13 +3,19 @@ require_once("../../../app/Controllers/UsuariosController.php");
 require_once("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 
+use App\Controllers\CategoriasController;
 use App\Controllers\ProductosController;
 use App\Models\GeneralFunctions;
 use App\Models\Productos;
+use App\Models\Categorias;
 
 $nameModel = "Producto";
 $pluralModel = $nameModel.'s';
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+
+/* Si llega el idCategoria cargar los datos de esa categoria */
+/* @var $_SESSION['idCategoria'] Categorias */
+$_SESSION['idCategoria'] = !empty($_GET['idCategoria']) ? CategoriasController::searchForID(['id' => $_GET['idCategoria']]) : NULL;
 ?>
 <!DOCTYPE html>
 <html>
@@ -50,20 +56,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 
         <!-- Main content -->
         <section class="content">
-
-            <?php if (!empty($_GET['respuesta']) && !empty($_GET['action'])) { ?>
-                <?php if ($_GET['respuesta'] == "correcto") { ?>
-                    <div class="alert alert-success alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <h5><i class="icon fas fa-check"></i> Correcto!</h5>
-                        <?php if ($_GET['action'] == "create") { ?>
-                            El <?= $nameModel ?> ha sido creado con exito!
-                        <?php } else if ($_GET['action'] == "update") { ?>
-                            Los datos del <?= $nameModel ?> han sido actualizados correctamente!
-                        <?php } ?>
-                    </div>
-                <?php } ?>
-            <?php } ?>
+            <!-- Generar Mensajes de alerta -->
+            <?= (!empty($_GET['respuesta'])) ? GeneralFunctions::getAlertDialog($_GET['respuesta'], $_GET['mensaje']) : ""; ?>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
@@ -113,7 +107,13 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                             </thead>
                                             <tbody>
                                             <?php
-                                            $arrProductos = ProductosController::getAll();
+                                            $arrProductos = array();
+                                            if(!empty($_SESSION['idCategoria'])){
+                                                $arrProductos = $_SESSION['idCategoria']->getProductosCategoria();
+                                            }else{
+                                                $arrProductos = ProductosController::getAll();
+                                            }
+
                                             /* @var $arrProductos Productos[] */
                                             foreach ($arrProductos as $producto) {
                                                 ?>

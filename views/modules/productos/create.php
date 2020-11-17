@@ -3,6 +3,7 @@ require("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 
 use App\Controllers\CategoriasController;
+use App\Models\GeneralFunctions;
 use Carbon\Carbon;
 
 $nameModel = "Producto";
@@ -45,15 +46,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 
         <!-- Main content -->
         <section class="content">
-            <?php if (!empty($_GET['respuesta'])) { ?>
-                <?php if ($_GET['respuesta'] != "correcto") { ?>
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        Error al crear el <?= $nameModel ?>: <?= $_GET['mensaje'] ?>
-                    </div>
-                <?php } ?>
-            <?php } ?>
+            <!-- Generar Mensaje de alerta -->
+            <?= (!empty($_GET['respuesta'])) ? GeneralFunctions::getAlertDialog($_GET['respuesta'], $_GET['mensaje']) : ""; ?>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">

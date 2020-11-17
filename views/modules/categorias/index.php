@@ -14,7 +14,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $_ENV['TITLE_SITE'] ?> | Gestión de <?= $pluralModel ?></title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Gestión de <?= $plcategoría ?></title>
     <?php require("../../partials/head_imports.php"); ?>
     <!-- DataTables -->
     <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
@@ -50,20 +50,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 
         <!-- Main content -->
         <section class="content">
-
-            <?php if (!empty($_GET['respuesta']) && !empty($_GET['action'])) { ?>
-                <?php if ($_GET['respuesta'] == "correcto") { ?>
-                    <div class="alert alert-success alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <h5><i class="icon fas fa-check"></i> Correcto!</h5>
-                        <?php if ($_GET['action'] == "create") { ?>
-                            El <?= $nameModel ?> ha sido creado con exito!
-                        <?php } else if ($_GET['action'] == "update") { ?>
-                            Los datos del <?= $nameModel ?> han sido actualizados correctamente!
-                        <?php } ?>
-                    </div>
-                <?php } ?>
-            <?php } ?>
+            <!-- Generar Mensajes de alerta -->
+            <?= (!empty($_GET['respuesta'])) ? GeneralFunctions::getAlertDialog($_GET['respuesta'], $_GET['mensaje']) : ""; ?>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
@@ -127,6 +115,10 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                            type="button" data-toggle="tooltip" title="Ver"
                                                            class="btn docs-tooltip btn-warning btn-xs"><i
                                                                     class="fa fa-eye"></i></a>
+                                                        <a href="../productos/index.php?idCategoria=<?= $categoria->getId(); ?>"
+                                                           type="button" data-toggle="tooltip" title="Ver Productos"
+                                                           class="btn docs-tooltip btn-success btn-xs"><i
+                                                                    class="fa fa-sitemap"></i></a>
                                                         <?php if ($categoria->getEstado() != "Activo") { ?>
                                                             <a href="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=activate&id=<?= $categoria->getId(); ?>"
                                                                type="button" data-toggle="tooltip" title="Activar"

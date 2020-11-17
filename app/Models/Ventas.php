@@ -2,43 +2,43 @@
 
 namespace App\Models;
 
-require_once (__DIR__ .'/../../vendor/autoload.php');
-require_once ('Usuarios.php');
-require_once('BasicModel.php');
-
+use App\Models\Interfaces\Model;
 use Carbon\Carbon;
-use App\Models\Usuarios;
+use Exception;
+use JsonSerializable;
 
-class Ventas extends AbstractDBConnection
+class Ventas extends AbstractDBConnection implements Model, JsonSerializable
 {
-    private int $id;
+    private ?int $id;
     private string $numero_serie;
-    private ?Usuarios $cliente_id;
-    private ?Usuarios $empleado_id;
+    private int $cliente_id;
+    private int $empleado_id;
     private Carbon $fecha_venta;
     private float $monto;
     private string $estado;
+    private Carbon $created_at;
+    private Carbon $updated_at;
+
+    /* Relaciones */
+    private ?Usuarios $empleado;
+    private ?Usuarios $cliente;
 
     /**
-     * Ventas constructor.
-     * @param int $id
-     * @param string $numero_serie
-     * @param Usuarios $cliente_id
-     * @param Usuarios $empleado_id
-     * @param Carbon $fecha_venta
-     * @param float $monto
-     * @param string $estado
+     * Venta constructor. Recibe un array asociativo
+     * @param array $venta
      */
-    public function __construct($categoria = array())
+    public function __construct($venta = array())
     {
         parent::__construct();
-        $this->id = $categoria['id'] ?? 0;
-        $this->numero_serie = $categoria['numero_serie'] ?? '';
-        $this->cliente_id = $categoria['cliente_id'] ?? null;
-        $this->empleado_id = $categoria['empleado_id'] ?? null;
-        $this->fecha_venta = $categoria['fecha_venta'] ?? new Carbon();
-        $this->monto = $categoria['monto'] ?? 0.0;
-        $this->estado = $categoria['estado'] ?? '';
+        $this->setId($venta['id'] ?? NULL);
+        $this->setNumeroSerie($venta['numero_serie'] ?? NULL);
+        $this->setClienteId($venta['cliente_id'] ?? 0);
+        $this->setEmpleadoId($venta['empleado_id'] ?? 0);
+        $this->setFechaVenta(!empty($venta['created_at']) ? Carbon::parse($venta['created_at']) : new Carbon());
+        $this->setMonto($venta['monto'] ?? 0.0);
+        $this->setEstado($venta['estado'] ?? 'En progreso');
+        $this->setCreatedAt(!empty($venta['created_at']) ? Carbon::parse($venta['created_at']) : new Carbon());
+        $this->setUpdatedAt(!empty($venta['updated_at']) ? Carbon::parse($venta['updated_at']) : new Carbon());
     }
 
     /**
@@ -53,7 +53,7 @@ class Ventas extends AbstractDBConnection
      * @return int|mixed
      * @return int|mixed
      */
-    public function getId() : int
+    public function getId() : ?int
     {
         return $this->id;
     }
@@ -61,7 +61,7 @@ class Ventas extends AbstractDBConnection
     /**
      * @param int|mixed $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -75,41 +75,48 @@ class Ventas extends AbstractDBConnection
     }
 
     /**
-     * @param mixed|string $numero_serie
+     * @param
+     * @throws Exception
      */
-    public function setNumeroSerie(string $numero_serie): void
+    public function setNumeroSerie(string $numero_serie = null): void
     {
-        $this->numero_serie = $numero_serie;
+        if(empty($numero_serie)){
+            $this->Connect();
+            $this->numero_serie = 'FV-'.($this->countRowsTable('ventas')+1).'-'.date('Y-m-d');
+            $this->Disconnect();
+        }else{
+            $this->numero_serie = $numero_serie;
+        }
     }
 
     /**
-     * @return Usuarios|mixed|null
+     * @return int
      */
-    public function getClienteId() : Usuarios
+    public function getClienteId() : int
     {
         return $this->cliente_id;
     }
 
     /**
-     * @param Usuarios|mixed|null $cliente_id
+     * @param int $cliente_id
      */
-    public function setClienteId(Usuarios $cliente_id): void
+    public function setClienteId(int $cliente_id): void
     {
         $this->cliente_id = $cliente_id;
     }
 
     /**
-     * @return Usuarios|mixed|null
+     * @return int
      */
-    public function getEmpleadoId() : Usuarios
+    public function getEmpleadoId() : int
     {
         return $this->empleado_id;
     }
 
     /**
-     * @param Usuarios|mixed|null $empleado_id
+     * @param int $empleado_id
      */
-    public function setEmpleadoId(Usuarios $empleado_id): void
+    public function setEmpleadoId(int $empleado_id): void
     {
         $this->empleado_id = $empleado_id;
     }
@@ -157,111 +164,176 @@ class Ventas extends AbstractDBConnection
     /**
      * @param mixed|string $estado
      */
-    public function setEstado(float $estado): void
+    public function setEstado(string $estado): void
     {
         $this->estado = $estado;
     }
 
     /**
-     * @return mixed
+     * @return Carbon
      */
-    public function create() : bool
+    public function getCreatedAt(): Carbon
     {
-        $result = $this->insertRow("INSERT INTO weber.ventas VALUES (NULL, ?, ?, ?, ?, ?, ?)", array(
-                $this->numero_serie,
-                $this->cliente_id->getId(),
-                $this->empleado_id->getId(),
-                $this->fecha_venta->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
-                $this->monto,
-                $this->estado
-            )
-        );
-        $this->setId(($result) ? $this->getLastId() : null);
+        return $this->created_at->locale('es');
+    }
+
+    /**
+     * @param Carbon $created_at
+     */
+    public function setCreatedAt(Carbon $created_at): void
+    {
+        $this->created_at = $created_at;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getUpdatedAt(): Carbon
+    {
+        return $this->updated_at->locale('es');
+    }
+
+    /**
+     * @param Carbon $updated_at
+     */
+    public function setUpdatedAt(Carbon $updated_at): void
+    {
+        $this->updated_at = $updated_at;
+    }
+
+    /* Relaciones */
+    /**
+     * Retorna el objeto usuario del empleado correspondiente a la venta
+     * @return Usuarios|null
+     */
+    public function getEmpleado(): ?Usuarios
+    {
+        if(!empty($this->empleado_id)){
+            $this->empleado = Usuarios::searchForId($this->empleado_id) ?? new Usuarios();
+            return $this->empleado;
+        }
+        return NULL;
+    }
+
+    /**
+     * Retorna el objeto usuario del cliente correspondiente a la venta
+     * @return Usuarios|null
+     */
+    public function getCliente(): ?Usuarios
+    {
+        if(!empty($this->cliente_id)){
+            $this->cliente = Usuarios::searchForId($this->cliente_id) ?? new Usuarios();
+            return $this->cliente;
+        }
+        return NULL;
+    }
+
+    /**
+     * @param string $query
+     * @return bool|null
+     */
+    protected function save(string $query): ?bool
+    {
+        $arrData = [
+            ':id' =>    $this->getId(),
+            ':numero_serie' =>   $this->getNumeroSerie(),
+            ':cliente_id' =>   $this->getClienteId(),
+            ':empleado_id' =>   $this->getEmpleadoId(),
+            ':fecha_venta' =>  $this->getFechaVenta()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
+            ':monto' =>   $this->getMonto(),
+            ':estado' =>   $this->getEstado(),
+            ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
+            ':updated_at' =>  $this->getUpdatedAt()->toDateTimeString()
+        ];
+        $this->Connect();
+        $result = $this->insertRow($query, $arrData);
         $this->Disconnect();
         return $result;
     }
 
     /**
-     * @return mixed
+     * @return bool|null
      */
-    public function update() : bool
+    function insert(): ?bool
     {
-        $result = $this->updateRow("UPDATE weber.ventas SET numero_serie = ?, cliente_id = ?, empleado_id = ?, fecha_venta = ?, monto = ?, estado = ? WHERE id = ?", array(
-                $this->numero_serie,
-                $this->cliente_id->getId(),
-                $this->empleado_id->getId(),
-                $this->fecha_venta->toDateTimeString(),
-                $this->monto,
-                $this->estado,
-                $this->id
-            )
-        );
-        $this->Disconnect();
-        return $result;
+        $query = "INSERT INTO weber.ventas VALUES (:id,:numero_serie,:cliente_id,:empleado_id,:fecha_venta,:monto,:estado,:created_at,:updated_at)";
+        return $this->save($query);
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function update() : ?bool
+    {
+        $query = "UPDATE weber.ventas SET 
+            numero_serie = :numero_serie, cliente_id = :cliente_id,
+            empleado_id = :empleado_id, fecha_venta = :fecha_venta,
+            monto = :monto, estado = :estado,
+            created_at = :created_at, updated_at = :updated_at WHERE id = :id";
+        return $this->save($query);
     }
 
     /**
      * @param $id
      * @return mixed
      */
-    public function deleted($id) : bool
+    public function deleted() : bool
     {
-        $Venta = Ventas::searchForId($id); //Buscando un usuario por el ID
-        $Venta->setEstado("Inactivo"); //Cambia el estado del Usuario
-        return $Venta->update();                    //Guarda los cambios..
+        $this->setEstado("Inactivo"); //Cambia el estado del Usuario
+        return $this->update();                    //Guarda los cambios..
     }
 
     /**
      * @param $query
      * @return mixed
      */
-    public static function search($query) : array
+    public static function search($query) : ?array
     {
-        $arrVentas = array();
-        $tmp = new Ventas();
-        $getrows = $tmp->getRows($query);
+        try {
+            $arrVentas = array();
+            $tmp = new Ventas();
+            $tmp->Connect();
+            $getrows = $tmp->getRows($query);
+            $tmp->Disconnect();
 
-        foreach ($getrows as $valor) {
-            $Venta = new Ventas();
-            $Venta->id = $valor['id'];
-            $Venta->numero_serie = $valor['numero_serie'];
-            $Venta->cliente_id = Usuarios::searchForId($valor['cliente_id']);
-            $Venta->empleado_id = Usuarios::searchForId($valor['empleado_id']);
-            $Venta->fecha_venta = Carbon::parse($valor['fecha_venta']);
-            $Venta->monto = $valor['monto'];
-            $Venta->estado = $valor['estado'];
-            $Venta->Disconnect();
-            array_push($arrVentas, $Venta);
+            foreach ($getrows as $valor) {
+                $Venta = new Ventas($valor);
+                array_push($arrVentas, $Venta);
+                unset($Venta);
+            }
+            return $arrVentas;
+        } catch (Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
-
-        $tmp->Disconnect();
-        return $arrVentas;
+        return NULL;
     }
 
     /**
      * @param $id
-     * @return mixed
+     * @return Ventas
+     * @throws Exception
      */
-    public static function searchForId($id) : Ventas
+    public static function searchForId($id) : ?Ventas
     {
-        $Venta = null;
-        if ($id > 0) {
-            $Venta = new Ventas();
-            $getrow = $Venta->getRow("SELECT * FROM weber.ventas WHERE id =?", array($id));
-            $Venta->id = $getrow['id'];
-            $Venta->numero_serie = $getrow['numero_serie'];
-            $Venta->cliente_id = Usuarios::searchForId($getrow['cliente_id']);
-            $Venta->empleado_id = Usuarios::searchForId($getrow['empleado_id']);
-            $Venta->fecha_venta = Carbon::parse($getrow['fecha_venta']);
-            $Venta->monto = $getrow['monto'];
-            $Venta->estado = $getrow['estado'];
+        try {
+            if ($id > 0) {
+                $Venta = new Ventas();
+                $Venta->Connect();
+                $getrow = $Venta->getRow("SELECT * FROM weber.ventas WHERE id =?", array($id));
+                $Venta->Disconnect();
+                return ($getrow) ? new Ventas($getrow) : null;
+            }else{
+                throw new Exception('Id de venta Invalido');
+            }
+        } catch (Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
-        $Venta->Disconnect();
-        return $Venta;
+        return NULL;
     }
 
     /**
-     * @return mixed
+     * @return array
+     * @throws Exception
      */
     public static function getAll() : array
     {
@@ -269,15 +341,47 @@ class Ventas extends AbstractDBConnection
     }
 
     /**
+     * @param $numeroSerie
+     * @return bool
+     * @throws Exception
+     */
+    public static function facturaRegistrada($numeroSerie): bool
+    {
+        $numeroSerie = trim(strtolower($numeroSerie));
+        $result = Categorias::search("SELECT id FROM weber.ventas where numero_serie = '" . $numeroSerie. "'");
+        if ( !empty($result) && count ($result) > 0 ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @return string
      */
     public function __toString() : string
     {
-        return "Numero Serie: $this->numero_serie, Cliente: $this->cliente_id->nombresCompletos(), Empleado: $this->empleado_id->nombresCompletos(), Fecha Venta: $this->fecha_venta->toDateTimeString(), Monto: $this->monto, Estado: $this->estado";
+        return "Numero Serie: $this->numero_serie, Cliente: ".$this->getCliente()->nombresCompletos().", Empleado: ".$this->getEmpleado()->nombresCompletos().", Fecha Venta: $this->fecha_venta->toDateTimeString(), Monto: $this->monto, Estado: $this->estado";
     }
 
-    protected function save(string $query): ?bool
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4
+     */
+    public function jsonSerialize()
     {
-        // TODO: Implement save() method.
+        return [
+            'numero_serie' => $this->getNumeroSerie(),
+            'cliente' => $this->getCliente()->jsonSerialize(),
+            'empleado' => $this->getEmpleado()->jsonSerialize(),
+            'fecha_venta' => $this->getFechaVenta()->toDateTimeString(),
+            'monto' => $this->getMonto(),
+            'estado' => $this->getEstado(),
+            'created_at' => $this->getCreatedAt()->toDateTimeString(),
+            'updated_at' => $this->getUpdatedAt()->toDateTimeString(),
+        ];
     }
 }

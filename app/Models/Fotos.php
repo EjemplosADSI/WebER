@@ -67,7 +67,7 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getNombre(): ?string
     {
-        return ucfirst($this->nombre);
+        return ucwords($this->nombre);
     }
 
     /**
@@ -147,7 +147,7 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getCreatedAt(): Carbon
     {
-        return $this->created_at;
+        return $this->created_at->locale('es');
     }
 
     /**
@@ -163,7 +163,7 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getUpdatedAt(): Carbon
     {
-        return $this->updated_at;
+        return $this->updated_at->locale('es');
     }
 
     /**

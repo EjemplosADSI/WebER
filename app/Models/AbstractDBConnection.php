@@ -109,21 +109,6 @@ abstract class AbstractDBConnection {
     }
 
     /**
-     * Obtener el ID del ultimo registro que se haya insertado en la BD
-     *
-     * $database->getLastId();
-     * @return int|null
-     */
-    public function getLastId() : ?int {
-        try{
-            return $this->datab->lastInsertId();
-        }catch(PDOException | Exception $e){
-            GeneralFunctions::logFile('Exception',$e, 'error');
-        }
-        return null;
-    }
-
-    /**
      * Inserta registros en una tabla.
      *
      * $database ->insertRow("INSERT INTO users (username, email) VALUES (?, ?)", array("Diego", "yusaf@email.com"));
@@ -169,6 +154,53 @@ abstract class AbstractDBConnection {
      */
     public function deleteRow(string $query, array $params = []){
         return $this->insertRow($query, $params);
+    }
+
+    /**
+     * Obtener el ID del ultimo registro que se haya insertado en la BD
+     *
+     * $database->getLastId();
+     * @param string|null $table
+     * @return int|null
+     * @throws Exception
+     */
+    public function getLastId(string $table = null) : ?int {
+        try{
+            if(!empty($table)){
+                if($this->countRowsTable($table) > 0){
+                    $result = $this->getRow("SELECT id FROM ".$table." ORDER BY id DESC LIMIT 1", []);
+                    return $result['id'];
+                }
+                return 0;
+            }else{
+                return $this->datab->lastInsertId();
+            }
+        }catch(PDOException | Exception $e){
+            GeneralFunctions::logFile('Exception',$e, 'error');
+        }
+        return null;
+    }
+
+    /**
+     * Cuenta el numero de filas en una tabla
+     *
+     * $database->getLastId();
+     * @param string|null $table
+     * @return int|null
+     * @throws Exception
+     */
+    public function countRowsTable(string $table = null) : ?int {
+        try{
+            if(!empty($table)){
+                $sql = "SELECT COUNT(*) FROM ".$table;
+                if ($resultado = $this->datab->query($sql)) {
+                    return (int) $resultado->fetchColumn();
+                }
+            }
+        }catch(PDOException | Exception $e){
+            GeneralFunctions::logFile('Exception',$e, 'error');
+        }
+        return null;
     }
 
     /**

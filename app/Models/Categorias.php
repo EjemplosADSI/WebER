@@ -62,7 +62,7 @@ class Categorias extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getNombre() : string
     {
-        return ucfirst($this->nombre);
+        return ucwords($this->nombre);
     }
 
     /**
@@ -110,7 +110,7 @@ class Categorias extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getCreatedAt(): Carbon
     {
-        return $this->created_at;
+        return $this->created_at->locale('es');
     }
 
     /**
@@ -118,7 +118,7 @@ class Categorias extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function setCreatedAt(Carbon $created_at): void
     {
-        $this->created_at = $created_at;
+        $this->created_at = $created_at->locale('es');
     }
 
     /**
@@ -126,7 +126,7 @@ class Categorias extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getUpdatedAt(): Carbon
     {
-        return $this->updated_at;
+        return $this->updated_at->locale('es');
     }
 
     /**
@@ -148,6 +148,10 @@ class Categorias extends AbstractDBConnection implements Model, JsonSerializable
         return $this->productosCategoria;
     }
 
+    /**
+     * @param string $query
+     * @return bool|null
+     */
     protected function save(string $query): ?bool
     {
         $arrData = [
@@ -291,6 +295,8 @@ class Categorias extends AbstractDBConnection implements Model, JsonSerializable
             'nombre' => $this->getNombre(),
             'descripcion' => $this->getDescripcion(),
             'estado' => $this->getEstado(),
+            'created_at' => $this->getCreatedAt()->toDateTimeString(),
+            'updated_at' => $this->getUpdatedAt()->toDateTimeString(),
         ];
     }
 }

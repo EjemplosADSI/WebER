@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Dotenv\Dotenv;
+use Dotenv\Environment\Adapter\EnvConstAdapter;
+use Dotenv\Environment\Adapter\ServerConstAdapter;
+use Dotenv\Environment\DotenvFactory;
 use Exception;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
@@ -20,12 +23,15 @@ final class GeneralFunctions
      */
     static function loadEnv (array $requiredVars = [], array $integerVars = []){
         try {
-            $dotenv = Dotenv::create(__DIR__ ."/../../");
+
+            $factory = new DotenvFactory([new EnvConstAdapter(), new ServerConstAdapter()]);
+            $dotenv = Dotenv::create(__DIR__ ."/../../",null,$factory);
             $dotenv->load();
             $dotenv->required($requiredVars)->notEmpty();
             $dotenv->required($integerVars)->isInteger();
+            return true;
         }catch (Exception $re){
-            echo "Variables faltantes o vaciás: ";
+            GeneralFunctions::logFile("Carga de variables de entorno fallo.",$re,'error');
             throw new \RuntimeException($re->getMessage());
         }
     }
@@ -124,5 +130,42 @@ final class GeneralFunctions
             echo 'console.'.$type.'('. $dataPrint .')';
         }
         echo '</script>';
+    }
+
+
+    /**
+     * @param string $type (error, info, warning, success)
+     * @param string $mensaje
+     * @param string $title
+     * @return string
+     */
+    static function getAlertDialog (string $type = 'info', string $mensaje = '', string $title = "" ) : string
+    {
+        $alert = ""; $icon = ""; $title = "";
+        $type = ($type == 'error') ? 'danger' : $type;
+
+        if($type === 'danger'){
+            $icon = "ban";
+            $title = "Error: ";
+            $mensaje = "Ha ocurrido el siguiente error: ".$mensaje;
+        }else if($type === 'info'){
+            $icon = "info";
+            $title = "Información: ";
+        }else if($type === 'warning'){
+            $icon = "exclamation-triangle";
+            $title = "Advertencia: ";
+            $mensaje = "Alerta: ".$mensaje;
+        }else if($type === 'success'){
+            $icon = "check";
+            $title = "Solicitud Procesada: ";
+        }
+
+        $alert .= "<div class='alert alert-$type alert-dismissible'>";
+        $alert .= "    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>";
+        $alert .= "    <h5><i class='icon fas fa-$icon'></i>".$title."</h5>";
+        $alert .= $mensaje."!";
+        $alert .= "</div>";
+
+        return $alert;
     }
 }

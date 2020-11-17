@@ -134,7 +134,7 @@ final class Municipios extends AbstractDBConnection implements Model, JsonSerial
      */
     public function getCreatedAt(): Carbon
     {
-        return $this->created_at;
+        return $this->created_at->locale('es');
     }
 
     /**
@@ -150,7 +150,7 @@ final class Municipios extends AbstractDBConnection implements Model, JsonSerial
      */
     public function getUpdatedAt(): Carbon
     {
-        return $this->updated_at;
+        return $this->updated_at->locale('es');
     }
 
     /**
@@ -166,7 +166,7 @@ final class Municipios extends AbstractDBConnection implements Model, JsonSerial
      */
     public function getDeletedAt(): Carbon
     {
-        return $this->deleted_at;
+        return $this->deleted_at->locale('es');
     }
 
     /**

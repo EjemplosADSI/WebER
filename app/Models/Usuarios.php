@@ -84,7 +84,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getNombres() : string
     {
-        return ucfirst($this->nombres);
+        return ucwords($this->nombres);
     }
 
     /**
@@ -100,7 +100,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getApellidos() : string
     {
-        return ucfirst($this->apellidos);
+        return ucwords($this->apellidos);
     }
 
     /**
@@ -308,7 +308,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function getUpdatedAt(): Carbon
     {
-        return $this->updated_at;
+        return $this->updated_at->locale('es');
     }
 
     /**

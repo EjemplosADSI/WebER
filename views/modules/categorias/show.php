@@ -5,6 +5,7 @@ require("../../../app/Controllers/CategoriasController.php");
 
 use App\Controllers\CategoriasController;
 use App\Models\Categorias;
+use App\Models\GeneralFunctions;
 
 $nameModel = "Categoria";
 $pluralModel = $nameModel.'s';
@@ -31,7 +32,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Informacion del <?= $nameModel ?></h1>
+                        <h1>Información del <?= $nameModel ?></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -46,23 +47,9 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 
         <!-- Main content -->
         <section class="content">
-
-            <?php if (!empty($_GET['respuesta'])) { ?>
-                <?php if ($_GET['respuesta'] == "error") { ?>
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        Error al consultar el <?= $nameModel ?>: <?= ($_GET['mensaje']) ?? "" ?>
-                    </div>
-                <?php } ?>
-            <?php } else if (empty($_GET['id'])) { ?>
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                    Faltan criterios de busqueda <?= ($_GET['mensaje']) ?? "" ?>
-                </div>
-            <?php } ?>
-
+            <!-- Generar Mensajes de alerta -->
+            <?= (!empty($_GET['respuesta'])) ? GeneralFunctions::getAlertDialog($_GET['respuesta'], $_GET['mensaje']) : ""; ?>
+            <?= (empty($_GET['id'])) ? GeneralFunctions::getAlertDialog('error', 'Faltan Criterios de Búsqueda') : ""; ?>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">

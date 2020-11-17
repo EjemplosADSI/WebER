@@ -110,7 +110,7 @@ final class Departamentos extends AbstractDBConnection implements Model, JsonSer
      */
     public function getCreatedAt(): Carbon
     {
-        return $this->created_at;
+        return $this->created_at->locale('es');
     }
 
     /**
@@ -126,7 +126,7 @@ final class Departamentos extends AbstractDBConnection implements Model, JsonSer
      */
     public function getUpdatedAt(): Carbon
     {
-        return $this->updated_at;
+        return $this->updated_at->locale('es');
     }
 
     /**
@@ -142,7 +142,7 @@ final class Departamentos extends AbstractDBConnection implements Model, JsonSer
      */
     public function getDeletedAt(): Carbon
     {
-        return $this->deleted_at;
+        return $this->deleted_at->locale('es');
     }
 
     /**

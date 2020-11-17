@@ -1,13 +1,20 @@
 <?php
 require("../../partials/routes.php");
-require("../../../app/Controllers/VentasController.php");
 require_once("../../partials/check_login.php");
+require("../../../app/Controllers/VentasController.php");
 
-use App\Controllers\VentasController; ?>
+use App\Controllers\VentasController;
+use App\Models\Ventas;
+use App\Models\GeneralFunctions;
+
+$nameModel = "Venta";
+$pluralModel = $nameModel.'s';
+$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $_ENV['TITLE_SITE'] ?> | Datos de la Venta</title>
+    <title><?= $_ENV['TITLE_SITE'] ?> | Datos de la <?= $nameModel ?></title>
     <?php require("../../partials/head_imports.php"); ?>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -25,12 +32,13 @@ use App\Controllers\VentasController; ?>
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Informacion de la Venta</h1>
+                        <h1>Información de la <?= $nameModel ?></h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/Views/">WebER</a></li>
-                            <li class="breadcrumb-item active">Inicio</li>
+                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
+                            <li class="breadcrumb-item"><a href="index.php"><?= $pluralModel ?></a></li>
+                            <li class="breadcrumb-item active">Ver</li>
                         </ol>
                     </div>
                 </div>
@@ -39,29 +47,17 @@ use App\Controllers\VentasController; ?>
 
         <!-- Main content -->
         <section class="content">
-
-            <?php if (!empty($_GET['respuesta'])) { ?>
-                <?php if ($_GET['respuesta'] == "error") { ?>
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        Error al consultar el usuario: <?= ($_GET['mensaje']) ?? "" ?>
-                    </div>
-                <?php } ?>
-            <?php } else if (empty($_GET['id'])) { ?>
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                    Faltan criterios de busqueda <?= ($_GET['mensaje']) ?? "" ?>
-                </div>
-            <?php } ?>
+            <!-- Generar Mensajes de alerta -->
+            <?= (!empty($_GET['respuesta'])) ? GeneralFunctions::getAlertDialog($_GET['respuesta'], $_GET['mensaje']) : ""; ?>
+            <?= (empty($_GET['id'])) ? GeneralFunctions::getAlertDialog('error', 'Faltan Criterios de Búsqueda') : ""; ?>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
                         <!-- Horizontal Form -->
                         <div class="card card-green">
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) {
-                                $DataVentas = VentasController::searchForID($_GET["id"]);
+                                $DataVentas = VentasController::searchForID(["id" => $_GET["id"]]);
+                                /* @var $DataVentas Ventas */
                                 if (!empty($DataVentas)) {
                                     ?>
                                     <div class="card-header">
@@ -91,10 +87,10 @@ use App\Controllers\VentasController; ?>
                                         </p>
                                         <hr>
                                         <strong><i class="fas fa-user-ninja mr-1"></i> Cliente</strong>
-                                        <p class="text-muted"><?= $DataVentas->getClienteId()->getNombres() . ": " . $DataVentas->getClienteId()->getApellidos() ?></p>
+                                        <p class="text-muted"><?= $DataVentas->getCliente()->getNombres() . " " . $DataVentas->getCliente()->getApellidos() ?></p>
                                         <hr>
                                         <strong><i class="far fa-user mr-1"></i> Empleado</strong>
-                                        <p class="text-muted"><?= $DataVentas->getEmpleadoId()->getNombres() . ": " . $DataVentas->getEmpleadoId()->getApellidos() ?></p>
+                                        <p class="text-muted"><?= $DataVentas->getEmpleado()->getNombres() . " " . $DataVentas->getEmpleado()->getApellidos() ?></p>
                                         <hr>
                                         <strong><i class="far fa-calendar mr-1"></i> Fecha Venta</strong>
                                         <p class="text-muted"><?= $DataVentas->getFechaVenta(); ?></p>
@@ -112,13 +108,13 @@ use App\Controllers\VentasController; ?>
                                             <div class="col-auto mr-auto">
                                                 <a role="button" href="index.php" class="btn btn-success float-right"
                                                    style="margin-right: 5px;">
-                                                    <i class="fas fa-tasks"></i> Gestionar Ventas
+                                                    <i class="fas fa-tasks"></i> Gestionar <?= $pluralModel ?>
                                                 </a>
                                             </div>
                                             <div class="col-auto">
                                                 <a role="button" href="create.php" class="btn btn-primary float-right"
                                                    style="margin-right: 5px;">
-                                                    <i class="fas fa-plus"></i> Crear Venta
+                                                    <i class="fas fa-plus"></i> Crear <?= $nameModel ?>
                                                 </a>
                                             </div>
                                         </div>

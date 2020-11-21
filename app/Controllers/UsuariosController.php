@@ -153,7 +153,6 @@ class UsuariosController
         } else {
             $arrUsuarios = Usuarios::getAll();
         }
-
         $htmlSelect = "<select " . (($isMultiple) ? "multiple" : "") . " " . (($isRequired) ? "required" : "") . " id= '" . $id . "' name='" . $nombre . "' class='" . $class . "' style='width: 100%;'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if (count($arrUsuarios) > 0) {

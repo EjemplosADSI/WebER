@@ -8,8 +8,8 @@ use App\Models\GeneralFunctions;
 use App\Models\Usuarios;
 
 $nameModel = "Usuario";
-$pluralModel = $nameModel.'s';
-$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+$pluralModel = $nameModel . 's';
+$frmSession = $_SESSION['frm' . $pluralModel] ?? NULL;
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,7 +36,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
+                            <li class="breadcrumb-item"><a
+                                        href="<?= $baseURL; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
                             <li class="breadcrumb-item"><a href="index.php"><?= $pluralModel ?></a></li>
                             <li class="breadcrumb-item active">Ver</li>
                         </ol>
@@ -81,7 +82,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                         <div class="row">
                                             <div class="col-sm-10">
                                                 <p>
-                                                    <strong><i class="fas fa-book mr-1"></i> Nombres y Apellidos</strong>
+                                                    <strong><i class="fas fa-book mr-1"></i> Nombres y
+                                                        Apellidos</strong>
                                                 <p class="text-muted">
                                                     <?= $DataUsuario->getNombres() . " " . $DataUsuario->getApellidos() ?>
                                                 </p>
@@ -90,17 +92,22 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 <p class="text-muted"><?= $DataUsuario->getTipoDocumento() . ": " . $DataUsuario->getDocumento() ?></p>
                                                 <hr>
                                                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Direccion</strong>
-                                                <p class="text-muted"><?= $DataUsuario->getDireccion() ?>, <?= $DataUsuario->getMunicipio()->getNombre() ?> - <?= $DataUsuario->getMunicipio()->getDepartamento()->getNombre() ?></p>
+                                                <p class="text-muted"><?= $DataUsuario->getDireccion() ?>
+                                                    , <?= $DataUsuario->getMunicipio()->getNombre() ?>
+                                                    - <?= $DataUsuario->getMunicipio()->getDepartamento()->getNombre() ?></p>
                                                 <hr>
                                                 <strong><i class="fas fa-calendar mr-1"></i> Fecha Nacimiento</strong>
-                                                <p class="text-muted"><?= $DataUsuario->getFechaNacimiento()->translatedFormat('l, j \\de F Y'); ?> &nbsp;
-                                                    🎉Tienes: <?= $DataUsuario->getFechaNacimiento()->diffInYears(); ?> Años🤡
+                                                <p class="text-muted"><?= $DataUsuario->getFechaNacimiento()->translatedFormat('l, j \\de F Y'); ?>
+                                                    &nbsp;
+                                                    🎉Tienes: <?= $DataUsuario->getFechaNacimiento()->diffInYears(); ?>
+                                                    Años🤡
                                                 </p>
                                                 <hr>
                                                 <strong><i class="fas fa-phone mr-1"></i> Telefono</strong>
                                                 <p class="text-muted"><?= $DataUsuario->getTelefono() ?></p>
                                                 <hr>
-                                                <strong><i class="fas fa-calendar-check mr-1"></i> Fecha Registro</strong>
+                                                <strong><i class="fas fa-calendar-check mr-1"></i> Fecha
+                                                    Registro</strong>
                                                 <p class="text-muted"><?= $DataUsuario->getCreatedat()->toDateTimeString(); ?></p>
                                                 <hr>
                                                 <strong><i class="far fa-file-alt mr-1"></i> Estado y Rol</strong>
@@ -113,8 +120,10 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                         <h4>Foto Perfil</h4>
                                                     </div>
                                                     <div class="col-12">
-                                                        <?php if(!empty($DataUsuario->getFoto())){ ?>
-                                                            <img class='img-thumbnail rounded' src='../../public/uploadFiles/photos/<?= $DataUsuario->getFoto(); ?>' alt="Foto Perfil">
+                                                        <?php if (!empty($DataUsuario->getFoto())) { ?>
+                                                            <img class='img-thumbnail rounded'
+                                                                 src='../../public/uploadFiles/photos/<?= $DataUsuario->getFoto(); ?>'
+                                                                 alt="Foto Perfil">
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -130,7 +139,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 </a>
                                             </div>
                                             <div class="col-auto">
-                                                <a role="button" href="edit.php?id=<?= $DataUsuario->getId(); ?>" class="btn btn-primary float-right"
+                                                <a role="button" href="edit.php?id=<?= $DataUsuario->getId(); ?>"
+                                                   class="btn btn-primary float-right"
                                                    style="margin-right: 5px;">
                                                     <i class="fas fa-edit"></i> Editar <?= $nameModel ?>
                                                 </a>

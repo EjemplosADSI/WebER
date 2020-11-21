@@ -238,14 +238,15 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 <script>
     $(function() {
         $('#departamento_id').on('change', function() {
-            $.post("../../../app/Controllers/MainController.php?controller=Municipios&action=selectMunicipios&request=ajax", {
+            $.post("../../../app/Controllers/MainController.php?controller=Municipios&action=selectMunicipios", {
                 isMultiple: false,
                 isRequired: true,
                 id: "municipio_id",
                 nombre: "municipio_id",
                 defaultValue: "",
                 class: "form-control select2bs4 select2-info",
-                where: "departamento_id = "+$('#departamento_id').val()+" and estado = 'Activo'"
+                where: "departamento_id = "+$('#departamento_id').val()+" and estado = 'Activo'",
+                request: 'ajax'
             }, function(e) {
                 if (e)
                     console.log(e);

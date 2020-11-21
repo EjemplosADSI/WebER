@@ -2,33 +2,37 @@
 
 namespace App\Models;
 
-require_once (__DIR__ .'/../../vendor/autoload.php');
-require_once('BasicModel.php');
+use App\Models\Interfaces\Model;
+use Carbon\Carbon;
+use Exception;
+use JsonSerializable;
 
-class DetalleVentas extends AbstractDBConnection
+class DetalleVentas extends AbstractDBConnection implements Model, JsonSerializable
 {
-    private int $id;
-    private Ventas $ventas_id;
-    private Productos $producto_id;
+    private ?int $id;
+    private int $ventas_id;
+    private int $producto_id;
     private int $cantidad;
     private float $precio_venta;
+    private Carbon $created_at;
+
+    /* Relaciones */
+    private ?Ventas $venta;
+    private ?Productos $producto;
 
     /**
-     * DetalleVentas constructor.
-     * @param int $id
-     * @param Ventas $ventas_id
-     * @param Productos $producto_id
-     * @param int $cantidad
-     * @param float $precio_venta
+     * Detalle Venta constructor. Recibe un array asociativo
+     * @param array $detalle_venta
      */
-    public function __construct($categoria = array())
+    public function __construct(array $detalle_venta = [])
     {
         parent::__construct();
-        $this->id = $categoria['id'] ?? 0;
-        $this->ventas_id = $categoria['ventas_id'] ?? new Ventas();
-        $this->producto_id = $categoria['producto_id'] ?? new Productos();
-        $this->cantidad = $categoria['cantidad'] ?? 0;
-        $this->precio_venta = $categoria['precio_venta'] ?? 0.0;
+        $this->setId($venta['id'] ?? NULL);
+        $this->setPrecioVenta($detalle_venta['ventas_id'] ?? 0);
+        $this->setProductoId($detalle_venta['producto_id'] ?? 0);
+        $this->setCantidad($detalle_venta['cantidad'] ?? 0);
+        $this->setPrecioVenta($detalle_venta['precio_venta'] ?? 0.0);
+        $this->setCreatedAt(!empty($categoria['created_at']) ? Carbon::parse($categoria['created_at']) : new Carbon());
     }
 
     /**
@@ -40,49 +44,49 @@ class DetalleVentas extends AbstractDBConnection
     }
 
     /**
-     * @return int|mixed
+     * @return int|null
      */
-    public function getId() : int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int|mixed $id
+     * @param int|null $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return Ventas|mixed
+     * @return int|mixed
      */
-    public function getVentasId() : Ventas
+    public function getVentasId() : int
     {
         return $this->ventas_id;
     }
 
     /**
-     * @param Ventas|mixed $ventas_id
+     * @param int|mixed $ventas_id
      */
-    public function setVentasId(Ventas $ventas_id): void
+    public function setVentasId(int $ventas_id): void
     {
         $this->ventas_id = $ventas_id;
     }
 
     /**
-     * @return Productos
+     * @return int
      */
-    public function getProductoId(): Productos
+    public function getProductoId(): int
     {
         return $this->producto_id;
     }
 
     /**
-     * @param Productos $producto_id
+     * @param int $producto_id
      */
-    public function setProductoId(Productos $producto_id): void
+    public function setProductoId(int $producto_id): void
     {
         $this->producto_id = $producto_id;
     }
@@ -119,21 +123,69 @@ class DetalleVentas extends AbstractDBConnection
         $this->precio_venta = $precio_venta;
     }
 
+    /**
+     * @return Carbon
+     */
+    public function getCreatedAt(): Carbon
+    {
+        return $this->created_at;
+    }
 
     /**
-     * @return mixed
+     * @param Carbon $created_at
      */
-    public function create() : bool
+    public function setCreatedAt(Carbon $created_at): void
     {
-        $result = $this->insertRow("INSERT INTO weber.detalle_venta VALUES (NULL, ?, ?, ?, ?)", array(
-                $this->ventas_id->getId(),
-                $this->producto_id->getId(),
-                $this->cantidad,
-                $this->precio_venta
-            )
-        );
+        $this->created_at = $created_at;
+    }
+
+    /* Relaciones */
+    /**
+     * Retorna el objeto venta correspondiente al detalle venta
+     * @return Ventas|null
+     */
+    public function getVenta(): ?Ventas
+    {
+        if(!empty($this->ventas_id)){
+            $this->venta = Ventas::searchForId($this->ventas_id) ?? new Ventas();
+            return $this->venta;
+        }
+        return NULL;
+    }
+
+    /**
+     * Retorna el objeto producto correspondiente al detalle venta
+     * @return Productos|null
+     */
+    public function getProducto(): ?Productos
+    {
+        if(!empty($this->producto_id)){
+            $this->producto = Productos::searchForId($this->producto_id) ?? new Productos();
+            return $this->producto;
+        }
+        return NULL;
+    }
+
+    protected function save(string $query): ?bool
+    {
+        $arrData = [
+            ':id' =>   $this->getId(),
+            ':venta_id' =>   $this->getVentasId(),
+            ':producto_id' =>  $this->getProductoId(),
+            ':cantidad' =>   $this->getCantidad(),
+            ':precio_venta' =>   $this->getPrecioVenta(),
+            ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
+        ];
+        $this->Connect();
+        $result = $this->insertRow($query, $arrData);
         $this->Disconnect();
         return $result;
+    }
+
+    function insert()
+    {
+        $query = "INSERT INTO weber.detalle_ventas VALUES (:id,:venta_id,:producto_id,:cantidad,:precio_venta,:created_at)";
+        return $this->save($query);
     }
 
     /**
@@ -141,74 +193,66 @@ class DetalleVentas extends AbstractDBConnection
      */
     public function update() : bool
     {
-        $result = $this->updateRow("UPDATE weber.detalle_venta SET ventas_id = ?, producto_id = ?, cantidad = ?, precio_venta = ? WHERE id = ?", array(
-                $this->ventas_id->getId(),
-                $this->producto_id->getId(),
-                $this->cantidad,
-                $this->precio_venta,
-                $this->id
-            )
-        );
-        $this->Disconnect();
-        return $result;
+        $query = "UPDATE weber.detalle_ventas SET 
+            cantidad = :cantidad, precio_venta = :precio_venta,
+            created_at = :created_at WHERE id = :id";
+        return $this->save($query);
     }
 
     /**
-     * @param $id
      * @return mixed
      */
-    public function deleted($id) : bool
+    public function deleted() : bool
     {
-        $DetalleVenta = DetalleVentas::searchForId($id); //Buscando un usuario por el ID
-        $deleterow = $DetalleVenta->deleteRow("DELETE FROM detalle_venta WHERE id = ?", array($id));
-        return $deleterow;                    //Guarda los cambios..
+        $query = "DELETE FROM detalle_ventas WHERE id = :id";
+        return $this->save($query);
     }
 
     /**
      * @param $query
      * @return mixed
      */
-    public static function search($query) : array
+    public static function search($query) : ?array
     {
-        $arrDetalleVenta = array();
-        $tmp = new DetalleVentas();
-        $getrows = $tmp->getRows($query);
+        try {
+            $arrDetalleVenta = array();
+            $tmp = new DetalleVentas();
+            $tmp->Connect();
+            $getrows = $tmp->getRows($query);
+            $tmp->Disconnect();
 
-        foreach ($getrows as $valor) {
-            $DetalleVenta = new DetalleVentas();
-            $DetalleVenta->id = $valor['id'];
-            $DetalleVenta->ventas_id = Ventas::searchForId($valor['ventas_id']);
-            $DetalleVenta->producto_id = Productos::searchForId($valor['producto_id']);
-            $DetalleVenta->cantidad = $valor['cantidad'];
-            $DetalleVenta->precio_venta = $valor['precio_venta'];
-            $DetalleVenta->Disconnect();
-            if(count($getrows) == 1){ // Si solamente hay un registro encontrado devuelve este objeto y no un array
-                return $DetalleVenta;
+            foreach ($getrows as $valor) {
+                $DetalleVenta = new DetalleVentas($valor);
+                array_push($arrDetalleVenta, $DetalleVenta);
+                unset($DetalleVenta);
             }
-            array_push($arrDetalleVenta, $DetalleVenta);
+            return $arrDetalleVenta;
+        } catch (Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
-        $tmp->Disconnect();
-        return $arrDetalleVenta;
+        return NULL;
     }
 
     /**
      * @param $id
      * @return mixed
      */
-    public static function searchForId($id) : DetalleVentas
+    public static function searchForId($id) : ?DetalleVentas
     {
-        $DetalleVenta = null;
-        if ($id > 0) {
-            $DetalleVenta = new DetalleVentas();
-            $getrow = $DetalleVenta->getRow("SELECT * FROM weber.detalle_ventas WHERE id =?", array($id));
-            $DetalleVenta->id = $getrow['id'];
-            $DetalleVenta->ventas_id = Ventas::searchForId($getrow['ventas_id']);
-            $DetalleVenta->producto_id = Productos::searchForId($getrow['producto_id']);
-            $DetalleVenta->cantidad = $getrow['cantidad'];
-            $DetalleVenta->precio_venta = $getrow['precio_venta'];
+        try {
+            if ($id > 0) {
+                $DetalleVenta = new DetalleVentas();
+                $DetalleVenta->Connect();
+                $getrow = $DetalleVenta->getRow("SELECT * FROM weber.detalle_ventas WHERE id = ?", array($id));
+                $DetalleVenta->Disconnect();
+                return ($getrow) ? new DetalleVentas($getrow) : null;
+            }else{
+                throw new Exception('Id de detalle venta Invalido');
+            }
+        } catch (Exception $e) {
+            GeneralFunctions::logFile('Exception',$e, 'error');
         }
-        $DetalleVenta->Disconnect();
-        return $DetalleVenta;
+        return NULL;
     }
 
     /**
@@ -220,12 +264,13 @@ class DetalleVentas extends AbstractDBConnection
     }
 
     /**
-     * @param $nombres
+     * @param $venta_id
+     * @param $producto_id
      * @return bool
      */
-    public static function productoEnFactura($producto_id): bool
+    public static function productoEnFactura($venta_id,$producto_id): bool
     {
-        $result = DetalleVentas::search("SELECT id FROM weber.detalle_venta where producto_id = '" . $producto_id. "'");
+        $result = DetalleVentas::search("SELECT id FROM weber.detalle_ventas where venta_id = '" . $venta_id. "' and producto_id = '" . $producto_id. "'");
         if (count($result) > 0) {
             return true;
         } else {
@@ -238,11 +283,24 @@ class DetalleVentas extends AbstractDBConnection
      */
     public function __toString() : string
     {
-        return "Venta: $this->ventas_id->getNumeroSerie(), Producto: $this->producto_id->getNombres(), Cantidad: $this->cantidad, Precio Venta: $this->precio_venta";
+        return "Venta: ".$this->venta->getNumeroSerie().", Producto: ".$this->producto->getNombre().", Cantidad: $this->cantidad, Precio Venta: $this->precio_venta";
     }
 
-    protected function save(string $query): ?bool
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4
+     */
+    public function jsonSerialize()
     {
-        // TODO: Implement save() method.
+        return [
+            'venta_id' => $this->getVenta()->jsonSerialize(),
+            'producto_id' => $this->getProducto()->jsonSerialize(),
+            'cantidad' => $this->getCantidad(),
+            'precio_venta' => $this->getPrecioVenta(),
+            'created_at' => $this->getCreatedAt()->toDateTimeString(),
+        ];
     }
 }

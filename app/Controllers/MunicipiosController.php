@@ -3,7 +3,8 @@
 
 namespace App\Controllers;
 
-require (__DIR__.'/../../vendor/autoload.php');
+require(__DIR__ . '/../../vendor/autoload.php');
+
 use App\Models\GeneralFunctions;
 use App\Models\Municipios;
 
@@ -20,7 +21,7 @@ class MunicipiosController
             }
             return $result;
         } catch (\Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e, 'error');
         }
         return null;
     }
@@ -35,7 +36,7 @@ class MunicipiosController
             }
             return $result;
         } catch (\Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e, 'error');
         }
         return null;
     }
@@ -47,16 +48,15 @@ class MunicipiosController
                                             $defaultValue = "",
                                             $class = "form-control",
                                             $where = "",
-                                            $arrExcluir = array())
+                                            $arrExcluir = array(),
+                                            $request = 'html')
     {
         $arrMunicipios = array();
         if ($where != "") {
-            $base = "SELECT * FROM municipios WHERE ";
-            $arrMunicipios = Municipios::search($base . ' ' . $where);
+            $arrMunicipios = Municipios::search("SELECT * FROM municipios WHERE " . $where);
         } else {
             $arrMunicipios = Municipios::getAll();
         }
-
         $htmlSelect = "<select " . (($isMultiple) ? "multiple" : "") . " " . (($isRequired) ? "required" : "") . " id= '" . $id . "' name='" . $nombre . "' class='" . $class . "' style='width: 100%;'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if (count($arrMunicipios) > 0) {

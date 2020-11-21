@@ -27,7 +27,7 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
      * Venta constructor. Recibe un array asociativo
      * @param array $venta
      */
-    public function __construct($venta = array())
+    public function __construct(array $venta = [])
     {
         parent::__construct();
         $this->setId($venta['id'] ?? NULL);
@@ -274,7 +274,6 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     }
 
     /**
-     * @param $id
      * @return mixed
      */
     public function deleted() : bool

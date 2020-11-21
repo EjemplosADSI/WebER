@@ -192,16 +192,16 @@ if (!empty($_GET['id'])) {
                                             <tbody>
                                             <?php
                                             if (!empty($_GET['id'])) {
-                                                $arrDetalleVentas = DetalleVentas::search("SELECT * FROM weber.detalle_ventas WHERE ventas_id = ".$_GET['id']);
+                                                $arrDetalleVentas = DetalleVentas::search("SELECT * FROM weber.detalle_ventas WHERE venta_id = ".$_GET['id']);
                                                 if(count($arrDetalleVentas) > 0) {
-                                                    /* @var $arrDetalleVentas \App\Models\DetalleVentas[] */
+                                                    /* @var $arrDetalleVentas DetalleVentas[] */
                                                     foreach ($arrDetalleVentas as $detalleVenta) {
                                                         ?>
                                                         <tr>
-                                                            <td><?php echo $detalleVenta->getId(); ?></td>
-                                                            <td><?php echo $detalleVenta->getProductoId()->getNombre(); ?></td>
-                                                            <td><?php echo $detalleVenta->getCantidad(); ?></td>
-                                                            <td><?php echo $detalleVenta->getPrecio(); ?></td>
+                                                            <td><?= $detalleVenta->getId(); ?></td>
+                                                            <td><?= $detalleVenta->getProducto()->getNombre(); ?></td>
+                                                            <td><?= $detalleVenta->getCantidad(); ?></td>
+                                                            <td><?= $detalleVenta->getPrecioVenta(); ?></td>
                                                             <td>
                                                                 <a href="edit.php?id=<?php echo $detalleVenta->getId(); ?>"
                                                                    type="button" data-toggle="tooltip" title="Actualizar"
@@ -211,18 +211,11 @@ if (!empty($_GET['id'])) {
                                                                    type="button" data-toggle="tooltip" title="Ver"
                                                                    class="btn docs-tooltip btn-warning btn-xs"><i
                                                                             class="fa fa-eye"></i></a>
-                                                                <?php if ($detalleVenta->getEstado() != "Activo") { ?>
-                                                                    <a href="../../../app/Controllers/ProductosController.php?action=activate&Id=<?php echo $detalleVenta->getId(); ?>"
-                                                                       type="button" data-toggle="tooltip" title="Activar"
-                                                                       class="btn docs-tooltip btn-success btn-xs"><i
-                                                                                class="fa fa-check-square"></i></a>
-                                                                <?php } else { ?>
-                                                                    <a type="button"
-                                                                       href="../../../app/Controllers/ProductosController.php?action=inactivate&Id=<?php echo $detalleVenta->getId(); ?>"
-                                                                       data-toggle="tooltip" title="Inactivar"
-                                                                       class="btn docs-tooltip btn-danger btn-xs"><i
-                                                                                class="fa fa-times-circle"></i></a>
-                                                                <?php } ?>
+                                                                <a type="button"
+                                                                   href="../../../app/Controllers/ProductosController.php?action=inactivate&Id=<?php echo $detalleVenta->getId(); ?>"
+                                                                   data-toggle="tooltip" title="Eliminar"
+                                                                   class="btn docs-tooltip btn-danger btn-xs"><i
+                                                                            class="fa fa-times-circle"></i></a>
                                                             </td>
                                                         </tr>
                                                     <?php }
@@ -233,9 +226,9 @@ if (!empty($_GET['id'])) {
                                             <tfoot>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Nombres</th>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
                                                 <th>Precio</th>
-                                                <th>Stock</th>
                                                 <th>Acciones</th>
                                             </tr>
                                             </tfoot>
@@ -264,7 +257,7 @@ if (!empty($_GET['id'])) {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="../../../app/Controllers/DetalleVentasController.php?action=create" method="post">
+                    <form action="../../../app/Controllers/MainController.php?controller=DetalleVentas&action=create" method="post">
                         <div class="modal-body">
                             <?php //var_dump($dataVenta); ?>
                             <input id="ventas_id" name="ventas_id" value="<?= !empty($dataVenta) ? $dataVenta->getId() : ''; ?>" hidden
@@ -325,18 +318,8 @@ if (!empty($_GET['id'])) {
 </div>
 <!-- ./wrapper -->
 <?php require('../../partials/scripts.php'); ?>
-<!-- DataTables -->
-<script src="<?= $adminlteURL ?>/plugins/datatables/jquery.dataTables.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-responsive/js/dataTables.responsive.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-responsive/js/responsive.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/dataTables.buttons.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/jszip/jszip.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/pdfmake/pdfmake.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.html5.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.print.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.colVis.js"></script>
+<!-- Scripts requeridos para las datatables -->
+<?php require('../../partials/datatables_scripts.php'); ?>
 
 <script>
 
@@ -348,16 +331,21 @@ if (!empty($_GET['id'])) {
             var dataSelect = e.params.data;
             var dataProducto = null;
             if(dataSelect.id !== ""){
-                $.post("../../../app/Controllers/ProductosController.php?action=searchForIDAjax", {idProducto: dataSelect.id}, "json")
-                    .done(function( resultProducto ) {
-                        dataProducto = resultProducto;
-                    })
-                    .fail(function(err) {
-                        console.log( "Error al realizar la consulta"+err );
-                    })
-                    .always(function() {
-                        updateDataProducto(dataProducto);
-                    });
+                $.post("../../../app/Controllers/MainController.php?controller=Productos&action=searchForID",
+                    {
+                        id: dataSelect.id,
+                        request: 'ajax'
+                    }, "json"
+                )
+                .done(function( resultProducto ) {
+                    dataProducto = resultProducto;
+                })
+                .fail(function(err) {
+                    console.log( "Error al realizar la consulta"+err );
+                })
+                .always(function() {
+                    updateDataProducto(dataProducto);
+                });
             }else{
                 updateDataProducto(dataProducto);
             }
@@ -386,24 +374,6 @@ if (!empty($_GET['id'])) {
             $("#total_producto").val($( "#cantidad" ).val() *  $("#precio_venta").val());
         });
 
-        $('.datatable').DataTable({
-            "dom": 'Bfrtip',
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": true,
-            "language": {
-                "url": "../../public/Spanish.json" //Idioma
-            },
-            "buttons": [
-                'copy', 'print', 'excel', 'pdf'
-            ],
-            "pagingType": "full_numbers",
-            "responsive": true,
-            "stateSave": true, //Guardar la configuracion del usuario
-        });
     });
 </script>
 

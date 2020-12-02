@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Models\Interfaces;
+namespace App\Interfaces;
+
 use JsonSerializable;
 
 interface Model

@@ -3,7 +3,7 @@
 
 namespace App\Controllers;
 
-require (__DIR__.'/../../vendor/autoload.php');
+
 use App\Models\GeneralFunctions;
 use App\Models\Departamentos;
 

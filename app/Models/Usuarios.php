@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Models\Interfaces\Model;
+use App\Interfaces\Model;
 use Carbon\Carbon;
 use Exception;
 use JsonSerializable;
@@ -431,12 +431,15 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
             $getrows = $tmp->getRows($query);
             $tmp->Disconnect();
 
-            foreach ($getrows as $valor) {
-                $Usuario = new Usuarios($valor);
-                array_push($arrUsuarios, $Usuario);
-                unset($Usuario);
+            if (!empty($getrows)) {
+                foreach ($getrows as $valor) {
+                    $Usuario = new Usuarios($valor);
+                    array_push($arrUsuarios, $Usuario);
+                    unset($Usuario);
+                }
+                return $arrUsuarios;
             }
-            return $arrUsuarios;
+            return null;
         } catch (Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }

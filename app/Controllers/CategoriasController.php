@@ -1,38 +1,44 @@
 <?php
-
 namespace App\Controllers;
 
-require (__DIR__.'/../../vendor/autoload.php');
 use App\Models\GeneralFunctions;
 use App\Models\Categorias;
-use Carbon\Carbon;
+use App\Traits\SanitizerFields;
 
-class CategoriasController{
+include(__DIR__ . '/../../vendor/autoload.php');
 
+class CategoriasController
+{
     private array $dataCategoria;
+    use SanitizerFields;
 
     public function __construct(array $_FORM)
     {
         $this->dataCategoria = array();
-        $this->dataCategoria['id'] = $_FORM['id'] ?? NULL;
+        $this->dataCategoria['id'] = $_FORM['id'] ?? null;
         $this->dataCategoria['nombre'] = $_FORM['nombre'] ?? '';
         $this->dataCategoria['descripcion'] = $_FORM['descripcion'] ?? '';
         $this->dataCategoria['estado'] = $_FORM['estado'] ?? 'Activo';
+        $this->dataCategoria = $this->sanitize($this->dataCategoria);
     }
 
-    public function create() {
+    public function create()
+    {
         try {
-            if (!empty($this->dataCategoria['nombre']) && !Categorias::categoriaRegistrada($this->dataCategoria['nombre'])) {
+            if (!empty($this->dataCategoria['nombre']) &&
+                !Categorias::categoriaRegistrada($this->dataCategoria['nombre'])) {
                 $Categoria = new Categorias($this->dataCategoria);
                 if ($Categoria->insert()) {
                     unset($_SESSION['frmCategorias']);
-                    header("Location: ../../views/modules/categorias/index.php?respuesta=correcto");
+                    header("Location: ".
+                        "../../views/modules/categorias/index.php?respuesta=success&mensaje=Categoría Registrada");
                 }
             } else {
-                header("Location: ../../views/modules/categorias/create.php?respuesta=error&mensaje=Categoria ya registrado");
+                header("Location: ".
+                    "../../views/modules/categorias/create.php?respuesta=error&mensaje=Categoría ya registrado");
             }
         } catch (\Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e, 'error');
         }
     }
 
@@ -40,17 +46,18 @@ class CategoriasController{
     {
         try {
             $Categoria = new Categorias($this->dataCategoria);
-            if($Categoria->update()){
+            if ($Categoria->update()) {
                 unset($_SESSION['frmCategorias']);
             }
-
-            header("Location: ../../views/modules/categorias/show.php?id=" . $Categoria->getId() . "&respuesta=correcto");
+            header("Location: ../../views/modules/categorias/show.php?id=" . $Categoria->getId()
+                . "&respuesta=success&mensaje=Categoría Actualizada");
         } catch (\Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e, 'error');
         }
     }
 
-    static public function searchForID (array $data){
+    public static function searchForID(array $data)
+    {
         try {
             $result = Categorias::searchForId($data['id']);
             if (!empty($data['request']) and $data['request'] === 'ajax' and !empty($result)) {
@@ -59,12 +66,13 @@ class CategoriasController{
             }
             return $result;
         } catch (\Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e, 'error');
         }
         return null;
     }
 
-    static public function getAll (array $data = null){
+    public static function getAll(array $data = null)
+    {
         try {
             $result = Categorias::getAll();
             if (!empty($data['request']) and $data['request'] === 'ajax') {
@@ -73,18 +81,20 @@ class CategoriasController{
             }
             return $result;
         } catch (\Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e, 'error');
         }
         return null;
     }
 
-    static public function activate (int $id){
+    public static function activate(int $id)
+    {
         try {
             $ObjCategoria = Categorias::searchForId($id);
             $ObjCategoria->setEstado("Activo");
-            if($ObjCategoria->update()){
-                header("Location: ../../views/modules/categorias/index.php");
-            }else{
+            if ($ObjCategoria->update()) {
+                header("Location:" .
+                        "../../views/modules/categorias/index.php?respuesta=success&mensaje=Estado Actualizado");
+            } else {
                 header("Location: ../../views/modules/categorias/index.php?respuesta=error&mensaje=Error al guardar");
             }
         } catch (\Exception $e) {

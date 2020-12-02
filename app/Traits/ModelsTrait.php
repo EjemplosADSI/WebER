@@ -1,7 +1,8 @@
 <?php
 
 
-namespace App\Models\Traits;
+namespace App\Traits;
+
 use App\Models\GeneralFunctions;
 
 class ModelsTrait

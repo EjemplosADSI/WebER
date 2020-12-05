@@ -42,7 +42,7 @@ class UsuariosController
                 $Usuario = new Usuarios ($this->dataUsuario);
                 if ($Usuario->insert()) {
                     unset($_SESSION['frmUsuarios']);
-                    header("Location: ../../views/modules/usuarios/index.php?respuesta=correcto");
+                    header("Location: ../../views/modules/usuarios/index.php?respuesta=success&mensaje=Usuario Registrado");
                 }
             } else {
                 header("Location: ../../views/modules/usuarios/create.php?respuesta=error&mensaje=Usuario ya registrado");
@@ -71,7 +71,7 @@ class UsuariosController
                 unset($_SESSION['frmUsuarios']);
             }
 
-            header("Location: ../../views/modules/usuarios/show.php?id=" . $user->getId() . "&respuesta=correcto");
+            header("Location: ../../views/modules/usuarios/show.php?id=" . $user->getId() . "&respuesta=success&mensaje=Usuario Actualizado");
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }

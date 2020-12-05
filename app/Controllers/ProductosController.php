@@ -29,7 +29,7 @@ class ProductosController{
                 $Producto = new Productos ($this->dataProducto);
                 if ($Producto->insert()) {
                     unset($_SESSION['frmProductos']);
-                    header("Location: ../../views/modules/productos/index.php?respuesta=correcto");
+                    header("Location: ../../views/modules/productos/index.php?respuesta=success&mensaje=Producto Registrado!");
                 }
             } else {
                 header("Location: ../../views/modules/productos/create.php?respuesta=error&mensaje=Producto ya registrado");
@@ -47,7 +47,7 @@ class ProductosController{
                 unset($_SESSION['frmProductos']);
             }
 
-            header("Location: ../../views/modules/productos/show.php?id=" . $producto->getId() . "&respuesta=correcto");
+            header("Location: ../../views/modules/productos/show.php?id=" . $producto->getId() . "&respuesta=success&mensaje=Producto Actualizado");
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }

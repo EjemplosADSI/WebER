@@ -26,10 +26,10 @@ class CategoriasController{
                 $Categoria = new Categorias($this->dataCategoria);
                 if ($Categoria->insert()) {
                     unset($_SESSION['frmCategorias']);
-                    header("Location: ../../views/modules/categorias/index.php?respuesta=correcto");
+                    header("Location: ../../views/modules/categorias/index.php?respuesta=success&mensaje=Categoria Registrada!");
                 }
             } else {
-                header("Location: ../../views/modules/categorias/create.php?respuesta=error&mensaje=Categoria ya registrado");
+                header("Location: ../../views/modules/categorias/create.php?respuesta=error&mensaje=Categoria ya registrada!");
             }
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
@@ -44,7 +44,7 @@ class CategoriasController{
                 unset($_SESSION['frmCategorias']);
             }
 
-            header("Location: ../../views/modules/categorias/show.php?id=" . $Categoria->getId() . "&respuesta=correcto");
+            header("Location: ../../views/modules/categorias/show.php?id=" . $Categoria->getId() . "&respuesta=success&mensaje=Categoria Actualizada");
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }

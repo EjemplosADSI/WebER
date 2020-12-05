@@ -28,7 +28,7 @@ class DetalleVentasController
                 $DetalleVenta = new DetalleVentas($this->dataDetalleVenta);
                 if ($DetalleVenta->insert()) {
                     unset($_SESSION['frmDetalleVentas']);
-                    header("Location: ../../views/modules/ventas/create.php?respuesta=correcto");
+                    header("Location: ../../views/modules/ventas/create.php?respuesta=success&mensaje=DetalleVenta Actualizada");
                 }
             } else {
                 header("Location: ../../views/modules/ventas/create.php?respuesta=error&mensaje=Producto ya agregado a la compra");
@@ -45,7 +45,7 @@ class DetalleVentasController
             if($DetalleVenta->update()){
                 unset($_SESSION['frmDetalleVentas']);
             }
-            header("Location: ../../views/modules/ventas/create.php?respuesta=correcto&mensaje=Producto Actualizado");
+            header("Location: ../../views/modules/ventas/create.php?respuesta=success&mensaje=Producto Actualizado");
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }

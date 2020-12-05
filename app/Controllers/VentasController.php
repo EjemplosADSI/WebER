@@ -46,7 +46,7 @@ class VentasController{
             if($Venta->update()){
                 unset($_SESSION['frmVentas']);
             }
-            header("Location: ../../views/modules/ventas/show.php?id=" . $Venta->getId() . "&respuesta=success");
+            header("Location: ../../views/modules/ventas/show.php?id=" . $Venta->getId() . "&respuesta=success&mensaje=Venta Actualizada");
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
             //header("Location: ../../views/modules/ventas/edit.php?respuesta=error");

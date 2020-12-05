@@ -20,8 +20,8 @@ if (!empty($_GET['controller'])){
             if(!empty($_GET['id'])){
                 $controller->{$_GET['action']}($_GET['id']);
             }else if(!empty($_POST['request']) && $_POST['request'] == "ajax"){
-                echo call_user_func_array(array($controller, $_GET['action']), $_POST);
-                //echo $controller->{$_GET['action']}($_POST);
+                //echo call_user_func_array(array($controller, $_GET['action']), $_POST);
+                echo $controller->{$_GET['action']}($_POST);
             }else{
                 if(!empty($_FILES)){
                     $controller->{$_GET['action']}($_FILES);

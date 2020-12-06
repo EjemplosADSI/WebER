@@ -106,29 +106,33 @@ class CategoriasController{
         }
     }
 
-    static public function selectCategoria ($isMultiple=false,
-                                            $isRequired=true,
-                                            $id="categoria_id",
-                                            $nombre="categoria_id",
-                                            $defaultValue="",
-                                            $class="",
-                                            $where="",
-                                            $arrExcluir = array()){
+    static public function selectCategoria (array $params = []){
+
+        $params['isMultiple'] = $params['isMultiple'] ?? false;
+        $params['isRequired'] = $params['isRequired'] ?? true;
+        $params['id'] = $params['id'] ?? "categoria_id";
+        $params['name'] = $params['name'] ?? "categoria_id";
+        $params['defaultValue'] = $params['defaultValue'] ?? "";
+        $params['class'] = $params['class'] ?? "form-control";
+        $params['where'] = $params['where'] ?? "";
+        $params['arrExcluir'] = $params['arrExcluir'] ?? array();
+        $params['request'] = $params['request'] ?? 'html';
+
         $arrCategoria = array();
-        if($where != ""){
+        if($params['where'] != ""){
             $base = "SELECT * FROM categorias WHERE ";
-            $arrCategoria = Categorias::search($base.$where);
+            $arrCategoria = Categorias::search($base.$params['where']);
         }else{
             $arrCategoria = Categorias::getAll();
         }
 
-        $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."'>";
+        $htmlSelect = "<select ".(($params['isMultiple']) ? "multiple" : "")." ".(($params['isRequired']) ? "required" : "")." id= '".$params['id']."' name='".$params['name']."' class='".$params['class']."'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if(count($arrCategoria) > 0){
             /* @var $arrCategoria Categorias[] */
             foreach ($arrCategoria as $categoria)
-                if (!CategoriasController::categoriaIsInArray($categoria->getId(),$arrExcluir))
-                    $htmlSelect .= "<option ".(($categoria != "") ? (($defaultValue == $categoria->getId()) ? "selected" : "" ) : "")." value='".$categoria->getId()."'>".$categoria->getNombre()."</option>";
+                if (!CategoriasController::categoriaIsInArray($categoria->getId(),$params['arrExcluir']))
+                    $htmlSelect .= "<option ".(($categoria != "") ? (($params['defaultValue'] == $categoria->getId()) ? "selected" : "" ) : "")." value='".$categoria->getId()."'>".$categoria->getNombre()."</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;

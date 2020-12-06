@@ -120,13 +120,15 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                             <div class="form-group row">
                                                 <label for="categoria_id" class="col-sm-2 col-form-label">Categoria</label>
                                                 <div class="col-sm-10 ">
-                                                    <?= CategoriasController::selectCategoria(false,
-                                                        true,
-                                                        'categoria_id',
-                                                        'categoria_id',
-                                                        (!empty($DataProducto)) ? $DataProducto->getCategoriaId() : '',
-                                                        'form-control select2bs4 select2-info',
-                                                        "estado = 'Activo'")
+                                                    <?= CategoriasController::selectCategoria(
+                                                        array(
+                                                            'id' => 'categoria_id',
+                                                            'name' => 'categoria_id',
+                                                            'defaultValue' => (!empty($DataProducto)) ? $DataProducto->getCategoriaId() : '',
+                                                            'class' => 'form-control select2bs4 select2-info',
+                                                            'where' => "estado = 'Activo'"
+                                                        )
+                                                    )
                                                     ?>
                                                 </div>
                                             </div>

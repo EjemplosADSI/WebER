@@ -41,30 +41,33 @@ class DepartamentosController
         return null;
     }
 
-    static public function selectDepartamentos($isMultiple = false,
-                                               $isRequired = true,
-                                               $id = "departamento_id",
-                                               $nombre = "departamento_id",
-                                               $defaultValue = "",
-                                               $class = "form-control",
-                                               $where = "",
-                                               $arrExcluir = array())
+    static public function selectDepartamentos (array $params = [])
     {
+        $params['isMultiple'] = $params['isMultiple'] ?? false;
+        $params['isRequired'] = $params['isRequired'] ?? true;
+        $params['id'] = $params['id'] ?? "municipio_id";
+        $params['name'] = $params['name'] ?? "municipio_id";
+        $params['defaultValue'] = $params['defaultValue'] ?? "";
+        $params['class'] = $params['class'] ?? "form-control";
+        $params['where'] = $params['where'] ?? "";
+        $params['arrExcluir'] = $params['arrExcluir'] ?? array();
+        $params['request'] = $params['request'] ?? 'html';
+
         $arrDepartamentos = array();
-        if ($where != "") {
+        if ($params['where'] != "") {
             $base = "SELECT * FROM departamentos WHERE ";
-            $arrDepartamentos = Departamentos::search($base . ' ' . $where);
+            $arrDepartamentos = Departamentos::search($base . ' ' . $params['where']);
         } else {
             $arrDepartamentos = Departamentos::getAll();
         }
 
-        $htmlSelect = "<select " . (($isMultiple) ? "multiple" : "") . " " . (($isRequired) ? "required" : "") . " id= '" . $id . "' name='" . $nombre . "' class='" . $class . "' style='width: 100%;'>";
+        $htmlSelect = "<select " . (($params['isMultiple']) ? "multiple" : "") . " " . (($params['isRequired']) ? "required" : "") . " id= '" . $params['id'] . "' name='" . $params['name'] . "' class='" . $params['class'] . "' style='width: 100%;'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if (count($arrDepartamentos) > 0) {
             /* @var $arrDepartamentos Departamentos[] */
             foreach ($arrDepartamentos as $departamento)
-                if (!DepartamentosController::departamentoIsInArray($departamento->getId(), $arrExcluir))
-                    $htmlSelect .= "<option " . (($departamento != "") ? (($defaultValue == $departamento->getId()) ? "selected" : "") : "") . " value='" . $departamento->getId() . "'>" . $departamento->getNombre() . "</option>";
+                if (!DepartamentosController::departamentoIsInArray($departamento->getId(), $params['arrExcluir']))
+                    $htmlSelect .= "<option " . (($departamento != "") ? (($params['defaultValue'] == $departamento->getId()) ? "selected" : "") : "") . " value='" . $departamento->getId() . "'>" . $departamento->getNombre() . "</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;

@@ -109,29 +109,33 @@ class ProductosController{
         }
     }
 
-    static public function selectProducto ($isMultiple=false,
-                                           $isRequired=true,
-                                           $id="idProducto",
-                                           $nombre="idProducto",
-                                           $defaultValue="",
-                                           $class="",
-                                           $where="",
-                                           $arrExcluir = array()){
+    static public function selectProducto (array $params = []){
+
+        $params['isMultiple'] = $params['isMultiple'] ?? false;
+        $params['isRequired'] = $params['isRequired'] ?? true;
+        $params['id'] = $params['id'] ?? "producto_id";
+        $params['name'] = $params['name'] ?? "producto_id";
+        $params['defaultValue'] = $params['defaultValue'] ?? "";
+        $params['class'] = $params['class'] ?? "form-control";
+        $params['where'] = $params['where'] ?? "";
+        $params['arrExcluir'] = $params['arrExcluir'] ?? array();
+        $params['request'] = $params['request'] ?? 'html';
+
         $arrProducto = array();
-        if($where != ""){
+        if($params['where'] != ""){
             $base = "SELECT * FROM productos WHERE ";
-            $arrProducto = Productos::search($base.$where);
+            $arrProducto = Productos::search($base.$params['where']);
         }else{
             $arrProducto = Productos::getAll();
         }
 
-        $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."'>";
+        $htmlSelect = "<select ".(($params['isMultiple']) ? "multiple" : "")." ".(($params['isRequired']) ? "required" : "")." id= '".$params['id']."' name='".$params['name']."' class='".$params['class']."'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if(count($arrProducto) > 0){
             /* @var $arrProducto Productos[] */
             foreach ($arrProducto as $producto)
-                if (!ProductosController::productoIsInArray($producto->getId(),$arrExcluir))
-                    $htmlSelect .= "<option ".(($producto != "") ? (($defaultValue == $producto->getId()) ? "selected" : "" ) : "")." value='".$producto->getId()."'>".$producto->getNombre()."</option>";
+                if (!ProductosController::productoIsInArray($producto->getId(),$params['arrExcluir']))
+                    $htmlSelect .= "<option ".(($producto != "") ? (($params['defaultValue'] == $producto->getId()) ? "selected" : "" ) : "")." value='".$producto->getId()."'>".$producto->getNombre()."</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;

@@ -91,13 +91,15 @@ if (!empty($_GET['id'])) {
                                     <div class="form-group row">
                                         <label for="cliente_id" class="col-sm-4 col-form-label">Cliente</label>
                                         <div class="col-sm-8">
-                                            <?= UsuariosController::selectUsuario(false,
-                                                true,
-                                                'cliente_id',
-                                                'cliente_id',
-                                                (!empty($dataVenta)) ? $dataVenta->getCliente()->getId() : '',
-                                                'form-control select2bs4 select2-info',
-                                                "rol = 'Cliente' and estado = 'Activo'")
+                                            <?= UsuariosController::selectUsuario(
+                                                array (
+                                                    'id' => 'cliente_id',
+                                                    'name' => 'cliente_id',
+                                                    'defaultValue' => (!empty($dataVenta)) ? $dataVenta->getCliente()->getId() : '',
+                                                    'class' => 'form-control select2bs4 select2-info',
+                                                    'where' => "rol = 'Cliente' and estado = 'Activo'"
+                                                )
+                                            )
                                             ?>
                                             <span class="text-info"><a href="../usuarios/create.php">Crear Cliente</a></span>
                                         </div>
@@ -106,13 +108,15 @@ if (!empty($_GET['id'])) {
                                     <div class="form-group row">
                                         <label for="empleado_id" class="col-sm-4 col-form-label">Empleado</label>
                                         <div class="col-sm-8">
-                                            <?= UsuariosController::selectUsuario(false,
-                                                true,
-                                                'empleado_id',
-                                                'empleado_id',
-                                                (!empty($dataVenta)) ? $dataVenta->getEmpleado()->getId() : '',
-                                                'form-control select2bs4 select2-info',
-                                                "rol = 'Empleado' and estado = 'Activo'")
+                                            <?= UsuariosController::selectUsuario(
+                                                array (
+                                                    'id' => 'empleado_id',
+                                                    'name' => 'empleado_id',
+                                                    'defaultValue' => (!empty($dataVenta)) ? $dataVenta->getEmpleado()->getId() : '',
+                                                    'class' => 'form-control select2bs4 select2-info',
+                                                    'where' => "rol = 'Empleado' and estado = 'Activo'"
+                                                )
+                                            )
                                             ?>
                                         </div>
                                     </div>
@@ -265,13 +269,15 @@ if (!empty($_GET['id'])) {
                             <div class="form-group row">
                                 <label for="producto_id" class="col-sm-4 col-form-label">Producto</label>
                                 <div class="col-sm-8">
-                                    <?= ProductosController::selectProducto(false,
-                                        true,
-                                        'producto_id',
-                                        'producto_id',
-                                        '',
-                                        'form-control select2bs4 select2-info',
-                                        "estado = 'Activo'")
+                                    <?= ProductosController::selectProducto(
+                                        array (
+                                            'id' => 'producto_id',
+                                            'name' => 'producto_id',
+                                            'defaultValue' => '',
+                                            'class' => 'form-control select2bs4 select2-info',
+                                            'where' => "estado = 'Activo'"
+                                        )
+                                    )
                                     ?>
                                     <div id="divResultProducto">
                                         <span class="text-muted">Precio Base: </span> <span id="spPrecio"></span>,

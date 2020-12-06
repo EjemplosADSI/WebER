@@ -55,7 +55,8 @@ class MunicipiosController
 
         $arrMunicipios = array();
         if ($params['where'] != "") {
-            $arrMunicipios = Municipios::search("SELECT * FROM municipios WHERE " . $params['where']);
+            $base = "SELECT * FROM municipios WHERE ";
+            $arrMunicipios = Municipios::search($base . $params['where']);
         } else {
             $arrMunicipios = Municipios::getAll();
         }

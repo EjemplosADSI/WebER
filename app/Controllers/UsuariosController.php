@@ -137,29 +137,32 @@ class UsuariosController
         }
     }
 
-    static public function selectUsuario($isMultiple = false,
-                                         $isRequired = true,
-                                         $id = "idUsuario",
-                                         $nombre = "idUsuario",
-                                         $defaultValue = "",
-                                         $class = "form-control",
-                                         $where = "",
-                                         $arrExcluir = array())
-    {
+    static public function selectUsuario(array $params = []) {
+
+        $params['isMultiple'] = $params['isMultiple'] ?? false;
+        $params['isRequired'] = $params['isRequired'] ?? true;
+        $params['id'] = $params['id'] ?? "usuario_id";
+        $params['name'] = $params['name'] ?? "usuario_id";
+        $params['defaultValue'] = $params['defaultValue'] ?? "";
+        $params['class'] = $params['class'] ?? "form-control";
+        $params['where'] = $params['where'] ?? "";
+        $params['arrExcluir'] = $params['arrExcluir'] ?? array();
+        $params['request'] = $params['request'] ?? 'html';
+
         $arrUsuarios = array();
-        if ($where != "") {
+        if ($params['where'] != "") {
             $base = "SELECT * FROM usuarios WHERE ";
-            $arrUsuarios = Usuarios::search($base . ' ' . $where);
+            $arrUsuarios = Usuarios::search($base . ' ' . $params['where']);
         } else {
             $arrUsuarios = Usuarios::getAll();
         }
-        $htmlSelect = "<select " . (($isMultiple) ? "multiple" : "") . " " . (($isRequired) ? "required" : "") . " id= '" . $id . "' name='" . $nombre . "' class='" . $class . "' style='width: 100%;'>";
+        $htmlSelect = "<select " . (($params['isMultiple']) ? "multiple" : "") . " " . (($params['isRequired']) ? "required" : "") . " id= '" . $params['id'] . "' name='" . $params['name'] . "' class='" . $params['class'] . "' style='width: 100%;'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if (count($arrUsuarios) > 0) {
             /* @var $arrUsuarios Usuarios[] */
             foreach ($arrUsuarios as $usuario)
-                if (!UsuariosController::usuarioIsInArray($usuario->getId(), $arrExcluir))
-                    $htmlSelect .= "<option " . (($usuario != "") ? (($defaultValue == $usuario->getId()) ? "selected" : "") : "") . " value='" . $usuario->getId() . "'>" . $usuario->getDocumento() . " - " . $usuario->getNombres() . " " . $usuario->getApellidos() . "</option>";
+                if (!UsuariosController::usuarioIsInArray($usuario->getId(), $params['arrExcluir']))
+                    $htmlSelect .= "<option " . (($usuario != "") ? (($params['defaultValue'] == $usuario->getId()) ? "selected" : "") : "") . " value='" . $usuario->getId() . "'>" . $usuario->getDocumento() . " - " . $usuario->getNombres() . " " . $usuario->getApellidos() . "</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;

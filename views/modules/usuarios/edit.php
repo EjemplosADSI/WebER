@@ -156,13 +156,15 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                     <div class="form-group row">
                                                         <label for="municipio_id" class="col-sm-2 col-form-label">Municipio</label>
                                                         <div class="col-sm-5">
-                                                            <?= DepartamentosController::selectDepartamentos(false,
-                                                                true,
-                                                                'departamento_id',
-                                                                'departamento_id',
-                                                                (!empty($DataUsuario)) ? $DataUsuario->getMunicipio()->getDepartamento()->getId() : '', //Boyacá
-                                                                'form-control select2bs4 select2-info',
-                                                                "estado = 'Activo'")
+                                                            <?= DepartamentosController::selectDepartamentos(
+                                                                array(
+                                                                    'id' => 'departamento_id',
+                                                                    'name' => 'departamento_id',
+                                                                    'defaultValue' => (!empty($DataUsuario)) ? $DataUsuario->getMunicipio()->getDepartamento()->getId() : '15',
+                                                                    'class' => 'form-control select2bs4 select2-info',
+                                                                    'where' => "estado = 'Activo'"
+                                                                )
+                                                            )
                                                             ?>
                                                         </div>
                                                         <div class="col-sm-5 ">

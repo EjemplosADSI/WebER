@@ -196,7 +196,7 @@ if (!empty($_GET['id'])) {
                                             </thead>
                                             <tbody>
                                             <?php
-                                            if (!empty($dataVenta->getId())) {
+                                            if (!empty($dataVenta) and !empty($dataVenta->getId())) {
                                                 $arrDetalleVentas = DetalleVentas::search("SELECT * FROM weber.detalle_ventas WHERE venta_id = ".$dataVenta->getId());
                                                 if(count($arrDetalleVentas) > 0) {
                                                     /* @var $arrDetalleVentas DetalleVentas[] */
@@ -277,6 +277,9 @@ if (!empty($_GET['id'])) {
                                         <span class="text-muted">Precio Base: </span> <span id="spPrecio"></span>,
                                         <span class="text-muted">Precio Venta: </span> <span id="spPrecioVenta"></span>,
                                         <span class="text-muted">Stock: </span> <span id="spStock"></span>.
+                                        <span class="badge badge-info" id="spFoto" data-toggle="tooltip" data-html="true"
+                                              title="<img class='img-thumbnail' src='../../public/uploadFiles/photos/products/'>">Foto
+                                        </span>
                                     </div>
                                 </div>
                             </div>

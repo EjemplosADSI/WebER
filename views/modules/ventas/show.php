@@ -96,7 +96,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                         <p class="text-muted"><?= $DataVentas->getFechaVenta(); ?></p>
                                         <hr>
                                         <strong><i class="fas fa-money-bill mr-1"></i> Monto</strong>
-                                        <p class="text-muted"><?= $DataVentas->getMonto(); ?></p>
+                                        <p class="text-muted"><?= GeneralFunctions::formatCurrency($DataVentas->getMonto()); ?></p>
                                         <hr>
                                         <strong><i class="fas fa-cog mr-1"></i> Estado</strong>
                                         <p class="text-muted"><?= $DataVentas->getEstado(); ?></p>

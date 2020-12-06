@@ -355,6 +355,25 @@ class Productos extends AbstractDBConnection implements Model, JsonSerializable
         return "Nombre: $this->nombre, Precio: $this->precio, Porcentaje: $this->porcentaje_ganancia, Stock: $this->stock, Estado: $this->estado";
     }
 
+    public function substractStock(int $quantity)
+    {
+        $this->setStock( $this->getStock() - $quantity);
+        $result = $this->update();
+        if($result == false){
+            GeneralFunctions::console('Stock no actualizado!');
+        }
+        return $result;
+    }
+
+    public function addStock(int $quantity)
+    {
+        $this->setStock( $this->getStock() + $quantity);
+        $result = $this->update();
+        if($result == false){
+            GeneralFunctions::console('Stock no actualizado!');
+        }
+        return $result;
+    }
 
     /**
      * Specify data which should be serialized to JSON

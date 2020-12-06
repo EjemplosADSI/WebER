@@ -27,8 +27,8 @@ class DetalleVentas extends AbstractDBConnection implements Model, JsonSerializa
     public function __construct(array $detalle_venta = [])
     {
         parent::__construct();
-        $this->setId($venta['id'] ?? NULL);
-        $this->setPrecioVenta($detalle_venta['ventas_id'] ?? 0);
+        $this->setId($detalle_venta['id'] ?? NULL);
+        $this->setVentasId($detalle_venta['venta_id'] ?? 0);
         $this->setProductoId($detalle_venta['producto_id'] ?? 0);
         $this->setCantidad($detalle_venta['cantidad'] ?? 0);
         $this->setPrecioVenta($detalle_venta['precio_venta'] ?? 0.0);
@@ -123,6 +123,11 @@ class DetalleVentas extends AbstractDBConnection implements Model, JsonSerializa
         $this->precio_venta = $precio_venta;
     }
 
+    public function getTotalProducto() : float
+    {
+        return $this->getPrecioVenta() * $this->getCantidad();
+    }
+
     /**
      * @return Carbon
      */
@@ -166,16 +171,21 @@ class DetalleVentas extends AbstractDBConnection implements Model, JsonSerializa
         return NULL;
     }
 
-    protected function save(string $query): ?bool
+    protected function save(string $query, string $type = 'insert'): ?bool
     {
-        $arrData = [
-            ':id' =>   $this->getId(),
-            ':venta_id' =>   $this->getVentasId(),
-            ':producto_id' =>  $this->getProductoId(),
-            ':cantidad' =>   $this->getCantidad(),
-            ':precio_venta' =>   $this->getPrecioVenta(),
-            ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
-        ];
+        if($type == 'deleted'){
+            $arrData = [ ':id' =>   $this->getId() ];
+        }else{
+            $arrData = [
+                ':id' =>   $this->getId(),
+                ':venta_id' =>   $this->getVentasId(),
+                ':producto_id' =>  $this->getProductoId(),
+                ':cantidad' =>   $this->getCantidad(),
+                ':precio_venta' =>   $this->getPrecioVenta(),
+                ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
+            ];
+        }
+
         $this->Connect();
         $result = $this->insertRow($query, $arrData);
         $this->Disconnect();
@@ -185,7 +195,10 @@ class DetalleVentas extends AbstractDBConnection implements Model, JsonSerializa
     function insert()
     {
         $query = "INSERT INTO weber.detalle_ventas VALUES (:id,:venta_id,:producto_id,:cantidad,:precio_venta,:created_at)";
-        return $this->save($query);
+        if($this->save($query)){
+            return $this->getProducto()->substractStock($this->getCantidad());
+        }
+        return false;
     }
 
     /**
@@ -194,8 +207,8 @@ class DetalleVentas extends AbstractDBConnection implements Model, JsonSerializa
     public function update() : bool
     {
         $query = "UPDATE weber.detalle_ventas SET 
-            cantidad = :cantidad, precio_venta = :precio_venta,
-            created_at = :created_at WHERE id = :id";
+            venta_id = :venta_id, producto_id = :producto_id, cantidad = :cantidad, 
+            precio_venta = :precio_venta, created_at = :created_at WHERE id = :id";
         return $this->save($query);
     }
 
@@ -205,7 +218,7 @@ class DetalleVentas extends AbstractDBConnection implements Model, JsonSerializa
     public function deleted() : bool
     {
         $query = "DELETE FROM detalle_ventas WHERE id = :id";
-        return $this->save($query);
+        return $this->save($query, 'deleted');
     }
 
     /**

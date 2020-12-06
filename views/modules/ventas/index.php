@@ -111,7 +111,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                     <td><?= $venta->getCliente()->getNombres(); ?> <?= $venta->getCliente()->getApellidos(); ?></td>
                                                     <td><?= $venta->getEmpleado()->getNombres(); ?> <?= $venta->getEmpleado()->getApellidos(); ?></td>
                                                     <td><?= $venta->getFechaVenta(); ?></td>
-                                                    <td><?= $venta->getMonto(); ?></td>
+                                                    <td><?= GeneralFunctions::formatCurrency($venta->getMonto()); ?></td>
                                                     <td><?= $venta->getEstado(); ?></td>
                                                     <td>
                                                         <a href="show.php?id=<?php echo $venta->getId(); ?>"

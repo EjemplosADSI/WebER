@@ -140,7 +140,7 @@ if (!empty($_GET['id'])) {
                                         <div class="form-group row">
                                             <label for="numero_serie" class="col-sm-4 col-form-label">Monto</label>
                                             <div class="col-sm-8">
-                                                <?= $dataVenta->getMonto() ?>
+                                                <?= GeneralFunctions::formatCurrency($dataVenta->getMonto()) ?>
                                             </div>
                                         </div>
                                     <?php } ?>
@@ -190,13 +190,14 @@ if (!empty($_GET['id'])) {
                                                 <th>Producto</th>
                                                 <th>Cantidad</th>
                                                 <th>Precio</th>
-                                                <th>Acciones</th>
+                                                <th>Total</th>
+                                                <th>Act</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <?php
-                                            if (!empty($_GET['id'])) {
-                                                $arrDetalleVentas = DetalleVentas::search("SELECT * FROM weber.detalle_ventas WHERE venta_id = ".$_GET['id']);
+                                            if (!empty($dataVenta->getId())) {
+                                                $arrDetalleVentas = DetalleVentas::search("SELECT * FROM weber.detalle_ventas WHERE venta_id = ".$dataVenta->getId());
                                                 if(count($arrDetalleVentas) > 0) {
                                                     /* @var $arrDetalleVentas DetalleVentas[] */
                                                     foreach ($arrDetalleVentas as $detalleVenta) {
@@ -205,18 +206,11 @@ if (!empty($_GET['id'])) {
                                                             <td><?= $detalleVenta->getId(); ?></td>
                                                             <td><?= $detalleVenta->getProducto()->getNombre(); ?></td>
                                                             <td><?= $detalleVenta->getCantidad(); ?></td>
-                                                            <td><?= $detalleVenta->getPrecioVenta(); ?></td>
+                                                            <td><?= GeneralFunctions::formatCurrency($detalleVenta->getPrecioVenta()); ?></td>
+                                                            <td><?= GeneralFunctions::formatCurrency($detalleVenta->getTotalProducto()); ?></td>
                                                             <td>
-                                                                <a href="edit.php?id=<?php echo $detalleVenta->getId(); ?>"
-                                                                   type="button" data-toggle="tooltip" title="Actualizar"
-                                                                   class="btn docs-tooltip btn-primary btn-xs"><i
-                                                                            class="fa fa-edit"></i></a>
-                                                                <a href="show.php?id=<?php echo $detalleVenta->getId(); ?>"
-                                                                   type="button" data-toggle="tooltip" title="Ver"
-                                                                   class="btn docs-tooltip btn-warning btn-xs"><i
-                                                                            class="fa fa-eye"></i></a>
                                                                 <a type="button"
-                                                                   href="../../../app/Controllers/ProductosController.php?action=inactivate&Id=<?php echo $detalleVenta->getId(); ?>"
+                                                                   href="../../../app/Controllers/MainController.php?controller=DetalleVentas&action=deleted&id=<?= $detalleVenta->getId(); ?>"
                                                                    data-toggle="tooltip" title="Eliminar"
                                                                    class="btn docs-tooltip btn-danger btn-xs"><i
                                                                             class="fa fa-times-circle"></i></a>
@@ -233,7 +227,8 @@ if (!empty($_GET['id'])) {
                                                 <th>Producto</th>
                                                 <th>Cantidad</th>
                                                 <th>Precio</th>
-                                                <th>Acciones</th>
+                                                <th>Total</th>
+                                                <th>Act</th>
                                             </tr>
                                             </tfoot>
                                         </table>
@@ -263,8 +258,7 @@ if (!empty($_GET['id'])) {
                     </div>
                     <form action="../../../app/Controllers/MainController.php?controller=DetalleVentas&action=create" method="post">
                         <div class="modal-body">
-                            <?php //var_dump($dataVenta); ?>
-                            <input id="ventas_id" name="ventas_id" value="<?= !empty($dataVenta) ? $dataVenta->getId() : ''; ?>" hidden
+                            <input id="venta_id" name="venta_id" value="<?= !empty($dataVenta) ? $dataVenta->getId() : ''; ?>" hidden
                                    required="required" type="text">
                             <div class="form-group row">
                                 <label for="producto_id" class="col-sm-4 col-form-label">Producto</label>
@@ -275,7 +269,7 @@ if (!empty($_GET['id'])) {
                                             'name' => 'producto_id',
                                             'defaultValue' => '',
                                             'class' => 'form-control select2bs4 select2-info',
-                                            'where' => "estado = 'Activo'"
+                                            'where' => "estado = 'Activo' and stock > 0"
                                         )
                                     )
                                     ?>

@@ -46,7 +46,7 @@ class VentasController{
             if($Venta->update()){
                 unset($_SESSION['frmVentas']);
             }
-            header("Location: ../../views/modules/ventas/show.php?id=" . $Venta->getId() . "&respuesta=success");
+            header("Location: ../../views/modules/ventas/show.php?id=" . $Venta->getId() . "&respuesta=success&mensaje=Venta Actualizada");
         } catch (\Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
             //header("Location: ../../views/modules/ventas/edit.php?respuesta=error");
@@ -96,29 +96,33 @@ class VentasController{
         }
     }
 
-    static public function selectVentas ($isMultiple=false,
-                                        $isRequired=true,
-                                        $id="venta_id",
-                                        $nombre="venta_id",
-                                        $defaultValue="",
-                                        $class="",
-                                        $where="",
-                                        $arrExcluir = array()){
+    static public function selectVentas (array $params = [] ){
+
+        $params['isMultiple'] = $params['isMultiple'] ?? false;
+        $params['isRequired'] = $params['isRequired'] ?? true;
+        $params['id'] = $params['id'] ?? "venta_id";
+        $params['name'] = $params['name'] ?? "venta_id";
+        $params['defaultValue'] = $params['defaultValue'] ?? "";
+        $params['class'] = $params['class'] ?? "form-control";
+        $params['where'] = $params['where'] ?? "";
+        $params['arrExcluir'] = $params['arrExcluir'] ?? array();
+        $params['request'] = $params['request'] ?? 'html';
+
         $arrVentas = array();
-        if($where != ""){
+        if($params['where'] != ""){
             $base = "SELECT * FROM ventas WHERE ";
-            $arrVentas = Ventas::search($base.$where);
+            $arrVentas = Ventas::search($base.$params['where']);
         }else{
             $arrVentas = Ventas::getAll();
         }
 
-        $htmlSelect = "<select ".(($isMultiple) ? "multiple" : "")." ".(($isRequired) ? "required" : "")." id= '".$id."' name='".$nombre."' class='".$class."'>";
+        $htmlSelect = "<select ".(($params['isMultiple']) ? "multiple" : "")." ".(($params['isRequired']) ? "required" : "")." id= '".$params['id']."' name='".$params['name']."' class='".$params['class']."'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if(count($arrVentas) > 0){
             /* @var $arrVentas Ventas[] */
             foreach ($arrVentas as $ventas)
-                if (!VentasController::ventaIsInArray($ventas->getId(),$arrExcluir))
-                    $htmlSelect .= "<option ".(($ventas != "") ? (($defaultValue == $ventas->getId()) ? "selected" : "" ) : "")." value='".$ventas->getId()."'>".$ventas->getNumeroSerie()."</option>";
+                if (!VentasController::ventaIsInArray($ventas->getId(),$params['arrExcluir']))
+                    $htmlSelect .= "<option ".(($ventas != "") ? (($params['defaultValue'] == $ventas->getId()) ? "selected" : "" ) : "")." value='".$ventas->getId()."'>".$ventas->getNumeroSerie()."</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;

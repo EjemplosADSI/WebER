@@ -1,1 +1,560 @@
-[2020-11-18T09:51:51.603030+00:00] General.ERROR: Action no encontrada {"descripcion":"La accion selectMunicipios no fue encontrada en el controlador App\\Controllers\\ProductosController"} 
+[2020-12-06T14:06:00.461098+00:00] General.ERROR: Exception  
+[2020-12-06T14:06:00.462574+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-06T14:06:00.462891+00:00] General.ERROR: Line: 101  
+[2020-12-06T14:06:00.463140+00:00] General.ERROR: Mensaje: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,COERCIBLE) for operation '='  
+[2020-12-06T14:06:00.463399+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 101
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 279
+            [function] => getRows
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 334
+            [function] => search
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ProductosController.php
+            [line] => 28
+            [function] => productoRegistrado
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => paã±ales winny wold etapa 3
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ProductosController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  
+[2020-12-06T14:06:41.352899+00:00] General.ERROR: Exception  
+[2020-12-06T14:06:41.354006+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-06T14:06:41.354316+00:00] General.ERROR: Line: 101  
+[2020-12-06T14:06:41.354587+00:00] General.ERROR: Mensaje: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,COERCIBLE) for operation '='  
+[2020-12-06T14:06:41.354909+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 101
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 279
+            [function] => getRows
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 334
+            [function] => search
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ProductosController.php
+            [line] => 28
+            [function] => productoRegistrado
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => paã±ales winny wold etapa 3
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ProductosController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  
+[2020-12-06T14:07:02.448303+00:00] General.ERROR: Exception  
+[2020-12-06T14:07:02.449807+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-06T14:07:02.450192+00:00] General.ERROR: Line: 101  
+[2020-12-06T14:07:02.450545+00:00] General.ERROR: Mensaje: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,COERCIBLE) for operation '='  
+[2020-12-06T14:07:02.451052+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 101
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 279
+            [function] => getRows
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 334
+            [function] => search
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ProductosController.php
+            [line] => 28
+            [function] => productoRegistrado
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => paã±ales winny wold etapa 3
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ProductosController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  
+[2020-12-06T14:07:14.690615+00:00] General.ERROR: Exception  
+[2020-12-06T14:07:14.691946+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-06T14:07:14.692237+00:00] General.ERROR: Line: 101  
+[2020-12-06T14:07:14.692567+00:00] General.ERROR: Mensaje: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,COERCIBLE) for operation '='  
+[2020-12-06T14:07:14.692870+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 101
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 279
+            [function] => getRows
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 334
+            [function] => search
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ProductosController.php
+            [line] => 28
+            [function] => productoRegistrado
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => paã±ales winny wold etapa 3
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ProductosController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  
+[2020-12-06T14:07:25.398127+00:00] General.ERROR: Exception  
+[2020-12-06T14:07:25.400113+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-06T14:07:25.400583+00:00] General.ERROR: Line: 101  
+[2020-12-06T14:07:25.401068+00:00] General.ERROR: Mensaje: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,COERCIBLE) for operation '='  
+[2020-12-06T14:07:25.401499+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 101
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 279
+            [function] => getRows
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 334
+            [function] => search
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ProductosController.php
+            [line] => 28
+            [function] => productoRegistrado
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => paã±ales winny wold etapa 3
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ProductosController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  
+[2020-12-06T14:07:47.956246+00:00] General.ERROR: Exception  
+[2020-12-06T14:07:47.957287+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-06T14:07:47.957570+00:00] General.ERROR: Line: 101  
+[2020-12-06T14:07:47.957985+00:00] General.ERROR: Mensaje: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,COERCIBLE) for operation '='  
+[2020-12-06T14:07:47.958283+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 101
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 279
+            [function] => getRows
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 334
+            [function] => search
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ProductosController.php
+            [line] => 28
+            [function] => productoRegistrado
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => paã±ales winny wold etapa 3
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ProductosController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  
+[2020-12-06T14:08:44.190283+00:00] General.ERROR: Exception  
+[2020-12-06T14:08:44.191794+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-06T14:08:44.192214+00:00] General.ERROR: Line: 101  
+[2020-12-06T14:08:44.192468+00:00] General.ERROR: Mensaje: SQLSTATE[HY000]: General error: 1267 Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8_general_ci,COERCIBLE) for operation '='  
+[2020-12-06T14:08:44.192740+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 101
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 279
+            [function] => getRows
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Productos.php
+            [line] => 334
+            [function] => search
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => SELECT id FROM weber.productos where nombre = 'paã±ales winny wold etapa 3'
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ProductosController.php
+            [line] => 28
+            [function] => productoRegistrado
+            [class] => App\Models\Productos
+            [type] => ::
+            [args] => Array
+                (
+                    [0] => paã±ales winny wold etapa 3
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ProductosController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  

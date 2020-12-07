@@ -98,30 +98,33 @@ class FotosController
         }
     }
 
-    static public function selectFoto($isMultiple = false,
-                                      $isRequired = true,
-                                      $id = "idFoto",
-                                      $nombre = "idFoto",
-                                      $defaultValue = "",
-                                      $class = "",
-                                      $where = "",
-                                      $arrExcluir = array())
+    static public function selectFoto(array $params = [])
     {
+        $params['isMultiple'] = $params['isMultiple'] ?? false;
+        $params['isRequired'] = $params['isRequired'] ?? true;
+        $params['id'] = $params['id'] ?? "foto_id";
+        $params['name'] = $params['name'] ?? "foto_id";
+        $params['defaultValue'] = $params['defaultValue'] ?? "";
+        $params['class'] = $params['class'] ?? "form-control";
+        $params['where'] = $params['where'] ?? "";
+        $params['arrExcluir'] = $params['arrExcluir'] ?? array();
+        $params['request'] = $params['request'] ?? 'html';
+
         $arrFoto = array();
-        if ($where != "") {
+        if ($params['where'] != "") {
             $base = "SELECT * FROM fotos WHERE ";
-            $arrFoto = Fotos::search($base . $where);
+            $arrFoto = Fotos::search($base . $params['where']);
         } else {
             $arrFoto = Fotos::getAll();
         }
 
-        $htmlSelect = "<select " . (($isMultiple) ? "multiple" : "") . " " . (($isRequired) ? "required" : "") . " id= '" . $id . "' name='" . $nombre . "' class='" . $class . "'>";
+        $htmlSelect = "<select " . (($params['isMultiple']) ? "multiple" : "") . " " . (($params['isRequired']) ? "required" : "") . " id= '" . $params['id'] . "' name='" . $params['name'] . "' class='" . $params['class'] . "'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if (count($arrFoto) > 0) {
             /* @var $arrFoto Fotos[] */
             foreach ($arrFoto as $foto)
-                if (!FotosController::fotoIsInArray($foto->getId(), $arrExcluir))
-                    $htmlSelect .= "<option " . (($foto != "") ? (($defaultValue == $foto->getId()) ? "selected" : "") : "") . " value='" . $foto->getId() . "'>" . $foto->getNombre() . "</option>";
+                if (!FotosController::fotoIsInArray($foto->getId(), $params['arrExcluir']))
+                    $htmlSelect .= "<option " . (($foto != "") ? (($params['defaultValue'] == $foto->getId()) ? "selected" : "") : "") . " value='" . $foto->getId() . "'>" . $foto->getNombre() . "</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;

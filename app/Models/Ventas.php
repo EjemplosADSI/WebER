@@ -22,6 +22,7 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     /* Relaciones */
     private ?Usuarios $empleado;
     private ?Usuarios $cliente;
+    private ?array $detalleVenta;
 
     /**
      * Venta constructor. Recibe un array asociativo
@@ -35,10 +36,10 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
         $this->setClienteId($venta['cliente_id'] ?? 0);
         $this->setEmpleadoId($venta['empleado_id'] ?? 0);
         $this->setFechaVenta(!empty($venta['created_at']) ? Carbon::parse($venta['created_at']) : new Carbon());
-        $this->setMonto($venta['monto'] ?? 0.0);
         $this->setEstado($venta['estado'] ?? 'En progreso');
         $this->setCreatedAt(!empty($venta['created_at']) ? Carbon::parse($venta['created_at']) : new Carbon());
         $this->setUpdatedAt(!empty($venta['updated_at']) ? Carbon::parse($venta['updated_at']) : new Carbon());
+        $this->setMonto();
     }
 
     /**
@@ -148,9 +149,19 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @param float|mixed $monto
      */
-    public function setMonto(float $monto): void
+    public function setMonto(): void
     {
-        $this->monto = $monto;
+        $total = 0;
+        if($this->getId() != null){
+            $arrDetallesVenta = $this->getDetalleVenta();
+            if(!empty($arrDetallesVenta)){
+                /* @var $arrDetallesVenta DetalleVentas[] */
+                foreach ($arrDetallesVenta as $DetalleVenta){
+                    $total += $DetalleVenta->getTotalProducto();
+                }
+            }
+        }
+        $this->monto = $total;
     }
 
     /**
@@ -226,6 +237,17 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
             return $this->cliente;
         }
         return NULL;
+    }
+
+    /**
+     * retorna un array de detalles venta que perteneces a una venta
+     * @return array
+     */
+    public function getDetalleVenta(): ?array
+    {
+
+        $this->detalleVenta = DetalleVentas::search('SELECT * FROM weber.detalle_ventas where venta_id = '.$this->id);
+        return $this->detalleVenta;
     }
 
     /**

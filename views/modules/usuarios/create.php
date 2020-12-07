@@ -130,23 +130,24 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                             <div class="form-group row">
                                                 <label for="municipio_id" class="col-sm-2 col-form-label">Municipio</label>
                                                 <div class="col-sm-5">
-                                                    <?= DepartamentosController::selectDepartamentos(false,
-                                                        true,
-                                                        'departamento_id',
-                                                        'departamento_id',
-                                                        '15', //Boyacá
-                                                        'form-control select2bs4 select2-info',
-                                                        "estado = 'Activo'")
+                                                    <?= DepartamentosController::selectDepartamentos(
+                                                        array(
+                                                            'id' => 'departamento_id',
+                                                            'name' => 'departamento_id',
+                                                            'defaultValue' => '15', //Boyacá
+                                                            'class' => 'form-control select2bs4 select2-info',
+                                                            'where' => "estado = 'Activo'"
+                                                        )
+                                                    )
                                                     ?>
                                                 </div>
                                                 <div class="col-sm-5 ">
-                                                    <?= MunicipiosController::selectMunicipios(false,
-                                                        true,
-                                                        'municipio_id',
-                                                        'municipio_id',
-                                                        (!empty($frmSession['municipio_id'])) ? $frmSession['municipio_id'] : '',
-                                                        'form-control select2bs4 select2-info',
-                                                        "departamento_id = 15 and estado = 'Activo'")
+                                                    <?= MunicipiosController::selectMunicipios(array (
+                                                        'id' => 'municipio_id',
+                                                        'name' => 'municipio_id',
+                                                        'defaultValue' => (!empty($frmSession['municipio_id'])) ? $frmSession['municipio_id'] : '',
+                                                        'class' => 'form-control select2bs4 select2-info',
+                                                        'where' => "departamento_id = 15 and estado = 'Activo'"))
                                                     ?>
                                                 </div>
                                             </div>

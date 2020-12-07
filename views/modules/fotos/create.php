@@ -92,13 +92,15 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                             <div class="form-group row">
                                                 <label for="producto_id" class="col-sm-2 col-form-label">Producto</label>
                                                 <div class="col-sm-10">
-                                                    <?= ProductosController::selectProducto(false,
-                                                        true,
-                                                        'producto_id',
-                                                        'producto_id',
-                                                        !empty($_SESSION['idProducto']) ? $_SESSION['idProducto']->getId() : '',
-                                                        'form-control select2bs4 select2-info',
-                                                        "estado = 'Activo'")
+                                                    <?= ProductosController::selectProducto(
+                                                        array (
+                                                            'id' => 'producto_id',
+                                                            'name' => 'producto_id',
+                                                            'defaultValue' => !empty($_SESSION['idProducto']) ? $_SESSION['idProducto']->getId() : '',
+                                                            'class' => 'form-control select2bs4 select2-info',
+                                                            'where' => "estado = 'Activo'"
+                                                        )
+                                                    )
                                                     ?>
                                                 </div>
                                             </div>

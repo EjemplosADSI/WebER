@@ -41,29 +41,32 @@ class MunicipiosController
         return null;
     }
 
-    static public function selectMunicipios($isMultiple = false,
-                                            $isRequired = true,
-                                            $id = "municipio_id",
-                                            $nombre = "municipio_id",
-                                            $defaultValue = "",
-                                            $class = "form-control",
-                                            $where = "",
-                                            $arrExcluir = array(),
-                                            $request = 'html')
+    static public function selectMunicipios(array $params = [])
     {
+        $params['isMultiple'] = $params['isMultiple'] ?? false;
+        $params['isRequired'] = $params['isRequired'] ?? true;
+        $params['id'] = $params['id'] ?? "municipio_id";
+        $params['name'] = $params['name'] ?? "municipio_id";
+        $params['defaultValue'] = $params['defaultValue'] ?? "";
+        $params['class'] = $params['class'] ?? "form-control";
+        $params['where'] = $params['where'] ?? "";
+        $params['arrExcluir'] = $params['arrExcluir'] ?? array();
+        $params['request'] = $params['request'] ?? 'html';
+
         $arrMunicipios = array();
-        if ($where != "") {
-            $arrMunicipios = Municipios::search("SELECT * FROM municipios WHERE " . $where);
+        if ($params['where'] != "") {
+            $base = "SELECT * FROM municipios WHERE ";
+            $arrMunicipios = Municipios::search($base . $params['where']);
         } else {
             $arrMunicipios = Municipios::getAll();
         }
-        $htmlSelect = "<select " . (($isMultiple) ? "multiple" : "") . " " . (($isRequired) ? "required" : "") . " id= '" . $id . "' name='" . $nombre . "' class='" . $class . "' style='width: 100%;'>";
+        $htmlSelect = "<select " . (($params['isMultiple']) ? "multiple" : "") . " " . (($params['isRequired']) ? "required" : "") . " id= '" . $params['id'] . "' name='" . $params['name'] . "' class='" . $params['class'] . "' style='width: 100%;'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
         if (count($arrMunicipios) > 0) {
             /* @var $arrMunicipios Municipios[] */
             foreach ($arrMunicipios as $municipio)
-                if (!MunicipiosController::municipioIsInArray($municipio->getId(), $arrExcluir))
-                    $htmlSelect .= "<option " . (($municipio != "") ? (($defaultValue == $municipio->getId()) ? "selected" : "") : "") . " value='" . $municipio->getId() . "'>" . $municipio->getNombre() . "</option>";
+                if (!MunicipiosController::municipioIsInArray($municipio->getId(), $params['arrExcluir']))
+                    $htmlSelect .= "<option " . (($municipio != "") ? (($params['defaultValue'] == $municipio->getId()) ? "selected" : "") : "") . " value='" . $municipio->getId() . "'>" . $municipio->getNombre() . "</option>";
         }
         $htmlSelect .= "</select>";
         return $htmlSelect;

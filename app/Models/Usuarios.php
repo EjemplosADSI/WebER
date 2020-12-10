@@ -28,8 +28,8 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
 
     /* Relaciones */
     private ?Municipios $municipio;
-    private array $ventasCliente;
-    private array $ventasEmpleado;
+    private ?array $ventasCliente;
+    private ?array $ventasEmpleado;
 
     /**
      * Usuarios constructor. Recibe un array asociativo
@@ -334,19 +334,25 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return array
      */
-    public function getVentasCliente(): array
+    public function getVentasCliente(): ?array
     {
-        //TODO Falta programar la venta
-        return array();
+        if(!empty($this->getId())){
+            $this->ventasCliente = Ventas::search('SELECT * FROM ventas WHERE cliente_id = '.$this->getId());
+            return $this->ventasCliente;
+        }
+        return null;
     }
 
     /**
      * @return array
      */
-    public function getVentasEmpleado(): array
+    public function getVentasEmpleado(): ?array
     {
-        //TODO Falta programar la venta
-        return array();
+        if(!empty($this->getId())){
+            $this->ventasEmpleado = Ventas::search('SELECT * FROM ventas WHERE empleado_id = '.$this->getId());
+            return $this->ventasEmpleado;
+        }
+        return null;
     }
 
     /**

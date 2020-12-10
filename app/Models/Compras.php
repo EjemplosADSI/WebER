@@ -7,22 +7,23 @@ use Carbon\Carbon;
 use Exception;
 use JsonSerializable;
 
-class Ventas extends AbstractDBConnection implements Model, JsonSerializable
+class Compras extends AbstractDBConnection implements Model, JsonSerializable
 {
     private ?int $id;
     private string $numero_serie;
-    private int $cliente_id; // Id numerico (1,2,3,4) almacena en BD
     private int $empleado_id;
-    private Carbon $fecha_venta;
+    private int $proveedor_id;
+    private Carbon $fecha_compra;
     private float $monto;
     private string $estado;
     private Carbon $created_at;
-    private Carbon $updated_at;
+    private ?Carbon $updated_at;
 
     /* Relaciones */
-    private ?Usuarios $cliente; // Objeto de cliente (Nombres, Telefono, direccion)
     private ?Usuarios $empleado;
-    private ?array $detalleVenta;
+    private ?Usuarios $proveedor;
+    private ?array $detalleCompra;
+
 
     /**
      * Venta constructor. Recibe un array asociativo
@@ -33,9 +34,9 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
         parent::__construct();
         $this->setId($venta['id'] ?? NULL);
         $this->setNumeroSerie($venta['numero_serie'] ?? NULL);
-        $this->setClienteId($venta['cliente_id'] ?? 0);
+        $this->setProveedorId($venta['proveedor_id'] ?? 0);
         $this->setEmpleadoId($venta['empleado_id'] ?? 0);
-        $this->setFechaVenta(!empty($venta['created_at']) ? Carbon::parse($venta['created_at']) : new Carbon());
+        $this->setFechaCompra(!empty($venta['fecha_compra']) ? Carbon::parse($venta['fecha_compra']) : new Carbon());
         $this->setEstado($venta['estado'] ?? 'En progreso');
         $this->setCreatedAt(!empty($venta['created_at']) ? Carbon::parse($venta['created_at']) : new Carbon());
         $this->setUpdatedAt(!empty($venta['updated_at']) ? Carbon::parse($venta['updated_at']) : new Carbon());
@@ -93,17 +94,17 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return int
      */
-    public function getClienteId() : int
+    public function getProveedorId() : int
     {
-        return $this->cliente_id;
+        return $this->proveedor_id;
     }
 
     /**
-     * @param int $cliente_id
+     * @param int $proveedor_id
      */
-    public function setClienteId(int $cliente_id): void
+    public function setProveedorId(int $proveedor_id): void
     {
-        $this->cliente_id = $cliente_id;
+        $this->proveedor_id = $proveedor_id;
     }
 
     /**
@@ -125,17 +126,17 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return Carbon|mixed
      */
-    public function getFechaVenta() : Carbon
+    public function getFechaCompra() : Carbon
     {
-        return $this->fecha_venta->locale('es');
+        return $this->fecha_compra->locale('es');
     }
 
     /**
-     * @param Carbon|mixed $fecha_venta
+     * @param Carbon|mixed $fecha_compra
      */
-    public function setFechaVenta(Carbon $fecha_venta): void
+    public function setFechaCompra(Carbon $fecha_compra): void
     {
-        $this->fecha_venta = $fecha_venta;
+        $this->fecha_compra = $fecha_compra;
     }
 
     /**
@@ -153,11 +154,11 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     {
         $total = 0;
         if($this->getId() != null){
-            $arrDetallesVenta = $this->getDetalleVenta();
-            if(!empty($arrDetallesVenta)){
-                /* @var $arrDetallesVenta DetalleVentas[] */
-                foreach ($arrDetallesVenta as $DetalleVenta){
-                    $total += $DetalleVenta->getTotalProducto();
+            $arrDetallesCompra = $this->getDetalleCompra();
+            if(!empty($arrDetallesCompra)){
+                /* @var $arrDetallesCompra DetalleCompra[] */
+                foreach ($arrDetallesCompra as $DetalleCompra){
+                    $total += $DetalleCompra->getTotalProducto();
                 }
             }
         }
@@ -230,11 +231,11 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
      * Retorna el objeto usuario del cliente correspondiente a la venta
      * @return Usuarios|null
      */
-    public function getCliente(): ?Usuarios
+    public function getProveedor(): ?Usuarios
     {
-        if(!empty($this->cliente_id)){
-            $this->cliente = Usuarios::searchForId($this->cliente_id) ?? new Usuarios();
-            return $this->cliente;
+        if(!empty($this->proveedor_id)){
+            $this->proveedor = Usuarios::searchForId($this->proveedor_id) ?? new Usuarios();
+            return $this->proveedor;
         }
         return NULL;
     }
@@ -259,9 +260,9 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
         $arrData = [
             ':id' =>    $this->getId(),
             ':numero_serie' =>   $this->getNumeroSerie(),
-            ':cliente_id' =>   $this->getClienteId(),
+            ':proveedor_id' =>   $this->getProveedorId(),
             ':empleado_id' =>   $this->getEmpleadoId(),
-            ':fecha_venta' =>  $this->getFechaVenta()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
+            ':fecha_compra' =>  $this->getFechaCompra()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
             ':monto' =>   $this->getMonto(),
             ':estado' =>   $this->getEstado(),
             ':created_at' =>  $this->getCreatedAt()->toDateTimeString(), //YYYY-MM-DD HH:MM:SS
@@ -278,7 +279,7 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
      */
     function insert(): ?bool
     {
-        $query = "INSERT INTO weber.ventas VALUES (:id,:numero_serie,:cliente_id,:empleado_id,:fecha_venta,:monto,:estado,:created_at,:updated_at)";
+        $query = "INSERT INTO weber.compras VALUES (:id,:numero_serie,:empleado_id,:proveedor_id,:fecha_compra,:monto,:estado,:created_at,:updated_at)";
         return $this->save($query);
     }
 
@@ -287,9 +288,9 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function update() : ?bool
     {
-        $query = "UPDATE weber.ventas SET 
-            numero_serie = :numero_serie, cliente_id = :cliente_id,
-            empleado_id = :empleado_id, fecha_venta = :fecha_venta,
+        $query = "UPDATE weber.compras SET 
+            numero_serie = :numero_serie, empleado_id = :empleado_id, 
+            proveedor_id = :proveedor_id, fecha_compra = :fecha_compra,
             monto = :monto, estado = :estado,
             created_at = :created_at, updated_at = :updated_at WHERE id = :id";
         return $this->save($query);
@@ -311,18 +312,18 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     public static function search($query) : ?array
     {
         try {
-            $arrVentas = array();
-            $tmp = new Ventas();
+            $arrCompras = array();
+            $tmp = new Compras();
             $tmp->Connect();
             $getrows = $tmp->getRows($query);
             $tmp->Disconnect();
 
             foreach ($getrows as $valor) {
-                $Venta = new Ventas($valor);
-                array_push($arrVentas, $Venta);
-                unset($Venta);
+                $Compra = new Compras($valor);
+                array_push($arrCompras, $Compra);
+                unset($Compra);
             }
-            return $arrVentas;
+            return $arrCompras;
         } catch (Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
         }
@@ -334,17 +335,17 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
      * @return Ventas
      * @throws Exception
      */
-    public static function searchForId($id) : ?Ventas
+    public static function searchForId($id) : ?Compras
     {
         try {
             if ($id > 0) {
-                $Venta = new Ventas();
-                $Venta->Connect();
-                $getrow = $Venta->getRow("SELECT * FROM weber.ventas WHERE id =?", array($id));
-                $Venta->Disconnect();
-                return ($getrow) ? new Ventas($getrow) : null;
+                $Compra = new Compras();
+                $Compra->Connect();
+                $getrow = $Compra->getRow("SELECT * FROM weber.compras WHERE id =?", array($id));
+                $Compra->Disconnect();
+                return ($getrow) ? new Compras($getrow) : null;
             }else{
-                throw new Exception('Id de venta Invalido');
+                throw new Exception('Id de compra Invalido');
             }
         } catch (Exception $e) {
             GeneralFunctions::logFile('Exception',$e, 'error');
@@ -358,7 +359,7 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
      */
     public static function getAll() : array
     {
-        return Ventas::search("SELECT * FROM weber.ventas");
+        return Ventas::search("SELECT * FROM weber.compras");
     }
 
     /**
@@ -369,7 +370,7 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     public static function facturaRegistrada($numeroSerie): bool
     {
         $numeroSerie = trim(strtolower($numeroSerie));
-        $result = Compras::search("SELECT id FROM weber.ventas where numero_serie = '" . $numeroSerie. "'");
+        $result = Compras::search("SELECT id FROM weber.compras where numero_serie = '" . $numeroSerie. "'");
         if ( !empty($result) && count ($result) > 0 ) {
             return true;
         } else {
@@ -382,8 +383,9 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
      */
     public function __toString() : string
     {
-        return "Numero Serie: $this->numero_serie, Cliente: ".$this->getCliente()->nombresCompletos().", Empleado: ".$this->getEmpleado()->nombresCompletos().", Fecha Venta: $this->fecha_venta->toDateTimeString(), Monto: $this->monto, Estado: $this->estado";
+        return "Numero Serie: $this->numero_serie, Cliente: ".$this->getProveedor()->nombresCompletos().", Empleado: ".$this->getEmpleado()->nombresCompletos().", Fecha Venta: $this->fecha_compra->toDateTimeString(), Monto: $this->monto, Estado: $this->estado";
     }
+
 
     /**
      * Specify data which should be serialized to JSON
@@ -396,9 +398,9 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     {
         return [
             'numero_serie' => $this->getNumeroSerie(),
-            'cliente' => $this->getCliente()->jsonSerialize(),
+            'proveedor' => $this->getProveedor()->jsonSerialize(),
             'empleado' => $this->getEmpleado()->jsonSerialize(),
-            'fecha_venta' => $this->getFechaVenta()->toDateTimeString(),
+            'fecha_compra' => $this->getFechaCompra()->toDateTimeString(),
             'monto' => $this->getMonto(),
             'estado' => $this->getEstado(),
             'created_at' => $this->getCreatedAt()->toDateTimeString(),

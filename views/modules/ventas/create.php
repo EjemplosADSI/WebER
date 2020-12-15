@@ -5,7 +5,7 @@ require_once("../../partials/check_login.php");
 use App\Controllers\ProductosController;
 use App\Controllers\UsuariosController;
 use App\Controllers\VentasController;
-use App\Models\DetalleCompras;
+use App\Models\DetalleVentas;
 use App\Models\GeneralFunctions;
 use Carbon\Carbon;
 
@@ -197,9 +197,9 @@ if (!empty($_GET['id'])) {
                                             <tbody>
                                             <?php
                                             if (!empty($dataVenta) and !empty($dataVenta->getId())) {
-                                                $arrDetalleVentas = DetalleCompras::search("SELECT * FROM weber.detalle_ventas WHERE venta_id = ".$dataVenta->getId());
+                                                $arrDetalleVentas = DetalleVentas::search("SELECT * FROM weber.detalle_ventas WHERE venta_id = ".$dataVenta->getId());
                                                 if(count($arrDetalleVentas) > 0) {
-                                                    /* @var $arrDetalleVentas DetalleCompras[] */
+                                                    /* @var $arrDetalleVentas DetalleVentas[] */
                                                     foreach ($arrDetalleVentas as $detalleVenta) {
                                                         ?>
                                                         <tr>

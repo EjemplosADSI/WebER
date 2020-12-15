@@ -155,7 +155,7 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
         if($this->getId() != null){
             $arrDetallesVenta = $this->getDetalleVenta();
             if(!empty($arrDetallesVenta)){
-                /* @var $arrDetallesVenta DetalleCompras[] */
+                /* @var $arrDetallesVenta DetalleVentas[] */
                 foreach ($arrDetallesVenta as $DetalleVenta){
                     $total += $DetalleVenta->getTotalProducto();
                 }

@@ -180,6 +180,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                             <option <?= (!empty($frmSession['rol']) && $frmSession['rol'] == "Administrador") ? "selected" : ""; ?> value="Administrador">Administrador</option>
                                                             <option <?= (!empty($frmSession['rol']) && $frmSession['rol'] == "Empleado") ? "selected" : ""; ?> value="Empleado">Empleado</option>
                                                             <option <?= (!empty($frmSession['rol']) && $frmSession['rol'] == "Cliente") ? "selected" : ""; ?> value="Cliente">Cliente</option>
+                                                            <option <?= (!empty($frmSession['rol']) && $frmSession['rol'] == "Proveedor") ? "selected" : ""; ?> value="Proveedor">Proveedor</option>
                                                         </select>
                                                     </div>
                                                 </div>

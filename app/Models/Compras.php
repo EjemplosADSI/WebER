@@ -84,7 +84,7 @@ class Compras extends AbstractDBConnection implements Model, JsonSerializable
     {
         if(empty($numero_serie)){
             $this->Connect();
-            $this->numero_serie = 'FV-'.($this->countRowsTable('ventas')+1).'-'.date('Y-m-d');
+            $this->numero_serie = 'FC-'.($this->countRowsTable('ventas')+1).'-'.date('Y-m-d');
             $this->Disconnect();
         }else{
             $this->numero_serie = $numero_serie;
@@ -156,7 +156,7 @@ class Compras extends AbstractDBConnection implements Model, JsonSerializable
         if($this->getId() != null){
             $arrDetallesCompra = $this->getDetalleCompra();
             if(!empty($arrDetallesCompra)){
-                /* @var $arrDetallesCompra DetalleCompra[] */
+                /* @var $arrDetallesCompra DetalleCompras[] */
                 foreach ($arrDetallesCompra as $DetalleCompra){
                     $total += $DetalleCompra->getTotalProducto();
                 }
@@ -241,14 +241,14 @@ class Compras extends AbstractDBConnection implements Model, JsonSerializable
     }
 
     /**
-     * retorna un array de detalles venta que perteneces a una venta
+     * retorna un array de detalles compra que perteneces a una venta
      * @return array
      */
-    public function getDetalleVenta(): ?array
+    public function getDetalleCompra(): ?array
     {
 
-        $this->detalleVenta = DetalleVentas::search('SELECT * FROM weber.detalle_ventas where venta_id = '.$this->id);
-        return $this->detalleVenta;
+        $this->detalleCompra = DetalleCompras::search('SELECT * FROM weber.detalle_compras where compra_id = '.$this->id);
+        return $this->detalleCompra;
     }
 
     /**
@@ -359,7 +359,7 @@ class Compras extends AbstractDBConnection implements Model, JsonSerializable
      */
     public static function getAll() : array
     {
-        return Ventas::search("SELECT * FROM weber.compras");
+        return Compras::search("SELECT * FROM weber.compras");
     }
 
     /**

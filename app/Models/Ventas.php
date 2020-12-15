@@ -155,7 +155,7 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
         if($this->getId() != null){
             $arrDetallesVenta = $this->getDetalleVenta();
             if(!empty($arrDetallesVenta)){
-                /* @var $arrDetallesVenta DetalleVentas[] */
+                /* @var $arrDetallesVenta DetalleCompras[] */
                 foreach ($arrDetallesVenta as $DetalleVenta){
                     $total += $DetalleVenta->getTotalProducto();
                 }
@@ -246,7 +246,7 @@ class Ventas extends AbstractDBConnection implements Model, JsonSerializable
     public function getDetalleVenta(): ?array
     {
 
-        $this->detalleVenta = DetalleVentas::search('SELECT * FROM weber.detalle_ventas where venta_id = '.$this->id);
+        $this->detalleVenta = DetalleCompras::search('SELECT * FROM weber.detalle_ventas where venta_id = '.$this->id);
         return $this->detalleVenta;
     }
 

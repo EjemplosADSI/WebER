@@ -4,21 +4,21 @@ require_once("../../partials/check_login.php");
 
 use App\Controllers\ProductosController;
 use App\Controllers\UsuariosController;
-use App\Controllers\VentasController;
+use App\Controllers\ComprasController;
 use App\Models\DetalleCompras;
 use App\Models\GeneralFunctions;
 use Carbon\Carbon;
 
-$nameModel = "Venta";
+$nameModel = "Compra";
 $pluralModel = $nameModel.'s';
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 ?>
 
 <?php
-$dataVenta = null;
+$dataCompra = null;
 if (!empty($_GET['id'])) {
-    $dataVenta = VentasController::searchForID(["id" => $_GET['id']]);
-    if ($dataVenta->getEstado() != "En progreso"){
+    $dataCompra = ComprasController::searchForID(["id" => $_GET['id']]);
+    if ($dataCompra->getEstado() != "En progreso"){
         header('Location: index.php?respuesta=warning&mensaje=La venta ya ha finalizado');
     }
 }
@@ -88,22 +88,6 @@ if (!empty($_GET['id'])) {
                             <div class="card-body">
                                 <form class="form-horizontal" method="post" id="frmCreate<?= $nameModel ?>" name="frmCreate<?= $nameModel ?>"
                                       action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=create">
-                                    <div class="form-group row">
-                                        <label for="cliente_id" class="col-sm-4 col-form-label">Cliente</label>
-                                        <div class="col-sm-8">
-                                            <?= UsuariosController::selectUsuario(
-                                                array (
-                                                    'id' => 'cliente_id',
-                                                    'name' => 'cliente_id',
-                                                    'defaultValue' => (!empty($dataVenta)) ? $dataVenta->getCliente()->getId() : '',
-                                                    'class' => 'form-control select2bs4 select2-info',
-                                                    'where' => "rol = 'Cliente' and estado = 'Activo'"
-                                                )
-                                            )
-                                            ?>
-                                            <span class="text-info"><a href="../usuarios/create.php">Crear Cliente</a></span>
-                                        </div>
-                                    </div>
 
                                     <div class="form-group row">
                                         <label for="empleado_id" class="col-sm-4 col-form-label">Empleado</label>
@@ -112,7 +96,7 @@ if (!empty($_GET['id'])) {
                                                 array (
                                                     'id' => 'empleado_id',
                                                     'name' => 'empleado_id',
-                                                    'defaultValue' => (!empty($dataVenta)) ? $dataVenta->getEmpleado()->getId() : '',
+                                                    'defaultValue' => (!empty($dataCompra)) ? $dataCompra->getEmpleado()->getId() : '',
                                                     'class' => 'form-control select2bs4 select2-info',
                                                     'where' => "rol = 'Empleado' and estado = 'Activo'"
                                                 )
@@ -120,27 +104,45 @@ if (!empty($_GET['id'])) {
                                             ?>
                                         </div>
                                     </div>
+
+                                    <div class="form-group row">
+                                        <label for="cliente_id" class="col-sm-4 col-form-label">Proveedor</label>
+                                        <div class="col-sm-8">
+                                            <?= UsuariosController::selectUsuario(
+                                                array (
+                                                    'id' => 'proveedor_id',
+                                                    'name' => 'proveedor_id',
+                                                    'defaultValue' => (!empty($dataCompra)) ? $dataCompra->getProveedor()->getId() : '',
+                                                    'class' => 'form-control select2bs4 select2-info',
+                                                    'where' => "rol = 'Proveedor' and estado = 'Activo'"
+                                                )
+                                            )
+                                            ?>
+                                            <span class="text-info"><a href="../usuarios/create.php">Crear Proveedor</a></span>
+                                        </div>
+                                    </div>
+
                                     <?php
-                                    if (!empty($dataVenta)) {
+                                    if (!empty($dataCompra)) {
                                         ?>
                                         <div class="form-group row">
                                             <label for="numero_serie" class="col-sm-4 col-form-label">Codigo
-                                                Factura</label>
+                                                Compra</label>
                                             <div class="col-sm-8">
-                                                <?= $dataVenta->getNumeroSerie() ?>
+                                                <?= $dataCompra->getNumeroSerie() ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="numero_serie" class="col-sm-4 col-form-label">Fecha
-                                                Venta</label>
+                                                Compra</label>
                                             <div class="col-sm-8">
-                                                <?= $dataVenta->getFechaVenta() ?>
+                                                <?= $dataCompra->getFechaCompra() ?>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="numero_serie" class="col-sm-4 col-form-label">Monto</label>
                                             <div class="col-sm-8">
-                                                <?= GeneralFunctions::formatCurrency($dataVenta->getMonto()) ?>
+                                                <?= GeneralFunctions::formatCurrency($dataCompra->getMonto()) ?>
                                             </div>
                                         </div>
                                     <?php } ?>
@@ -155,7 +157,7 @@ if (!empty($_GET['id'])) {
                     <div class="col-md-8">
                         <div class="card card-lightblue">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-parachute-box"></i> &nbsp; Detalle Venta</h3>
+                                <h3 class="card-title"><i class="fas fa-parachute-box"></i> &nbsp; Detalle Compra</h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="card-refresh"
                                             data-source="create.php" data-source-selector="#card-refresh-content"
@@ -196,21 +198,21 @@ if (!empty($_GET['id'])) {
                                             </thead>
                                             <tbody>
                                             <?php
-                                            if (!empty($dataVenta) and !empty($dataVenta->getId())) {
-                                                $arrDetalleVentas = DetalleCompras::search("SELECT * FROM weber.detalle_ventas WHERE venta_id = ".$dataVenta->getId());
-                                                if(count($arrDetalleVentas) > 0) {
-                                                    /* @var $arrDetalleVentas DetalleCompras[] */
-                                                    foreach ($arrDetalleVentas as $detalleVenta) {
+                                            if (!empty($dataCompra) and !empty($dataCompra->getId())) {
+                                                $arrDetalleCompras = DetalleCompras::search("SELECT * FROM weber.detalle_compras WHERE compra_id = ".$dataCompra->getId());
+                                                if(count($arrDetalleCompras) > 0) {
+                                                    /* @var $arrDetalleCompras DetalleCompras[] */
+                                                    foreach ($arrDetalleCompras as $detalleCompra) {
                                                         ?>
                                                         <tr>
-                                                            <td><?= $detalleVenta->getId(); ?></td>
-                                                            <td><?= $detalleVenta->getProducto()->getNombre(); ?></td>
-                                                            <td><?= $detalleVenta->getCantidad(); ?></td>
-                                                            <td><?= GeneralFunctions::formatCurrency($detalleVenta->getPrecioVenta()); ?></td>
-                                                            <td><?= GeneralFunctions::formatCurrency($detalleVenta->getTotalProducto()); ?></td>
+                                                            <td><?= $detalleCompra->getId(); ?></td>
+                                                            <td><?= $detalleCompra->getProducto()->getNombre(); ?></td>
+                                                            <td><?= $detalleCompra->getCantidad(); ?></td>
+                                                            <td><?= GeneralFunctions::formatCurrency($detalleCompra->getPrecioVenta()); ?></td>
+                                                            <td><?= GeneralFunctions::formatCurrency($detalleCompra->getTotalProducto()); ?></td>
                                                             <td>
                                                                 <a type="button"
-                                                                   href="../../../app/Controllers/MainController.php?controller=DetalleVentas&action=deleted&id=<?= $detalleVenta->getId(); ?>"
+                                                                   href="../../../app/Controllers/MainController.php?controller=DetalleCompras&action=deleted&id=<?= $detalleCompra->getId(); ?>"
                                                                    data-toggle="tooltip" title="Eliminar"
                                                                    class="btn docs-tooltip btn-danger btn-xs"><i
                                                                             class="fa fa-times-circle"></i></a>
@@ -256,9 +258,9 @@ if (!empty($_GET['id'])) {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="../../../app/Controllers/MainController.php?controller=DetalleVentas&action=create" method="post">
+                    <form action="../../../app/Controllers/MainController.php?controller=DetalleCompras&action=create" method="post">
                         <div class="modal-body">
-                            <input id="venta_id" name="venta_id" value="<?= !empty($dataVenta) ? $dataVenta->getId() : ''; ?>" hidden
+                            <input id="compra_id" name="compra_id" value="<?= !empty($dataCompra) ? $dataCompra->getId() : ''; ?>" hidden
                                    required="required" type="text">
                             <div class="form-group row">
                                 <label for="producto_id" class="col-sm-4 col-form-label">Producto</label>

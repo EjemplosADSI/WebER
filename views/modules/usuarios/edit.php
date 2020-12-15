@@ -168,13 +168,14 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                             ?>
                                                         </div>
                                                         <div class="col-sm-5 ">
-                                                            <?= MunicipiosController::selectMunicipios(false,
-                                                                true,
-                                                                'municipio_id',
-                                                                'municipio_id',
-                                                                (!empty($DataUsuario)) ? $DataUsuario->getMunicipioId() : '',
-                                                                'form-control select2bs4 select2-info',
-                                                                "departamento_id = ".$DataUsuario->getMunicipio()->getDepartamento()->getId()." and estado = 'Activo'")
+                                                            <?= MunicipiosController::selectMunicipios(
+                                                                array (
+                                                                    'id' => 'municipio_id',
+                                                                    'name' => 'municipio_id',
+                                                                    'defaultValue' => (!empty($DataUsuario)) ? $DataUsuario->getMunicipioId() : '',
+                                                                    'class' => 'form-control select2bs4 select2-info',
+                                                                    'where' => "departamento_id = ".$DataUsuario->getMunicipio()->getDepartamento()->getId()." and estado = 'Activo'")
+                                                                )
                                                             ?>
                                                         </div>
                                                     </div>
@@ -208,6 +209,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                                     <option <?= ($DataUsuario->getRol() == "Administrador") ? "selected" : ""; ?> value="Administrador">Administrador</option>
                                                                     <option <?= ($DataUsuario->getRol() == "Empleado") ? "selected" : ""; ?> value="Empleado">Empleado</option>
                                                                     <option <?= ($DataUsuario->getRol() == "Cliente") ? "selected" : ""; ?> value="Cliente">Cliente</option>
+                                                                    <option <?= ($DataUsuario->getRol() == "Proveedor") ? "selected" : ""; ?> value="Proveedor">Proveedor</option>
                                                                 </select>
                                                             </div>
                                                         </div>

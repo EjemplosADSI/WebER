@@ -558,3 +558,179 @@
 
 )
   
+[2020-12-15T20:54:23.893572+00:00] General.ERROR: Exception  
+[2020-12-15T20:54:23.895874+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-15T20:54:23.896201+00:00] General.ERROR: Line: 126  
+[2020-12-15T20:54:23.896473+00:00] General.ERROR: Mensaje: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`weber`.`compras`, CONSTRAINT `fk_compras_usuarios1` FOREIGN KEY (`proveedor_id`) REFERENCES `usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION)  
+[2020-12-15T20:54:23.896767+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 126
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Compras.php
+            [line] => 272
+            [function] => insertRow
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => INSERT INTO weber.compras VALUES (:id,:numero_serie,:empleado_id,:proveedor_id,:fecha_compra,:monto,:estado,:created_at,:updated_at)
+                    [1] => Array
+                        (
+                            [:id] => 
+                            [:numero_serie] => FV-1-2020-12-15
+                            [:proveedor_id] => 0
+                            [:empleado_id] => 3
+                            [:fecha_compra] => 2020-12-15 20:54:23
+                            [:monto] => 0
+                            [:estado] => En progreso
+                            [:created_at] => 2020-12-15 20:54:23
+                            [:updated_at] => 2020-12-15 20:54:23
+                        )
+
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Compras.php
+            [line] => 283
+            [function] => save
+            [class] => App\Models\Compras
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => INSERT INTO weber.compras VALUES (:id,:numero_serie,:empleado_id,:proveedor_id,:fecha_compra,:monto,:estado,:created_at,:updated_at)
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ComprasController.php
+            [line] => 29
+            [function] => insert
+            [class] => App\Models\Compras
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ComprasController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  
+[2020-12-15T20:56:13.213253+00:00] General.ERROR: Exception  
+[2020-12-15T20:56:13.214004+00:00] General.ERROR: Archivo: C:\laragon\www\WebER\app\Models\AbstractDBConnection.php  
+[2020-12-15T20:56:13.214273+00:00] General.ERROR: Line: 126  
+[2020-12-15T20:56:13.214456+00:00] General.ERROR: Mensaje: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`weber`.`compras`, CONSTRAINT `fk_compras_usuarios2` FOREIGN KEY (`empleado_id`) REFERENCES `usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION)  
+[2020-12-15T20:56:13.214759+00:00] General.ERROR: Array
+(
+    [0] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\AbstractDBConnection.php
+            [line] => 126
+            [function] => execute
+            [class] => PDOStatement
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Compras.php
+            [line] => 272
+            [function] => insertRow
+            [class] => App\Models\AbstractDBConnection
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => INSERT INTO weber.compras VALUES (:id,:numero_serie,:empleado_id,:proveedor_id,:fecha_compra,:monto,:estado,:created_at,:updated_at)
+                    [1] => Array
+                        (
+                            [:id] => 
+                            [:numero_serie] => FV-1-2020-12-15
+                            [:proveedor_id] => 4
+                            [:empleado_id] => 0
+                            [:fecha_compra] => 2020-12-15 20:56:13
+                            [:monto] => 0
+                            [:estado] => En progreso
+                            [:created_at] => 2020-12-15 20:56:13
+                            [:updated_at] => 2020-12-15 20:56:13
+                        )
+
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Models\Compras.php
+            [line] => 283
+            [function] => save
+            [class] => App\Models\Compras
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => INSERT INTO weber.compras VALUES (:id,:numero_serie,:empleado_id,:proveedor_id,:fecha_compra,:monto,:estado,:created_at,:updated_at)
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\ComprasController.php
+            [line] => 29
+            [function] => insert
+            [class] => App\Models\Compras
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => C:\laragon\www\WebER\app\Controllers\MainController.php
+            [line] => 29
+            [function] => create
+            [class] => App\Controllers\ComprasController
+            [type] => ->
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+  

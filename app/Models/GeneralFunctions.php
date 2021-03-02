@@ -50,11 +50,11 @@ final class GeneralFunctions
             if($archivos->processed){
                 return $archivos->file_dst_name;
             }else{
-                GeneralFunctions::logFile("Archivo No Subido, Error en la carpeta..",$archivos->error,'error');
+                GeneralFunctions::logFile('Archivo No Subido',['descripcion' => "Error en la carpeta..",$archivos->error]);
                 return false;
             }
         }else{
-            GeneralFunctions::logFile("Archivo No Subido, Error en la carpeta..",$archivos->error,'error');
+            GeneralFunctions::logFile('Archivo No Subido',['descripcion' => "Error en la carpeta..",$archivos->error]);
             return false;
         }
     }
@@ -75,7 +75,7 @@ final class GeneralFunctions
         }
     }
 
-    static function formatCurrency($currency){
+    static function formatCurrency($currency = 0){
         $fmt = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
         return numfmt_format_currency($fmt, $currency, "COP");
     }

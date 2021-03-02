@@ -118,7 +118,7 @@ class VentasController{
 
         $htmlSelect = "<select ".(($params['isMultiple']) ? "multiple" : "")." ".(($params['isRequired']) ? "required" : "")." id= '".$params['id']."' name='".$params['name']."' class='".$params['class']."'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
-        if(count($arrVentas) > 0){
+        if(is_array($arrVentas) && count($arrVentas) > 0){
             /* @var $arrVentas Ventas[] */
             foreach ($arrVentas as $ventas)
                 if (!VentasController::ventaIsInArray($ventas->getId(),$params['arrExcluir']))

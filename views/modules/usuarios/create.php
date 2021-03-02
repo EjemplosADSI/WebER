@@ -1,4 +1,4 @@
-<?php
+ <?php
 require("../../partials/routes.php");
 require_once("../../partials/check_login.php");
 

@@ -131,7 +131,7 @@ class ProductosController{
 
         $htmlSelect = "<select ".(($params['isMultiple']) ? "multiple" : "")." ".(($params['isRequired']) ? "required" : "")." id= '".$params['id']."' name='".$params['name']."' class='".$params['class']."'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
-        if(count($arrProducto) > 0){
+        if(is_array($arrProducto) && count($arrProducto) > 0){
             /* @var $arrProducto Productos[] */
             foreach ($arrProducto as $producto)
                 if (!ProductosController::productoIsInArray($producto->getId(),$params['arrExcluir']))

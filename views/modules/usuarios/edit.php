@@ -12,7 +12,8 @@ use Carbon\Carbon;
 
 $nameModel = "Usuario";
 $pluralModel = $nameModel.'s';
-$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+$frmSession = $_SESSION['frm'.$pluralModel] ?? null;
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -74,6 +75,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                             <?php if (!empty($_GET["id"]) && isset($_GET["id"])) { ?>
                                 <p>
                                 <?php
+
                                 $DataUsuario = UsuariosController::searchForID(["id" => $_GET["id"]]);
                                 /* @var $DataUsuario Usuarios */
                                 if (!empty($DataUsuario)) {
@@ -156,7 +158,8 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                     <div class="form-group row">
                                                         <label for="municipio_id" class="col-sm-2 col-form-label">Municipio</label>
                                                         <div class="col-sm-5">
-                                                            <?= DepartamentosController::selectDepartamentos(
+                                                            <?=
+                                                            DepartamentosController::selectDepartamentos(
                                                                 array(
                                                                     'id' => 'departamento_id',
                                                                     'name' => 'departamento_id',

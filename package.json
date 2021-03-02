@@ -32,9 +32,9 @@
     "copyfiles": "^2.4.1",
     "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",
-    "postcss": "^8.1.14",
+    "postcss": "^8.2.1",
     "sass-lint": "*",
-    "uglify-js": "^3.12.1",
+    "uglify-js": "^3.12.2",
     "uglifyjs-folder": "^2.0.0"
   }
 }

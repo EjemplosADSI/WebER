@@ -158,7 +158,7 @@ class UsuariosController
         }
         $htmlSelect = "<select " . (($params['isMultiple']) ? "multiple" : "") . " " . (($params['isRequired']) ? "required" : "") . " id= '" . $params['id'] . "' name='" . $params['name'] . "' class='" . $params['class'] . "' style='width: 100%;'>";
         $htmlSelect .= "<option value='' >Seleccione</option>";
-        if (count($arrUsuarios) > 0) {
+        if (is_array($arrUsuarios) && count($arrUsuarios) > 0) {
             /* @var $arrUsuarios Usuarios[] */
             foreach ($arrUsuarios as $usuario)
                 if (!UsuariosController::usuarioIsInArray($usuario->getId(), $params['arrExcluir']))

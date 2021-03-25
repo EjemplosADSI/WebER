@@ -27,3 +27,6 @@ Para su correcto funcionamiento se requiere tener instaladas las siguientes herr
     1. Php 7.4 o Superior.
     2. Apache 2.4.43 o Superior.
 3. Una vez clonado el repositorio Ejecutar composer install
+4. Instalar el Script de la base de datos en phpmyadmin.
+5. Ejecutar npm install && npm run build
+6. composer dump-autoload

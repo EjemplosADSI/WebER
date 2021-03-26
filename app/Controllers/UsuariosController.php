@@ -184,7 +184,7 @@ class UsuariosController
         try {
             if(!empty($_POST['user']) && !empty($_POST['password'])){
                 $tmpUser = new Usuarios();
-                $respuesta = $tmpUser->Login($_POST['user'], $_POST['password']);
+                $respuesta = $tmpUser->login($_POST['user'], $_POST['password']);
                 if (is_a($respuesta,"App\Models\Usuarios")) {
                     $_SESSION['UserInSession'] = $respuesta->jsonSerialize();
                     header("Location: ../../views/index.php");

@@ -4,10 +4,12 @@ namespace App\Models;
 use App\Interfaces\Model;
 use Carbon\Carbon;
 use Exception;
+use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 
 class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
 {
+
     /* Tipos de Datos => bool, int, float,  */
     private ?int $id;
     private string $nombres;
@@ -26,10 +28,9 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     private Carbon $created_at;
     private Carbon $updated_at;
 
-    /* Relaciones */
-    private ?Municipios $municipio;
-    private ?array $ventasCliente;
-    private ?array $ventasEmpleado;
+    /* Seguridad de Contraseña */
+    const HASH = PASSWORD_DEFAULT;
+    const COST = 10;
 
     /**
      * Usuarios constructor. Recibe un array asociativo
@@ -38,7 +39,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     public function __construct(array $usuario = [])
     {
         parent::__construct();
-        $this->setId($usuario['id'] ?? NULL);
+        $this->setId($usuario['id'] ?? null);
         $this->setNombres($usuario['nombres'] ?? '');
         $this->setApellidos($usuario['apellidos'] ?? '');
         $this->setTipoDocumento($usuario['tipo_documento'] ?? '');
@@ -46,19 +47,22 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
         $this->setTelefono($usuario['telefono'] ?? 0);
         $this->setDireccion($usuario['direccion'] ?? '');
         $this->setMunicipioId($usuario['municipio_id'] ?? 0);
-        $this->setFechaNacimiento( !empty($usuario['fecha_nacimiento']) ? Carbon::parse($usuario['fecha_nacimiento']) : new Carbon());
+        $this->setFechaNacimiento(!empty($usuario['fecha_nacimiento']) ?
+            Carbon::parse($usuario['fecha_nacimiento']) : new Carbon());
         $this->setUser($usuario['user'] ?? null);
         $this->setPassword($usuario['password'] ?? null);
         $this->setFoto($usuario['foto'] ?? null);
         $this->setRol($usuario['rol'] ?? '');
         $this->setEstado($usuario['estado'] ?? '');
-        $this->setCreatedAt(!empty($usuario['created_at']) ? Carbon::parse($usuario['created_at']) : new Carbon());
-        $this->setUpdatedAt(!empty($usuario['updated_at']) ? Carbon::parse($usuario['updated_at']) : new Carbon());
+        $this->setCreatedAt(!empty($usuario['created_at']) ?
+            Carbon::parse($usuario['created_at']) : new Carbon());
+        $this->setUpdatedAt(!empty($usuario['updated_at']) ?
+            Carbon::parse($usuario['updated_at']) : new Carbon());
     }
 
-    function __destruct()
+    public function __destruct()
     {
-        if($this->isConnected){
+        if ($this->isConnected) {
             $this->Disconnect();
         }
     }
@@ -82,7 +86,8 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return mixed|string
      */
-    public function getNombres() : string
+    #[Pure]
+    public function getNombres() : null|string
     {
         return ucwords($this->nombres);
     }
@@ -98,7 +103,8 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return mixed|string
      */
-    public function getApellidos() : string
+    #[Pure]
+    public function getApellidos() : ?string
     {
         return ucwords($this->apellidos);
     }
@@ -114,7 +120,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return mixed|string
      */
-    public function getTipoDocumento() : string
+    public function getTipoDocumento() : ?string
     {
         return $this->tipo_documento;
     }
@@ -130,7 +136,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return int|mixed
      */
-    public function getDocumento() : int
+    public function getDocumento() : ?int
     {
         return $this->documento;
     }
@@ -146,7 +152,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return int|mixed
      */
-    public function getTelefono() : int
+    public function getTelefono() : ?int
     {
         return $this->telefono;
     }
@@ -162,7 +168,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return mixed|string
      */
-    public function getDireccion() : string
+    public function getDireccion() : ?string
     {
         return $this->direccion;
     }
@@ -194,7 +200,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return Carbon|mixed
      */
-    public function getFechaNacimiento() : Carbon
+    public function getFechaNacimiento() : ?Carbon
     {
         return $this->fecha_nacimiento->locale('es');
     }
@@ -258,7 +264,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return mixed|string
      */
-    public function getRol() : string
+    public function getRol() : ?string
     {
         return $this->rol;
     }
@@ -274,7 +280,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return mixed|string
      */
-    public function getEstado() : string
+    public function getEstado() : ?string
     {
         return $this->estado;
     }
@@ -290,7 +296,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return Carbon|mixed
      */
-    public function getCreatedAt() : Carbon
+    public function getCreatedAt() : ?Carbon
     {
         return $this->created_at->locale('es');
     }
@@ -319,38 +325,37 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
         $this->updated_at = $updated_at;
     }
 
-    /**
-     * @return Municipios
-     */
-    public function getMunicipio(): ?Municipios
-    {
-        if(!empty($this->municipio_id)){
-            $this->municipio = Municipios::searchForId($this->municipio_id) ?? new Municipios();
-            return $this->municipio;
-        }
-        return NULL;
-    }
+    /* Relaciones */
 
     /**
-     * @return array
+     * @return Municipios|null
      */
-    public function getVentasCliente(): ?array
+    public function getMunicipio(): Municipios|null
     {
-        if(!empty($this->getId())){
-            $this->ventasCliente = Ventas::search('SELECT * FROM ventas WHERE cliente_id = '.$this->getId());
-            return $this->ventasCliente;
+        if (!empty($this->municipio_id)) {
+            return Municipios::searchForId($this->municipio_id) ?? new Municipios();
         }
         return null;
     }
 
     /**
-     * @return array
+     * @return array|null
+     */
+    public function getVentasCliente(): ?array
+    {
+        if (!empty($this->getId())) {
+            return Ventas::search('SELECT * FROM ventas WHERE cliente_id = '.$this->getId());
+        }
+        return null;
+    }
+
+    /**
+     * @return array|null
      */
     public function getVentasEmpleado(): ?array
     {
-        if(!empty($this->getId())){
-            $this->ventasEmpleado = Ventas::search('SELECT * FROM ventas WHERE empleado_id = '.$this->getId());
-            return $this->ventasEmpleado;
+        if (!empty($this->getId())) {
+            return Ventas::search('SELECT * FROM ventas WHERE empleado_id = '.$this->getId());
         }
         return null;
     }
@@ -361,6 +366,8 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
      */
     protected function save(string $query): ?bool
     {
+        $hashPassword = password_hash($this->password, self::HASH, ['cost' => self::COST]);
+
         $arrData = [
             ':id' =>    $this->getId(),
             ':nombres' =>   $this->getNombres(),
@@ -372,7 +379,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
             ':municipio_id' =>   $this->getMunicipioId(),
             ':fecha_nacimiento' =>  $this->getFechaNacimiento()->toDateString(), //YYYY-MM-DD
             ':user' =>  $this->getUser(),
-            ':password' =>   $this->getPassword(),
+            ':password' =>   $hashPassword,
             ':foto' =>   $this->getFoto(),
             ':rol' =>   $this->getRol(),
             ':estado' =>   $this->getEstado(),
@@ -413,7 +420,6 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     }
 
     /**
-     * @param $id
      * @return bool
      * @throws Exception
      */
@@ -447,15 +453,14 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
             }
             return null;
         } catch (Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e);
         }
         return null;
     }
 
     /**
-     * @param $id
-     * @return Usuarios
-     * @throws Exception
+     * @param int $id
+     * @return Usuarios|null
      */
     public static function searchForId(int $id): ?Usuarios
     {
@@ -466,11 +471,11 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
                 $getrow = $tmpUsuario->getRow("SELECT * FROM weber.usuarios WHERE id =?", array($id));
                 $tmpUsuario->Disconnect();
                 return ($getrow) ? new Usuarios($getrow) : null;
-            }else{
+            } else {
                 throw new Exception('Id de usuario Invalido');
             }
         } catch (Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e);
         }
         return null;
     }
@@ -492,7 +497,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     public static function usuarioRegistrado($documento): bool
     {
         $result = Usuarios::search("SELECT * FROM weber.usuarios where documento = " . $documento);
-        if ( !empty($result) && count ($result) > 0 ) {
+        if (!empty($result) && count($result)>0) {
             return true;
         } else {
             return false;
@@ -502,7 +507,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return string
      */
-    public function nombresCompletos() : string
+    public function nombresCompletos(): string
     {
         return $this->nombres . " " . $this->apellidos;
     }
@@ -510,34 +515,42 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
     /**
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
-        return "Nombres: $this->nombres, Apellidos: $this->nombres, Tipo Documento: $this->tipo_documento, Documento: $this->documento, Telefono: $this->telefono, Direccion: $this->direccion, Direccion: $this->fecha_nacimiento->toDateTimeString()";
+        return "Nombres: $this->nombres, 
+                Apellidos: $this->nombres, 
+                Tipo Documento: $this->tipo_documento, 
+                Documento: $this->documento, 
+                Telefono: $this->telefono, 
+                Direccion: $this->direccion, 
+                Direccion: $this->fecha_nacimiento->toDateTimeString()";
     }
 
-    public function Login($User, $Password){
+    public function login($user, $password): Usuarios|String|null
+    {
         try {
-            $resultUsuarios = Usuarios::search("SELECT * FROM usuarios WHERE user = '$User'");
-            if(count($resultUsuarios) >= 1){
-                if($resultUsuarios[0]->password == $Password){
-                    if($resultUsuarios[0]->estado == 'Activo'){
+            $resultUsuarios = Usuarios::search("SELECT * FROM usuarios WHERE user = '$user'");
+            /* @var $resultUsuarios Usuarios[] */
+            if (count($resultUsuarios) >= 1) {
+                if (password_verify($password, $resultUsuarios[0]->getPassword())) {
+                    if ($resultUsuarios[0]->getEstado() == 'Activo') {
                         return $resultUsuarios[0];
-                    }else{
+                    } else {
                         return "Usuario Inactivo";
                     }
-                }else{
+                } else {
                     return "Contraseña Incorrecta";
                 }
-            }else{
+            } else {
                 return "Usuario Incorrecto";
             }
         } catch (Exception $e) {
-            GeneralFunctions::logFile('Exception',$e, 'error');
+            GeneralFunctions::logFile('Exception', $e);
             return "Error en Servidor";
         }
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->getId(),

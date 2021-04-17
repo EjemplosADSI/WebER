@@ -24,7 +24,7 @@ Para su correcto funcionamiento se requiere tener instaladas las siguientes herr
 
 1. Desde PhpStorm clonar el repositorio [https://github.com/EjemplosADSI/WebER.git](https://github.com/EjemplosADSI/WebER.git).
 2. Verificar lo siguientes requisitos en Laragon:
-    1. Php 7.4 o Superior.
+    1. Php 8 o Superior.
     2. Apache 2.4.43 o Superior.
 3. Una vez clonado el repositorio Ejecutar composer install
 4. Instalar el Script de la base de datos en phpmyadmin.

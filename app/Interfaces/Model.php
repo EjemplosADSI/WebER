@@ -4,7 +4,7 @@ namespace App\Interfaces;
 
 use JsonSerializable;
 
-interface Model
+interface Model extends JsonSerializable
 {
     # métodos abstractos para ABM de clases que hereden
     function insert();

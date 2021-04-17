@@ -8,7 +8,7 @@ use Exception;
 use JsonSerializable;
 
 
-class Fotos extends AbstractDBConnection implements Model, JsonSerializable
+class Fotos extends AbstractDBConnection implements Model
 {
     private ?int $id;
     private ?string $nombre;
@@ -41,7 +41,7 @@ class Fotos extends AbstractDBConnection implements Model, JsonSerializable
 
     function __destruct()
     {
-        if($this->isConnected){
+        if($this->isConnected()){
             $this->Disconnect();
         }
     }

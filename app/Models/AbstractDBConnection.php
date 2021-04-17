@@ -15,8 +15,8 @@ use PDOException;
 
 abstract class AbstractDBConnection {
 
-    public bool $isConnected = false;
-    protected PDO $datab;
+    private bool $isConnected = false;
+    protected PDO $objConnection;
 
     abstract protected function save(string $query) : ?bool;
 
@@ -34,17 +34,18 @@ abstract class AbstractDBConnection {
     public function Connect(){
         $this->isConnected = true;
         try {
-            GeneralFunctions::loadEnv(['DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'],['DB_PORT']);
+            GeneralFunctions::loadEnv(
+                ['DB_CONNECTION', 'DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'],['DB_PORT']);
             if(array_search($_ENV['DB_CONNECTION'], PDO::getAvailableDrivers()) !== false){
-                $this->datab = new PDO(
+                $this->objConnection = new PDO(
                     ($_ENV['DB_CONNECTION'] != "sqlsrv") ?
                         "{$_ENV['DB_CONNECTION']}:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_DATABASE']};charset={$_ENV['DB_CHAR_SET']}" :
                         "{$_ENV['DB_CONNECTION']}:Server={$_ENV['DB_HOST']},{$_ENV['DB_PORT']};database={$_ENV['DB_DATABASE']}",
                     $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
                 );
-                $this->datab->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $this->datab->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-                $this->datab->setAttribute(PDO::ATTR_PERSISTENT, true);
+                $this->objConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $this->objConnection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+                $this->objConnection->setAttribute(PDO::ATTR_PERSISTENT, true);
             }else{
                 throw new Exception('Driver de BD no soportado por el servidor');
             }
@@ -60,7 +61,7 @@ abstract class AbstractDBConnection {
      * @return void
      */
     public function Disconnect() : void{
-        unset($this->datab);
+        unset($this->objConnection);
         $this->isConnected = false;
     }
 
@@ -75,7 +76,7 @@ abstract class AbstractDBConnection {
     public function getRow(string $query, array $params = []){
         try{
             if(!empty($query)){
-                $stmt = $this->datab->prepare($query);
+                $stmt = $this->objConnection->prepare($query);
                 $stmt->execute($params);
                 return $stmt->fetch();
             }
@@ -97,7 +98,7 @@ abstract class AbstractDBConnection {
     public function getRows(string $query, array $params = []) : ?array{
         try{
             if(!empty($query)){
-                $stmt = $this->datab->prepare($query);
+                $stmt = $this->objConnection->prepare($query);
                 $stmt->execute($params);
                 return $stmt->fetchAll();
             }
@@ -119,7 +120,7 @@ abstract class AbstractDBConnection {
     public function insertRow(string $query, array $params = []): ?bool {
         try{
             if(!empty($query)) {
-                $stmt = $this->datab->prepare($query);
+                $stmt = $this->objConnection->prepare($query);
                 foreach ($params as $key => $value){
                     $stmt->bindValue($key, $value);
                 }
@@ -174,7 +175,7 @@ abstract class AbstractDBConnection {
                 }
                 return 0;
             }else{
-                return $this->datab->lastInsertId();
+                return $this->objConnection->lastInsertId();
             }
         }catch(PDOException | Exception $e){
             GeneralFunctions::logFile('Exception',$e, 'error');
@@ -194,7 +195,7 @@ abstract class AbstractDBConnection {
         try{
             if(!empty($table)){
                 $sql = "SELECT COUNT(*) FROM ".$table;
-                if ($resultado = $this->datab->query($sql)) {
+                if ($resultado = $this->objConnection->query($sql)) {
                     return (int) $resultado->fetchColumn();
                 }
             }
@@ -234,4 +235,13 @@ abstract class AbstractDBConnection {
         $query = preg_replace($keys, array_values($values), $query);
         return $query;
     }
+
+    /**
+     * @return bool
+     */
+    public function isConnected(): bool
+    {
+        return $this->isConnected;
+    }
+
 }

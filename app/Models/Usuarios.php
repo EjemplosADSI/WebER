@@ -7,7 +7,7 @@ use Exception;
 use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 
-class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
+class Usuarios extends AbstractDBConnection implements Model
 {
 
     /* Tipos de Datos => bool, int, float,  */
@@ -62,7 +62,7 @@ class Usuarios extends AbstractDBConnection implements Model, JsonSerializable
 
     public function __destruct()
     {
-        if ($this->isConnected) {
+        if ($this->isConnected()) {
             $this->Disconnect();
         }
     }

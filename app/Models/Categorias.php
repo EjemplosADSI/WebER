@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Exception;
 use JsonSerializable;
 
-class Categorias extends AbstractDBConnection implements Model, JsonSerializable
+class Categorias extends AbstractDBConnection implements Model
 {
     private ?int $id;
     private string $nombre;
@@ -36,7 +36,7 @@ class Categorias extends AbstractDBConnection implements Model, JsonSerializable
 
     function __destruct()
     {
-        if($this->isConnected){
+        if($this->isConnected()){
             $this->Disconnect();
         }
     }

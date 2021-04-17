@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Exception;
 use JsonSerializable;
 
-class Compras extends AbstractDBConnection implements Model, JsonSerializable
+class Compras extends AbstractDBConnection implements Model
 {
     private ?int $id;
     private string $numero_serie;

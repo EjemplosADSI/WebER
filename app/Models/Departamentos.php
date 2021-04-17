@@ -7,7 +7,7 @@ use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 
-final class Departamentos extends AbstractDBConnection implements Model, JsonSerializable
+final class Departamentos extends AbstractDBConnection implements Model
 {
     private ?int $id;
     private string $nombre;

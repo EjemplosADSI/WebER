@@ -22,7 +22,8 @@ class CategoriasController{
 
     public function create() {
         try {
-            if (!empty($this->dataCategoria['nombre']) && !Categorias::categoriaRegistrada($this->dataCategoria['nombre'])) {
+            if (!empty($this->dataCategoria['nombre']) &&
+                !Categorias::categoriaRegistrada($this->dataCategoria['nombre'])) {
                 $Categoria = new Categorias($this->dataCategoria);
                 if ($Categoria->insert()) {
                     unset($_SESSION['frmCategorias']);

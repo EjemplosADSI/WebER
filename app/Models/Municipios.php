@@ -7,7 +7,7 @@ use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 
-final class Municipios extends AbstractDBConnection implements Model, JsonSerializable
+final class Municipios extends AbstractDBConnection implements Model
 {
     private ?int $id;
     private string $nombre;
@@ -38,7 +38,7 @@ final class Municipios extends AbstractDBConnection implements Model, JsonSerial
 
     public function __destruct()
     {
-        if ($this->isConnected) {
+        if ($this->isConnected()) {
             $this->Disconnect();
         }
     }

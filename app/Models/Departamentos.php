@@ -163,13 +163,10 @@ final class Departamentos extends AbstractDBConnection implements Model
      */
     public function getMunicipiosDepartamento(): ?array
     {
-        if (!empty($this-> MunicipiosDepartamento)) {
-            $this-> MunicipiosDepartamento = Municipios::search(
-                "SELECT * FROM municipios WHERE departamento_id = ".$this->id
-            );
-            return $this-> MunicipiosDepartamento;
-        }
-        return null;
+        $this-> MunicipiosDepartamento = Municipios::search(
+            "SELECT * FROM municipios WHERE departamento_id = ".$this->id
+        );
+        return $this-> MunicipiosDepartamento ?? null;
     }
 
     public static function search($query): ?array
@@ -248,18 +245,18 @@ final class Departamentos extends AbstractDBConnection implements Model
         return null;
     }
 
-    public function insert()
+    public function insert(): ?bool
     {
-        return null;
+        return false;
     }
 
-    public function update()
+    public function update(): ?bool
     {
-        return null;
+        return false;
     }
 
-    public function deleted()
+    public function deleted(): ?bool
     {
-        return null;
+        return false;
     }
 }

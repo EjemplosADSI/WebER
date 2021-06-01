@@ -38,7 +38,6 @@ class UsuariosController
                     $resultUpload = GeneralFunctions::subirArchivo($fotoUsuario, "views/public/uploadFiles/photos/");
                     $this->dataUsuario['foto'] = ($resultUpload != false) ? $resultUpload : NULL;
                 }
-
                 $Usuario = new Usuarios ($this->dataUsuario);
                 if ($Usuario->insert()) {
                     unset($_SESSION['frmUsuarios']);

@@ -17,6 +17,8 @@ final class Municipios extends AbstractDBConnection implements Model
     private Carbon $created_at;
     private Carbon $updated_at;
     private Carbon $deleted_at;
+    /* Objeto de la relacion */
+    private Departamentos $departamento;
 
     /**
      * Municipios constructor. Recibe un array asociativo
@@ -183,9 +185,9 @@ final class Municipios extends AbstractDBConnection implements Model
     public function getDepartamento(): ?Departamentos
     {
         if (!empty($this->departamento_id)) {
-            return Departamentos::searchForId($this->departamento_id) ?? new Departamentos();
+            $this->departamento = Departamentos::searchForId($this->departamento_id) ?? new Departamentos();
         }
-        return null;
+        return $this->departamento;
     }
 
     public static function search($query): ?array
@@ -266,18 +268,18 @@ final class Municipios extends AbstractDBConnection implements Model
         return null;
     }
 
-    public function insert()
+    public function insert(): ?bool
     {
-        return null;
+        return false;
     }
 
-    public function update()
+    public function update(): ?bool
     {
-        return null;
+        return false;
     }
 
-    public function deleted()
+    public function deleted(): ?bool
     {
-        return null;
+        return false;
     }
 }

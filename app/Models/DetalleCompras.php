@@ -192,7 +192,7 @@ class DetalleCompras extends AbstractDBConnection implements Model
         return $result;
     }
 
-    function insert()
+    function insert() : ?bool
     {
         $query = "INSERT INTO weber.detalle_compras VALUES (:id,:producto_id,:compra_id,:cantidad,:precio_venta,:created_at)";
         if($this->save($query)){

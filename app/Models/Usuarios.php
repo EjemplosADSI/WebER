@@ -7,6 +7,10 @@ use Exception;
 use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 
+require_once ("AbstractDBConnection.php");
+require_once (__DIR__."\..\Interfaces\Model.php");
+require_once (__DIR__.'/../../vendor/autoload.php');
+
 class Usuarios extends AbstractDBConnection implements Model
 {
 
@@ -531,7 +535,7 @@ class Usuarios extends AbstractDBConnection implements Model
         try {
             $resultUsuarios = Usuarios::search("SELECT * FROM usuarios WHERE user = '$user'");
             /* @var $resultUsuarios Usuarios[] */
-            if (count($resultUsuarios) >= 1) {
+            if (!empty($resultUsuarios) && count($resultUsuarios) >= 1) {
                 if (password_verify($password, $resultUsuarios[0]->getPassword())) {
                     if ($resultUsuarios[0]->getEstado() == 'Activo') {
                         return $resultUsuarios[0];

@@ -1,7 +1,7 @@
 <?php
 
-//require ("..\app\Models\Departamentos.php");
-//use App\Models\Departamentos;
+require ("..\app\Models\Departamentos.php");
+use App\Models\Departamentos;
 
 //$dep = Departamentos::searchForId(15);
 

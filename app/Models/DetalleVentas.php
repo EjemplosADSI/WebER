@@ -192,7 +192,7 @@ class DetalleVentas extends AbstractDBConnection implements Model
         return $result;
     }
 
-    function insert()
+    function insert(): ?bool
     {
         $query = "INSERT INTO weber.detalle_ventas VALUES (:id,:venta_id,:producto_id,:cantidad,:precio_venta,:created_at)";
         if($this->save($query)){

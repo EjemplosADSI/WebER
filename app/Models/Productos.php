@@ -10,12 +10,12 @@ use JsonSerializable;
 class Productos extends AbstractDBConnection implements Model
 {
     private ?int $id;
-    private string $nombre;
-    private float $precio;
-    private float $porcentaje_ganancia;
-    private int $stock;
-    private int $categoria_id;
-    private string $estado;
+    private string $nombre; //adata x333
+    private float $precio; //2222
+    private float $porcentaje_ganancia; //0.5
+    private int $stock; //34
+    private int $categoria_id; //discos
+    private string $estado; //Activo
     private Carbon $created_at;
     private Carbon $updated_at;
 

@@ -10,8 +10,9 @@ use App\Models\GeneralFunctions;
 use Carbon\Carbon;
 
 $nameModel = "Venta";
+$nameForm = 'frmCreate'.$nameModel;
 $pluralModel = $nameModel.'s';
-$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+$frmSession = $_SESSION[$nameForm] ?? NULL;
 ?>
 
 <?php
@@ -86,7 +87,7 @@ if (!empty($_GET['id'])) {
                             </div>
 
                             <div class="card-body">
-                                <form class="form-horizontal" method="post" id="frmCreate<?= $nameModel ?>" name="frmCreate<?= $nameModel ?>"
+                                <form class="form-horizontal" method="post" id="<?= $nameForm ?>" name="<?= $nameForm ?>"
                                       action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=create">
                                     <div class="form-group row">
                                         <label for="cliente_id" class="col-sm-4 col-form-label">Cliente</label>
@@ -307,7 +308,7 @@ if (!empty($_GET['id'])) {
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>
+                            <button id="frmName" name="frmName" value="<?= $nameForm ?>" type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>
                         </div>
                     </form>
                 </div>

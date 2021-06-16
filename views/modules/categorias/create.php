@@ -6,8 +6,9 @@ use App\Models\GeneralFunctions;
 use Carbon\Carbon;
 
 $nameModel = "Categoria";
+$nameForm = 'frmCreate'.$nameModel;
 $pluralModel = $nameModel.'s';
-$frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
+$frmSession = $_SESSION[$nameForm] ?? NULL;
 ?>
 <!DOCTYPE html>
 <html>
@@ -67,8 +68,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                             <!-- /.card-header -->
                             <!-- form start -->
                             <div class="card-body">
-                                <form class="form-horizontal" method="post" id="frmCreate<?= $nameModel ?>"
-                                      name="frmCreate<?= $nameModel ?>"
+                                <form class="form-horizontal" method="post" id="<?= $nameForm ?>" name="<?= $nameForm ?>"
                                       action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=create">
                                     <div class="form-group row">
                                         <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
@@ -85,7 +85,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                         </div>
                                     </div>
                                     <hr>
-                                    <button type="submit" class="btn btn-info">Enviar</button>
+                                    <button id="frmName" name="frmName" value="<?= $nameForm ?>" type="submit" class="btn btn-info">Enviar</button>
                                     <a href="index.php" role="button" class="btn btn-default float-right">Cancelar</a>
                                 </form>
                             </div>

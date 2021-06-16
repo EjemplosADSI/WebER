@@ -281,6 +281,7 @@ class DetalleCompras extends AbstractDBConnection implements Model
      * @param $producto_id
      * @return bool
      */
+
     public static function productoEnFactura($compra_id,$producto_id): bool
     {
         $result = DetalleCompras::search("SELECT id FROM weber.detalle_compras where compra_id = '" . $compra_id. "' and producto_id = '" . $producto_id. "'");

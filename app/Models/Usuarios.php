@@ -532,6 +532,7 @@ class Usuarios extends AbstractDBConnection implements Model
 
     public function login($user, $password): Usuarios|String|null
     {
+
         try {
             $resultUsuarios = Usuarios::search("SELECT * FROM usuarios WHERE user = '$user'");
             /* @var $resultUsuarios Usuarios[] */

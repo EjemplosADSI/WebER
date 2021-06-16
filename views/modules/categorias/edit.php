@@ -10,6 +10,7 @@ use Carbon\Carbon;
 
 $nameModel = "Categoria";
 $pluralModel = $nameModel.'s';
+$nameForm = 'frmEdit'.$nameModel;
 $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 
 ?>
@@ -79,8 +80,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                     ?>
                                     <div class="card-body">
                                         <!-- form start -->
-                                        <form class="form-horizontal" method="post" id="frmEdit<?= $nameModel ?>"
-                                              name="frmEdit<?= $nameModel ?>"
+                                        <form class="form-horizontal" method="post" id="<?= $nameForm ?>" name="<?= $nameForm ?>"
                                               action="../../../app/Controllers/MainController.php?controller=<?= $pluralModel ?>&action=edit">
                                             <input id="id" name="id" value="<?= $DataCategoria->getId(); ?>"
                                                    hidden required="required" type="text">
@@ -113,7 +113,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                                                 </div>
                                             </div>
                                             <hr>
-                                            <button type="submit" class="btn btn-info">Enviar</button>
+                                            <button id="frmName" name="frmName" value="<?= $nameForm ?>" type="submit" class="btn btn-info">Enviar</button>
                                             <a href="index.php" role="button" class="btn btn-default float-right">Cancelar</a>
                                         </form>
                                     </div>

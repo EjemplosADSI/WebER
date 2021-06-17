@@ -20,5 +20,6 @@
     <link rel="stylesheet" href="<?= $baseURL ?>/views/public/css/main.css">
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="<?= $baseURL ?>/views/public/img/favicon-32x32.png">
-
+    <!-- Social Buttons Bootstrap -->
+    <link href="<?= $baseURL ?>/node_modules/bootstrap-social/bootstrap-social.css" rel="stylesheet" >
 <!-- End Importaciones CSS -->

@@ -39,7 +39,7 @@
                     <a href="<?= $baseURL; ?>/views/index.php" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
-                            Inicio - <?= $_SESSION['UserInSession']['rol'] ?>
+                            Inicio
                         </p>
                     </a>
                 </li>

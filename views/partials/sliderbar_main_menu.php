@@ -12,12 +12,21 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
+        <div class="user-panel mt-3 pb-3 d-flex">
+            <div class="image align-middle">
                 <img src="<?= $baseURL ?>/views/public/img/user.png" class="img-circle elevation-2" alt="User Image">
             </div>
-            <div class="info">
-                <a href="#" class="d-block"> <?= $_SESSION['UserInSession']['nombres'] ?> </a>
+            <div class="d-flex flex-column">
+                <div class="info">
+                    <a href="<?= "$baseURL/views/modules/usuarios/show.php?id=" .$_SESSION['UserInSession']['id']?>" class="d-block">
+                        <?= $_SESSION['UserInSession']['nombres'] ?>
+                    </a>
+                </div>
+                <div class="info">
+                    <a href="#" class="d-block">
+                        <?= $_SESSION['UserInSession']['rol'] ?>
+                    </a>
+                </div>
             </div>
         </div>
 

@@ -75,7 +75,7 @@ class Fotos extends AbstractDBConnection implements Model
      */
     public function setNombre(?string $nombre): void
     {
-        $this->nombre = trim(mb_strtolower($nombre, 'UTF-8'));
+        $this->nombre = trim(mb_strtolower($nombre ?? '', 'UTF-8'));
     }
 
     /**
@@ -308,11 +308,11 @@ class Fotos extends AbstractDBConnection implements Model
     /**
      * Specify data which should be serialized to JSON
      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @return array data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return [
             'nombre' => $this->getNombre(),

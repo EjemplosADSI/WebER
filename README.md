@@ -30,3 +30,6 @@ Para su correcto funcionamiento se requiere tener instaladas las siguientes herr
 4. Instalar el Script de la base de datos en phpmyadmin.
 5. Ejecutar npm install && npm run build
 6. composer dump-autoload
+7. Herramientas de Buenas Practicas:
+   1. composer global require friendsofphp/php-cs-fixer --with-all-dependencies
+   2. composer global require "squizlabs/php_codesniffer=*"

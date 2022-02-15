@@ -9,4 +9,6 @@ composer.phar
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
 .php_cs.cache
 composer.lock
+.package-lock.json
 package-lock.json
+.php-cs-fixer.cache

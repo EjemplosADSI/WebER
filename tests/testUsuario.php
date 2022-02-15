@@ -1,5 +1,6 @@
 <?php
-require ("..\app\Models\Usuarios.php");
+require "..\app\Models\Usuarios.php";
+
 use App\Models\Usuarios;
 
 $usuario = Usuarios::searchForId(1);

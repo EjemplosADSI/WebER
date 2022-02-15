@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Weber Laragon" type="PhpHttpRequestRunConfigurationType" factoryName="PHP HTTP Request" server_name="Laragon" url="/Weber/">
+    <method v="2" />
+  </configuration>
+</component>

@@ -4,7 +4,8 @@
   "description": "Ejemplo MVC POO",
   "main": "index.js",
   "scripts": {
-    "buildcss": "node-sass --output-style compressed -r resources/scss/ -o views/public/css/",
+    
+    "buildcss": "sass --style=compressed resources/scss/:views/public/css/",
     "buildjs": "uglifyjs-folder resources/js/ -eo views/public/js/",
     "buildimg": "copyfiles -u 2 resources/img/*.* views/public/img/",
     "build": "npm run buildcss & npm run buildjs & npm run buildimg"
@@ -26,14 +27,13 @@
     "url": "https://github.com/EjemplosADSI/WebER/issues"
   },
   "homepage": "https://github.com/EjemplosADSI/WebER#readme",
-  "devDependencies": {},
   "dependencies": {
     "bootstrap-imageupload": "^1.1.3",
     "bootstrap-social": "^5.1.1",
     "copyfiles": "^2.4.1",
-    "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",
     "postcss": "^8.2.1",
+    "sass": "^1.49.7",
     "sass-lint": "*",
     "uglify-js": "^3.12.2",
     "uglifyjs-folder": "^2.0.0"

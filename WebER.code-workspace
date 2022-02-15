@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"php.validate.executablePath": "C:\\laragon\\bin\\php\\php-8.1.2-Win32-vs16-x64\\php.exe",
+		"php.validate.run": "onType",
+		"php.executablePath": "C:\\laragon\\bin\\php\\php-8.1.2-Win32-vs16-x64\\php.exe"
+	}
+}

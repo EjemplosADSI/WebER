@@ -86,6 +86,7 @@ class VentasController{
             $ObjVenta = Ventas::searchForId($_GET['Id']);
             $ObjVenta->setEstado("Cancelada");
             if($ObjVenta->update()){
+                $ObjVenta->cancelFactura();
                 header("Location: ../../views/modules/ventas/index.php");
             }else{
                 header("Location: ../../views/modules/ventas/index.php?respuesta=error&mensaje=Error al guardar");

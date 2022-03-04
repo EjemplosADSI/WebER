@@ -377,6 +377,17 @@ class Ventas extends AbstractDBConnection implements Model
         }
     }
 
+    function cancelFactura(){
+        $result = $this->getDetalleVenta();
+        /* @var $result DetalleVentas[] */
+        if( is_array($result) && count($result) > 0){
+            foreach ($result as $detalle){
+                $cantidad = $detalle->getCantidad();
+                $detalle->getProducto()->addStock($cantidad);
+            }
+        }
+    }
+
     /**
      * @return string
      */

@@ -5,6 +5,7 @@ use App\Models\GeneralFunctions;
 
     //Carga las librerias importadas del composer
 require(__DIR__ .'/../../vendor/autoload.php');
+    //\Spatie\Ignition\Ignition::make()->register();
     //__DIR__ => D:\laragon\www\WebER\views\partials
 if(GeneralFunctions::loadEnv(['ROOT_FOLDER'])){
     $baseURL = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST']."/".$_ENV['ROOT_FOLDER'];

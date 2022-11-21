@@ -1,6 +1,5 @@
 <?php
 require_once("../../../app/Controllers/UsuariosController.php");
-require_once("../../partials/routes.php");
 
 ?>
 <!DOCTYPE html>

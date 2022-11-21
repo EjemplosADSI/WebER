@@ -1,7 +1,7 @@
 <footer class="main-footer">
     <div class="row">
         <div class="col-4">
-            <strong>Copyright &copy; <?= date('Y') ?> <a href="<?= $baseURL; ?>"><?= $_ENV['ALIASE_SITE'] ?></a>.</strong>
+            <strong>Copyright &copy; <?= date('Y') ?> <a href="<?= $GLOBALS['baseURL']; ?>"><?= $_ENV['ALIASE_SITE'] ?></a>.</strong>
             Derechos Reservados.
         </div>
         <div class="col-4">

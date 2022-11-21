@@ -1,16 +1,16 @@
 <!-- DataTables -->
-<script src="<?= $adminlteURL ?>/plugins/datatables/jquery.dataTables.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-responsive/js/dataTables.responsive.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-responsive/js/responsive.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/dataTables.buttons.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.bootstrap4.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/jszip/jszip.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/pdfmake/pdfmake.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/pdfmake/vfs_fonts.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.html5.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.print.js"></script>
-<script src="<?= $adminlteURL ?>/plugins/datatables-buttons/js/buttons.colVis.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables/jquery.dataTables.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables-responsive/js/dataTables.responsive.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables-responsive/js/responsive.bootstrap4.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables-buttons/js/dataTables.buttons.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables-buttons/js/buttons.bootstrap4.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/jszip/jszip.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/pdfmake/pdfmake.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables-buttons/js/buttons.html5.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables-buttons/js/buttons.print.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/datatables-buttons/js/buttons.colVis.js"></script>
 
 <script>
     $(function () {

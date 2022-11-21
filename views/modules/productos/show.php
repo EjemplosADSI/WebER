@@ -18,7 +18,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
     <title><?= $_ENV['TITLE_SITE'] ?> | Datos del <?= $nameModel ?></title>
     <?php require("../../partials/head_imports.php"); ?>
     <!-- Ekko Lightbox -->
-    <link rel="stylesheet" href="<?= $adminlteURL ?>/plugins/ekko-lightbox/ekko-lightbox.css">
+    <link rel="stylesheet" href="<?= $GLOBALS['adminlteURL'] ?>/plugins/ekko-lightbox/ekko-lightbox.css">
 </head>
 <body class="hold-transition sidebar-mini">
 
@@ -39,7 +39,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="<?= $baseURL; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
+                            <li class="breadcrumb-item"><a href="<?= $GLOBALS['baseURL']; ?>/views/"><?= $_ENV['ALIASE_SITE'] ?></a></li>
                             <li class="breadcrumb-item"><a href="index.php"><?= $pluralModel ?></a></li>
                             <li class="breadcrumb-item active">Ver</li>
                         </ol>
@@ -175,7 +175,7 @@ $frmSession = $_SESSION['frm'.$pluralModel] ?? NULL;
 <!-- ./wrapper -->
 <?php require('../../partials/scripts.php'); ?>
 <!-- Ekko Lightbox -->
-<script src="<?= $adminlteURL ?>/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
+<script src="<?= $GLOBALS['adminlteURL'] ?>/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
 <!-- Page specific script -->
 <script>
     $(function () {

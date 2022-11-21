@@ -30,7 +30,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9",
-    "chevere/var-dump": "^0.4.1"
+    "chevere/var-dump": "^0.4.1",
+    "pyrech/composer-changelogs": "^1.8"
   },
   "autoload": {
     "psr-4": {
@@ -52,7 +53,10 @@
     ]
   },
   "config": {
-    "bin-dir": "bin"
+    "bin-dir": "bin",
+    "allow-plugins": {
+      "pyrech/composer-changelogs": true
+    }
   },
   "extra": {
 

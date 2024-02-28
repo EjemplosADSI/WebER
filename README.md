@@ -26,10 +26,15 @@ Para su correcto funcionamiento se requiere tener instaladas las siguientes herr
 2. Verificar lo siguientes requisitos en Laragon:
     1. Php 8 o Superior.
     2. Apache 2.4.43 o Superior.
-3. Una vez clonado el repositorio Ejecutar composer install
-4. Ejecutar npm install && npm run build
-5. composer dump-autoload
-6. composer run setup-db (O migrar manualmente la BD)
-7. Herramientas de Buenas Practicas:
+3. Una vez clonado el repositorio Ejecutar:
+   1. composer install
+   2. npm install && npm run build
+   3. composer dump-autoload
+   4. composer run setup-db (O migrar manualmente la BD database/Script.sql)
+4. Acceder a la aplicación [http://localhost/Weber]()
+5. El usuario por defecto es daom89 y password 123456
+
+#### Otras Herramientas
+1. Buenas Prácticas:
    1. composer global require friendsofphp/php-cs-fixer --with-all-dependencies
    2. composer global require "squizlabs/php_codesniffer=*"

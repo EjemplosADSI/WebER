@@ -46,6 +46,7 @@
     }
   },
   "scripts": {
+    "setup-db": "php setup_database.php",
     "post-install-cmd": [
 
     ],

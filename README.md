@@ -27,9 +27,9 @@ Para su correcto funcionamiento se requiere tener instaladas las siguientes herr
     1. Php 8 o Superior.
     2. Apache 2.4.43 o Superior.
 3. Una vez clonado el repositorio Ejecutar composer install
-4. Instalar el Script de la base de datos en phpmyadmin.
-5. Ejecutar npm install && npm run build
-6. composer dump-autoload
+4. Ejecutar npm install && npm run build
+5. composer dump-autoload
+6. composer run setup-db (O migrar manualmente la BD)
 7. Herramientas de Buenas Practicas:
    1. composer global require friendsofphp/php-cs-fixer --with-all-dependencies
    2. composer global require "squizlabs/php_codesniffer=*"

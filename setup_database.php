@@ -7,10 +7,11 @@ require(__DIR__ .'/vendor/autoload.php');
 // Carga las variables de entorno desde el archivo .env
 GeneralFunctions::loadEnv();
 
-// Configuración de la base de datos
+// Datos acceso root
 $user_root = 'root';
 $password_root = '';
 
+// Configuración de la base de datos
 $host = $_ENV['DB_HOST'];
 $port = $_ENV['DB_PORT'];
 $database = $_ENV['DB_DATABASE'];
